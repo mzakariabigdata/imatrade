@@ -1,5 +1,5 @@
-from imatrade.model.task import Task
-from imatrade.model.task_builder import TaskBuilder
+from imatrade.model import Task
+from imatrade.model import TaskBuilder
 from imatrade.view.task_view import TaskView
 from imatrade.observer.task_observer import TaskObserver
 from imatrade.factory.task_factory import TaskFactory, ExtendedTaskFactory

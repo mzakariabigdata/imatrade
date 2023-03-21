@@ -1,5 +1,5 @@
 from imatrade.observer.task_observer import TaskObserver
-from imatrade.model.task import TaskV2
+from imatrade.model import TaskV2
 
 
 class TaskDueDateObserver(TaskObserver):

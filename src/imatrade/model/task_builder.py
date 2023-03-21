@@ -1,4 +1,4 @@
-from imatrade.model.task import Task
+from .task import Task
 
 
 class TaskBuilder:

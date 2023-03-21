@@ -1,5 +1,5 @@
-from imatrade.model.task import Task, TaskV1, TaskV2
-from imatrade.model.task_builder import TaskBuilder
+from imatrade.model import Task, TaskV1, TaskV2
+from imatrade.model import TaskBuilder
 from imatrade.decorator.task_decorator import TaskWithLogging
 from abc import ABC
 

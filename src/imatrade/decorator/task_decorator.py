@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from imatrade.model.task import Task
+from imatrade.model import Task
 
 
 class TaskDecorator(Task, ABC):
