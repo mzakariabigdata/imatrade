@@ -1,6 +1,17 @@
+try:
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.shortcuts import button_dialog
+except ImportError:
+    print("Veuillez installer prompt_toolkit pour utiliser cette interface : pip install prompt_toolkit")
+    exit(1)
+    
 import pandas as pd
 
+from imatrade.menu import Menu
+
 from imatrade.utils.config import strategies_config
+
+from imatrade.command.add_task_command import AddTaskCommand, DisplayStrategyCommand, DisplayTasksCommand, PerformTasksCommand, QuitCommand, DisplayAllStrategiesCommand
 
 from imatrade.controller.task_controller import TaskController
 from imatrade.strategy.task import TitleSortingStrategy
@@ -18,6 +29,12 @@ from imatrade.strategy.observer import TaskDueDateStrategy
 from imatrade.model.trading_strategy_builder import MACrossoverStrategyBuilder, RSIStrategyBuilder
 from imatrade.factory.trading_strategy_factory import TradingStrategyFactory
 from imatrade.controller.trading_strategy_controller import TradingStrategyController
+
+
+def display_menu(commands):
+    print("\nOptions :")
+    for key, command in commands.items():
+        print(f"{key}. {command.description}")
 
 def main():
     count_strategy = TaskCountStrategy()
@@ -41,21 +58,11 @@ def main():
     strategy_factory.register_builder("MA_Crossover", MACrossoverStrategyBuilder())
     strategy_factory.register_builder("RSI", RSIStrategyBuilder())
     # Créer une instance du contrôleur avec la factory
-    controller = TradingStrategyController(strategy_factory)
+    trading_strategy_controller = TradingStrategyController(strategy_factory)
+    # Créer toutes les stratégies à partir du fichier strategies.yaml
+    strategies = trading_strategy_controller.create_all_strategies()
+    print(strategies)
     # Créer une stratégie de trading en utilisant la factory
-    ma_crossover_config = strategies_config.get("MA_Crossover")
-    ma_crossover_strategy = controller.create_strategy(
-        "MA_Crossover",
-        short_window=ma_crossover_config["short_window"],
-        long_window=ma_crossover_config["long_window"],
-    )
-    rsi_config = strategies_config.get("RSI")
-    rsi_strategy = controller.create_strategy(
-        "RSI",
-        rsi_period=rsi_config["rsi_period"],
-        oversold=rsi_config["oversold"],
-        overbought=rsi_config["overbought"],
-    )
     # Exemple de données de marché
     market_data = [
         {"date": "2021-01-01", "open": 1.2345, "close": 1.2360},
@@ -68,28 +75,21 @@ def main():
     # Définir la colonne "date" comme index
     market_data.set_index("date", inplace=True)
     # Exécuter les stratégies et afficher les signaux de trading
-    controller.execute_strategy(ma_crossover_strategy, market_data)
-    controller.execute_strategy(rsi_strategy, market_data)
+    for strategy_name, strategy in strategies.items():
+        trading_strategy_controller.execute_strategy(strategy_name, market_data)
 
-    while True:
-        print("\nOptions :")
-        print("1. Ajouter une tâche")
-        print("2. Afficher les tâches")
-        print("3. Perform les tâches")
-        print("4. Quitter")
 
-        choice = int(input("Choisissez une option : "))
-
-        if choice == 1:
-            task_controller.add_task()
-        elif choice == 2:
-            task_controller.display_tasks()
-        elif choice == 3:
-            task_controller.perform_tasks()
-        elif choice == 4:
-            break
-        else:
-            print("Option invalide. Veuillez réessayer.")
+    commands = {
+        1: AddTaskCommand(task_controller),
+        2: DisplayTasksCommand(task_controller),
+        3: PerformTasksCommand(task_controller),
+        4: DisplayStrategyCommand(trading_strategy_controller),
+        5: DisplayAllStrategiesCommand(trading_strategy_controller),
+        6: QuitCommand(),
+    }
+    
+    menu = Menu(commands)
+    menu.run()
 
 
 if __name__ == "__main__":

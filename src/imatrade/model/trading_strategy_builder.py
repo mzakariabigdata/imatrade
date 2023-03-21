@@ -23,8 +23,8 @@ class MACrossoverStrategyBuilder(TradingStrategyBuilder):
         self.long_window = long_window
         return self
 
-    def build(self):
-        return MACrossoverStrategy(self.short_window, self.long_window)
+    def build(self, config):
+        return MACrossoverStrategy(short_window=config["short_window"], long_window=config["long_window"])
 
 
 class RSIStrategyBuilder(TradingStrategyBuilder):
@@ -45,5 +45,5 @@ class RSIStrategyBuilder(TradingStrategyBuilder):
         self.oversold = oversold
         return self
 
-    def build(self):
-        return RSIStrategy(self.rsi_period, self.overbought, self.oversold)
+    def build(self, config):
+        return RSIStrategy(rsi_period=config["rsi_period"], oversold=config["oversold"], overbought=config["overbought"])

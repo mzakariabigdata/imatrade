@@ -1,6 +1,16 @@
 from abc import ABC, abstractmethod
 from imatrade.model import Task
+from imatrade.model.task import TaskInterface
 
+class TaskDecorator(TaskInterface):
+    def __init__(self, task: TaskInterface):
+        self._task = task
+
+    def perform(self):
+        self._task.perform()
+
+    def display(self):
+        self._task.display()
 
 class TaskDecorator(Task, ABC):
     """
@@ -15,6 +25,15 @@ class TaskDecorator(Task, ABC):
         pass
 
 
+class UrgentTaskDecorator(TaskDecorator):
+    def perform(self):
+        print("Attention, tâche urgente !")
+        self._task.perform()
+
+    def display(self):
+        print("Urgent : ", end="")
+        self._task.display()
+        
 class TaskWithLogging(TaskDecorator):
     """
     Décorateur de tâches qui ajoute des fonctionnalités de journalisation.
@@ -31,3 +50,9 @@ class TaskWithLogging(TaskDecorator):
 
     def __getattr__(self, attr):
         return getattr(self._task, attr)
+
+    def perform(self):
+        self._task.perform()
+
+    def display(self):
+        self._task.display()

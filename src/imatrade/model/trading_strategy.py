@@ -7,6 +7,10 @@ from ta.momentum import RSIIndicator
 import numpy as np
 
 class TradingStrategy(ABC):
+    def __init__(self, name, parameters):
+        self.name = name
+        self.parameters = parameters
+
     @abstractmethod
     def execute(self):
         pass
@@ -14,20 +18,20 @@ class TradingStrategy(ABC):
 
 class MACrossoverStrategy(TradingStrategy):
     def __init__(self, short_window, long_window):
-        self.short_window = short_window
-        self.long_window = long_window
+        parameters = {"short_window": short_window, "long_window": long_window}
+        super().__init__("Moving Average Crossover", parameters)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
-        self.market_data["short_mavg"] = self.market_data["close"].rolling(window=self.short_window).mean()
-        self.market_data["long_mavg"] = self.market_data["close"].rolling(window=self.long_window).mean()
+        self.market_data["short_mavg"] = self.market_data["close"].rolling(window=self.parameters["short_window"]).mean()
+        self.market_data["long_mavg"] = self.market_data["close"].rolling(window=self.parameters["long_window"]).mean()
 
     def generate_signals(self):
         signals = pd.DataFrame(index=self.market_data.index)
         signals["signal"] = 0.0
 
         # Create a signal when the short moving average crosses the long moving average
-        sig_start = self.short_window
+        sig_start = self.parameters["short_window"]
         sig_end = len(self.market_data)
 
         short_mavg = self.market_data["short_mavg"].iloc[sig_start:sig_end].values
@@ -47,14 +51,13 @@ class MACrossoverStrategy(TradingStrategy):
 
 
 class RSIStrategy(TradingStrategy):
-    def __init__(self, rsi_period, overbought, oversold):
-        self.rsi_period = rsi_period
-        self.overbought = overbought
-        self.oversold = oversold
+    def __init__(self, rsi_period, oversold, overbought):
+        parameters = {"rsi_period": rsi_period, "oversold": oversold, "overbought": overbought}
+        super().__init__("Relative Strength Index", parameters)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
-        rsi_indicator = RSIIndicator(close=self.market_data["close"], window=self.rsi_period)
+        rsi_indicator = RSIIndicator(close=self.market_data["close"], window=self.parameters["rsi_period"])
         self.market_data["RSI"] = rsi_indicator.rsi()
 
     def generate_signals(self):
@@ -62,18 +65,18 @@ class RSIStrategy(TradingStrategy):
         signals["signal"] = 0.0
 
         # Generate buy signal when RSI is below the oversold threshold
-        sig_start = self.rsi_period
+        sig_start = self.parameters["rsi_period"]
         sig_end = len(self.market_data)
 
         signals.iloc[sig_start:sig_end]["signal"] = np.where(
-            self.market_data["RSI"].iloc[sig_start:sig_end] < self.oversold,
+            self.market_data["RSI"].iloc[sig_start:sig_end] < self.parameters["oversold"],
             1.0,
             0.0,
         )
 
         # Generate sell signal when RSI is above the overbought threshold
         signals.iloc[sig_start:sig_end]["signal"] = np.where(
-            self.market_data["RSI"].iloc[sig_start:sig_end] > self.overbought,
+            self.market_data["RSI"].iloc[sig_start:sig_end] > self.parameters["overbought"],
             -1.0,
             signals["signal"].iloc[sig_start:sig_end],
         )

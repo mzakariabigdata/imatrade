@@ -1,4 +1,15 @@
-class Task:
+from abc import ABC, abstractmethod
+
+class TaskInterface(ABC):
+    @abstractmethod
+    def perform(self):
+        pass
+
+    @abstractmethod
+    def display(self):
+        pass
+    
+class Task(TaskInterface):
     """
     Classe de base abstraite pour les tâches.
     """
@@ -32,6 +43,15 @@ class TaskV1(Task):
     def __str__(self):
         return f"{self.title} (Priorité: {self.priority_level}, description: {self.description})"
 
+    # Implémentation de la méthode perform de l'interface TaskInterface
+    def perform(self):
+        # Ici, vous pouvez ajouter le code pour effectuer la tâche
+        print(f"Effectuer la tâche V1 : {self.title}")
+
+    # Implémentation de la méthode display de l'interface TaskInterface
+    def display(self):
+        # Ici, vous pouvez ajouter le code pour afficher la tâche
+        print(f"Tâche V1 : {self.title} ({self.priority_level})")
 
 class TaskV2(Task):
     """
@@ -47,3 +67,13 @@ class TaskV2(Task):
 
     def set_due_date(self, due_date):
         self.due_date = due_date
+
+    # Implémentation de la méthode perform de l'interface TaskInterface
+    def perform(self):
+        # Ici, vous pouvez ajouter le code pour effectuer la tâche
+        print(f"Effectuer la tâche V1 : {self.title}")
+
+    # Implémentation de la méthode display de l'interface TaskInterface
+    def display(self):
+        # Ici, vous pouvez ajouter le code pour afficher la tâche
+        print(f"Tâche V1 : {self.title} ({self.due_date})")
