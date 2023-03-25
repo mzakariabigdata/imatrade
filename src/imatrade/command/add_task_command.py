@@ -2,43 +2,63 @@ from .task_command import TaskCommand
 
 
 class AddTaskCommand(TaskCommand):
-    
     def __init__(self, task_controller):
         self.task_controller = task_controller
 
     @property
     def description(self):
-        return  "Ajouter une tâche"
-    
+        return "Ajouter une tâche"
+
     def execute(self):
         self.task_controller.add_task()
 
+
 class DisplayTasksCommand(TaskCommand):
-    
     def __init__(self, task_controller):
         self.task_controller = task_controller
 
     @property
     def description(self):
-        return  "Afficher les tâches"
-    
+        return "Afficher les tâches"
+
     def execute(self):
         self.task_controller.display_tasks()
 
-class PerformTasksCommand(TaskCommand):
-    
+class DisplayStrategySummary(TaskCommand):
     def __init__(self, task_controller):
         self.task_controller = task_controller
 
     @property
     def description(self):
-        return  "Perform les tâches"
-    
+        return "Récapitulatif des stratégies de trading"
+
+    def execute(self):
+        self.task_controller.display_strategy_summary()
+
+class PerformTasksCommand(TaskCommand):
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        return "Perform les tâches"
+
     def execute(self):
         self.task_controller.perform_tasks()
 
+
+class GetHistoricalDataCommand(TaskCommand):
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        return "Get historical data"
+
+    def execute(self):
+        self.task_controller.get_historical_data()
+
 class DisplayStrategyCommand(TaskCommand):
-    
     def __init__(self, trading_strategy_controller):
         self.trading_strategy_controller = trading_strategy_controller
 
@@ -49,6 +69,7 @@ class DisplayStrategyCommand(TaskCommand):
     def execute(self):
         strategy_name = input("Entrez Strategy name : ")
         self.trading_strategy_controller.display_strategy(strategy_name)
+
 
 class DisplayAllStrategiesCommand(TaskCommand):
     def __init__(self, trading_strategy_controller):
@@ -61,8 +82,10 @@ class DisplayAllStrategiesCommand(TaskCommand):
     def execute(self):
         self.trading_strategy_controller.display_all_strategies()
 
+
 class QuitCommand(TaskCommand):
     description = "Quitter"
+
     def execute(self):
         print("Au revoir !")
         exit(0)

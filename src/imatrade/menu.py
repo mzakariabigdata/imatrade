@@ -6,7 +6,7 @@ class Menu:
         print("\nOptions :")
         for key, command in self.commands.items():
             print(f"{key}. {command.description}")
-    
+
     def run(self):
         while True:
             self.display()

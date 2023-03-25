@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class TaskInterface(ABC):
     @abstractmethod
     def perform(self):
@@ -8,7 +9,8 @@ class TaskInterface(ABC):
     @abstractmethod
     def display(self):
         pass
-    
+
+
 class Task(TaskInterface):
     """
     Classe de base abstraite pour les tâches.
@@ -52,6 +54,7 @@ class TaskV1(Task):
     def display(self):
         # Ici, vous pouvez ajouter le code pour afficher la tâche
         print(f"Tâche V1 : {self.title} ({self.priority_level})")
+
 
 class TaskV2(Task):
     """

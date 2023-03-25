@@ -16,4 +16,6 @@ class Config:
 
 
 # Chargement de la configuration des stratégies
-strategies_config = Config(os.path.join(os.path.dirname(__file__), '..\\..', 'config', 'strategies.yaml'))
+strategies_config = Config(
+    os.path.join(os.path.dirname(__file__), "..\\..", "config", "strategies.yaml")
+)

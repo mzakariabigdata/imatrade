@@ -5,3 +5,34 @@ RSI:
   rsi_period: 14
   oversold: 30
   overbought: 70
+BollingerBands:
+  window: 20
+  num_std: 2
+StochasticOscillator:
+  k_window: 14
+  d_window: 3
+  oversold: 20
+  overbought: 80
+MACD:
+  short_window: 12
+  long_window: 26
+  signal_window: 9
+ATR:
+  window: 14
+IchimokuCloud:
+  conversion_line_period: 9
+  base_line_period: 26
+  lagging_span_periods: 52
+  displacement: 26
+Breakout:
+  lookback_window: 20
+  buy_margin: 0.05
+  sell_margin: 0.05
+RSIDivergence:
+  signal_period: 14
+  long_rsi_period: 70
+  short_rsi_period: 30
+MAEnvelope:
+  ma_period: 20
+  ma_type: simple
+  ma_distance: 0.02

@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 pyyaml = "*"
+oandapyv20 = "*"
+python-dotenv = "*"
+openpyxl = "*"
 
 [dev-packages]
 pyclean = "*"

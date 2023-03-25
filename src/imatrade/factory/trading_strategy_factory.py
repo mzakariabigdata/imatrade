@@ -1,8 +1,9 @@
 """
 Contient la classe TradingStrategyFactory pour créer des stratégies
 """
-from imatrade.model import RSIStrategyBuilder, MACrossoverStrategyBuilder 
+from imatrade.model import RSIStrategyBuilder, MACrossoverStrategyBuilder
 from imatrade.utils.config import strategies_config
+
 
 class Singleton(type):
     _instances = {}
@@ -12,10 +13,11 @@ class Singleton(type):
             cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
 
+
 class TradingStrategyFactory(metaclass=Singleton):
     def __init__(self):
         self._builders = {}
-    
+
     # def create_all_strategy(self):
     #     for strategy_name, strategy_config in strategies_config.items():
     #         if strategy_name == "MA_Crossover":
@@ -28,7 +30,7 @@ class TradingStrategyFactory(metaclass=Singleton):
 
     def get_registered_strategy_names(self):
         return list(self._builders.keys())
-    
+
     def register_builder(self, strategy_name, builder):
         self._builders[strategy_name] = builder
 

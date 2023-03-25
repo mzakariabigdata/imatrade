@@ -4,6 +4,7 @@ Contient les classes de vue pour afficher les stratégies et les données
 
 # view/trading_strategy_view.py
 
+
 class TradingStrategyView:
     @staticmethod
     def display_strategy(strategy):
@@ -18,6 +19,12 @@ class TradingStrategyView:
         print("Données du marché :")
         for row in data:
             print(f"  {row}")
+        print()
+
+    @staticmethod
+    def display_strategy_summary(strategy):
+        print(f"Nom : {strategy.name}")
+        print(f"Paramètres : {strategy.parameters}")
         print()
 
     @staticmethod
