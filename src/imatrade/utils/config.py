@@ -1,21 +1,25 @@
 # utils/config.py
 import os
 import yaml
+from imobject import ObjDict
 
+global APPLICATION
+
+APPLICATION = ObjDict()
 
 class Config:
     def __init__(self, config_file):
-        self._config = self._load_config(config_file)
+        self._config_file = config_file
 
-    def _load_config(self, config_file):
-        with open(config_file, "r") as f:
+    def _load_config(self):
+        with open(self._config_file, "r") as f:
             return yaml.safe_load(f)
-
-    def get(self, key, default=None):
-        return self._config.get(key, default)
-
-
+    
 # Chargement de la configuration des stratégies
-strategies_config = Config(
+APPLICATION.strategies_config = Config(
     os.path.join(os.path.dirname(__file__), "..\\..", "config", "strategies.yaml")
-)
+)._load_config()
+
+# strategies_config = 
+
+# print("0000", strategies_config)

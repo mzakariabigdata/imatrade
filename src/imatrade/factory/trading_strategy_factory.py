@@ -1,9 +1,10 @@
 """
 Contient la classe TradingStrategyFactory pour créer des stratégies
 """
-from imatrade.model import RSIStrategyBuilder, MACrossoverStrategyBuilder
-from imatrade.utils.config import strategies_config
-
+from imatrade.model.trading_strategy_builder import TradingStrategyBuilder, MACrossoverStrategyBuilder
+import importlib
+from typing import List
+from imatrade.utils.config import APPLICATION
 
 class Singleton(type):
     _instances = {}
@@ -28,6 +29,16 @@ class TradingStrategyFactory(metaclass=Singleton):
     #             continue  # Ignore any other strategy types
     #         self.register_builder(strategy_name, builder)
 
+    def load_builders(self):
+        print(APPLICATION)
+        for strategy in APPLICATION.strategies_config.strategies:
+            module = importlib.import_module(f"imatrade.model.{strategy['module_path']}_builder")
+            # strategy_class = getattr(module, strategy['class_name'])
+            builder_class = getattr(module, f"{strategy['class_name']}Builder")
+            builder_instance = builder_class()
+            
+            self.register_builder(strategy['name'], builder_instance)
+
     def get_registered_strategy_names(self):
         return list(self._builders.keys())
 
@@ -38,5 +49,6 @@ class TradingStrategyFactory(metaclass=Singleton):
         builder = self._builders.get(strategy_name)
         if not builder:
             raise ValueError(f"Invalid strategy name: {strategy_name}")
-        strategy_config = strategies_config.get(strategy_name)
-        return builder.build(strategy_config)
+        strategy_config = APPLICATION.strategies_config.strategies.where(name=strategy_name)
+
+        return builder.build(strategy_config.find_by(name=strategy_name).parameters)

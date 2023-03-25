@@ -8,6 +8,7 @@ pyyaml = "*"
 oandapyv20 = "*"
 python-dotenv = "*"
 openpyxl = "*"
+imobject = "*"
 
 [dev-packages]
 pyclean = "*"

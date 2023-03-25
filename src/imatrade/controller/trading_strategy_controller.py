@@ -9,6 +9,9 @@ class TradingStrategyController:
         self.strategy_factory = strategy_factory
         self.oanda_data_provider = oanda_data_provider
         self.strategies = {}  # Stocker les stratégies créées
+    
+    def load_strategies_builders(self):
+        self.strategy_factory.load_builders()
 
     def create_all_strategies(self):
         for strategy_name in self.strategy_factory.get_registered_strategy_names():

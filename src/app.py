@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 from imatrade.menu import Menu
 
-from imatrade.utils.config import strategies_config
+from imatrade.utils.config import APPLICATION
 
 from imatrade.command.add_task_command import (
     AddTaskCommand,
@@ -77,24 +77,14 @@ def main():
 
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
-    strategy_factory.register_builder("MA_Crossover", MACrossoverStrategyBuilder())
-    strategy_factory.register_builder("RSI", RSIStrategyBuilder())
-    strategy_factory.register_builder("BollingerBands", BollingerBandsStrategyBuilder())
-    strategy_factory.register_builder(
-        "StochasticOscillator", StochasticOscillatorStrategyBuilder()
-    )
-    strategy_factory.register_builder("MACD", MACDStrategyBuilder())
-    strategy_factory.register_builder("ATR", ATRStrategyBuilder())
-    strategy_factory.register_builder("IchimokuCloud", IchimokuCloudStrategyBuilder())
-    strategy_factory.register_builder("Breakout", BreakoutStrategyBuilder())
-    strategy_factory.register_builder("RSIDivergence", RSIDivergenceStrategyBuilder())
-    strategy_factory.register_builder("MAEnvelope", MAEnvelopeStrategyBuilder())
-    
     # Créer une instance du contrôleur avec la factory
     trading_strategy_controller = TradingStrategyController(strategy_factory, oanda_data_provider)
+    # load all strategies builders
+    trading_strategy_controller.load_strategies_builders()
     # Créer toutes les stratégies à partir du fichier strategies.yaml
     strategies = trading_strategy_controller.create_all_strategies()
-    print(strategies)
+    print("--- strategies --- ", strategies)
+
     # Créer une stratégie de trading en utilisant la factory
     # Exemple de données de marché
     market_data = [
