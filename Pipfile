@@ -9,6 +9,7 @@ oandapyv20 = "*"
 python-dotenv = "*"
 openpyxl = "*"
 imobject = "*"
+cryptography = "*"
 
 [dev-packages]
 pyclean = "*"

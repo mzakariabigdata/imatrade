@@ -32,18 +32,6 @@ from imatrade.strategy.observer import TaskPriorityStrategy
 from imatrade.strategy.observer import TaskDueDateStrategy
 
 
-from imatrade.model.trading_strategy_builder import (
-    MACrossoverStrategyBuilder,
-    RSIStrategyBuilder,
-    BollingerBandsStrategyBuilder,
-    StochasticOscillatorStrategyBuilder,
-    ATRStrategyBuilder,
-    MACDStrategyBuilder,
-    IchimokuCloudStrategyBuilder,
-    MAEnvelopeStrategyBuilder,
-    RSIDivergenceStrategyBuilder,
-    BreakoutStrategyBuilder
-)
 from imatrade.factory.trading_strategy_factory import TradingStrategyFactory
 from imatrade.controller.trading_strategy_controller import TradingStrategyController
 

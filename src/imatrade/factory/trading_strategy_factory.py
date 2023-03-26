@@ -30,7 +30,6 @@ class TradingStrategyFactory(metaclass=Singleton):
     #         self.register_builder(strategy_name, builder)
 
     def load_builders(self):
-        print(APPLICATION)
         for strategy in APPLICATION.strategies_config.strategies:
             module = importlib.import_module(f"imatrade.model.{strategy['module_path']}_builder")
             # strategy_class = getattr(module, strategy['class_name'])
@@ -50,5 +49,4 @@ class TradingStrategyFactory(metaclass=Singleton):
         if not builder:
             raise ValueError(f"Invalid strategy name: {strategy_name}")
         strategy_config = APPLICATION.strategies_config.strategies.where(name=strategy_name)
-
-        return builder.build(strategy_config.find_by(name=strategy_name).parameters)
+        return builder.build(strategy_config.find_by(name=strategy_name))

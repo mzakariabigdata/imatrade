@@ -8,7 +8,8 @@ Contient les classes de vue pour afficher les stratégies et les données
 class TradingStrategyView:
     @staticmethod
     def display_strategy(strategy):
-        print(f"Stratégie de trading : {strategy.name}")
+        print(f"Stratégie de trading : {strategy.display_name}")
+        print(f"déscription: {strategy.description}")
         print("Paramètres :")
         for key, value in strategy.parameters.items():
             print(f"  {key}: {value}")

@@ -10,12 +10,15 @@ from ta.trend import MACD
 from ta.volatility import AverageTrueRange
 from ta.trend import IchimokuIndicator
 import numpy as np
-
+from imobject import ObjDict
 
 class TradingStrategy(ABC):
-    def __init__(self, name, parameters):
-        self.name = name
-        self.parameters = parameters
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.name = kwargs.name
+        self.description = kwargs.description
+        self.display_name = kwargs.display_name
+        self.parameters = kwargs.parameters
 
     @abstractmethod
     def execute(self):
@@ -24,14 +27,11 @@ class TradingStrategy(ABC):
 
 
 class IchimokuCloudStrategy(TradingStrategy):
-    def __init__(self, conversion_line_period, base_line_period, lagging_span_periods, displacement):
-        parameters = {
-            "conversion_line_period": conversion_line_period,
-            "base_line_period": base_line_period,
-            "lagging_span_periods": lagging_span_periods,
-            "displacement": displacement,
-        }
-        super().__init__("Ichimoku Cloud", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -83,9 +83,11 @@ class IchimokuCloudStrategy(TradingStrategy):
 
 
 class ATRStrategy(TradingStrategy):
-    def __init__(self, window):
-        parameters = {"window": window}
-        super().__init__("Average True Range", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -118,13 +120,11 @@ class ATRStrategy(TradingStrategy):
 
 
 class MACDStrategy(TradingStrategy):
-    def __init__(self, short_window, long_window, signal_window):
-        parameters = {
-            "short_window": short_window,
-            "long_window": long_window,
-            "signal_window": signal_window,
-        }
-        super().__init__("Moving Average Convergence Divergence", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -164,9 +164,11 @@ class MACDStrategy(TradingStrategy):
 
 
 class MACrossoverStrategy(TradingStrategy):
-    def __init__(self, short_window, long_window):
-        parameters = {"short_window": short_window, "long_window": long_window}
-        super().__init__("Moving Average Crossover", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -207,13 +209,11 @@ class MACrossoverStrategy(TradingStrategy):
 
 
 class RSIStrategy(TradingStrategy):
-    def __init__(self, rsi_period, oversold, overbought):
-        parameters = {
-            "rsi_period": rsi_period,
-            "oversold": oversold,
-            "overbought": overbought,
-        }
-        super().__init__("Relative Strength Index", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -257,9 +257,11 @@ class RSIStrategy(TradingStrategy):
 
 
 class BollingerBandsStrategy(TradingStrategy):
-    def __init__(self, window, num_std):
-        parameters = {"window": window, "num_std": num_std}
-        super().__init__("Bollinger Bands", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -294,14 +296,11 @@ class BollingerBandsStrategy(TradingStrategy):
 
 
 class StochasticOscillatorStrategy(TradingStrategy):
-    def __init__(self, k_window, d_window, oversold, overbought):
-        parameters = {
-            "k_window": k_window,
-            "d_window": d_window,
-            "oversold": oversold,
-            "overbought": overbought,
-        }
-        super().__init__("Stochastic Oscillator", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -340,9 +339,11 @@ class StochasticOscillatorStrategy(TradingStrategy):
 
 
 class RSIDivergenceStrategy(TradingStrategy):
-    def __init__(self, signal_period, long_rsi_period, short_rsi_period):
-        parameters = {"signal_period": signal_period, "long_rsi_period": long_rsi_period, "short_rsi_period": short_rsi_period}
-        super().__init__("RSI Divergence", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -375,9 +376,11 @@ class RSIDivergenceStrategy(TradingStrategy):
 
 
 class MAEnvelopeStrategy(TradingStrategy):
-    def __init__(self, ma_type, ma_period, ma_distance):
-        parameters = {"ma_type": ma_type, "ma_period": ma_period, "ma_distance": ma_distance}
-        super().__init__("Moving Average Envelope", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()
@@ -413,13 +416,11 @@ class MAEnvelopeStrategy(TradingStrategy):
 
 
 class BreakoutStrategy(TradingStrategy):
-    def __init__(self, lookback_window, buy_margin, sell_margin):
-        parameters = {
-            "lookback_window": lookback_window,
-            "buy_margin": buy_margin,
-            "sell_margin": sell_margin,
-        }
-        super().__init__("Breakout", parameters)
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        super().__init__(**kwargs)
 
     def prepare_data(self, market_data):
         self.market_data = market_data.copy()

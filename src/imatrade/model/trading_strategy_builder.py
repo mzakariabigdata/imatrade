@@ -40,12 +40,7 @@ class MAEnvelopeStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return MAEnvelopeStrategy(
-            ma_period=config["ma_period"],
-            ma_type=config["ma_type"],
-            ma_distance=config["ma_distance"],
-        )
-
+        return MAEnvelopeStrategy(**config)
 
 class RSIDivergenceStrategyBuilder(TradingStrategyBuilder):
     def __init__(self):
@@ -66,11 +61,7 @@ class RSIDivergenceStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return RSIDivergenceStrategy(
-            short_rsi_period=config["short_rsi_period"],
-            long_rsi_period=config["long_rsi_period"],
-            signal_period=config["signal_period"],
-        )
+        return RSIDivergenceStrategy(**config)
 
 
 class BollingerBandsStrategyBuilder(TradingStrategyBuilder):
@@ -87,24 +78,17 @@ class BollingerBandsStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return BollingerBandsStrategy(
-            window=config["window"], num_std=config["num_std"]
-        )
+        return BollingerBandsStrategy(**config)
 
 
 class ATRStrategyBuilder(TradingStrategyBuilder):
     def build(self, config):
-        return ATRStrategy(window=config["window"])
+        return ATRStrategy(**config)
 
 
 class MACDStrategyBuilder(TradingStrategyBuilder):
     def build(self, config):
-        return MACDStrategy(
-            short_window=config["short_window"],
-            long_window=config["long_window"],
-            signal_window=config["signal_window"],
-        )
-
+        return MACDStrategy(**config)
 
 class StochasticOscillatorStrategyBuilder(TradingStrategyBuilder):
     def __init__(self):
@@ -130,13 +114,7 @@ class StochasticOscillatorStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return StochasticOscillatorStrategy(
-            k_window=config["k_window"],
-            d_window=config["d_window"],
-            oversold=config["oversold"],
-            overbought=config["overbought"],
-        )
-
+        return StochasticOscillatorStrategy(**config)
 
 class MACrossoverStrategyBuilder(TradingStrategyBuilder):
     def __init__(self):
@@ -152,9 +130,7 @@ class MACrossoverStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return MACrossoverStrategy(
-            short_window=config["short_window"], long_window=config["long_window"]
-        )
+        return MACrossoverStrategy(**config)
 
 class IchimokuCloudStrategyBuilder(TradingStrategyBuilder):
     def __init__(self):
@@ -180,12 +156,7 @@ class IchimokuCloudStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return IchimokuCloudStrategy(
-            conversion_line_period=config["conversion_line_period"],
-            base_line_period=config["base_line_period"],
-            lagging_span_periods=config["lagging_span_periods"],
-            displacement=config["displacement"],
-        )
+        return IchimokuCloudStrategy(**config)
 
 class BreakoutStrategyBuilder(TradingStrategyBuilder):
     def __init__(self):
@@ -206,11 +177,7 @@ class BreakoutStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return BreakoutStrategy(
-            lookback_window=config["lookback_window"],
-            buy_margin=config["buy_margin"],
-            sell_margin=config["sell_margin"],
-        )
+        return BreakoutStrategy(**config)
 
 
 class RSIStrategyBuilder(TradingStrategyBuilder):
@@ -232,8 +199,4 @@ class RSIStrategyBuilder(TradingStrategyBuilder):
         return self
 
     def build(self, config):
-        return RSIStrategy(
-            rsi_period=config["rsi_period"],
-            oversold=config["oversold"],
-            overbought=config["overbought"],
-        )
+        return RSIStrategy(**config)
