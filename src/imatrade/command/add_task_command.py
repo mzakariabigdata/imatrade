@@ -24,6 +24,7 @@ class DisplayTasksCommand(TaskCommand):
     def execute(self):
         self.task_controller.display_tasks()
 
+
 class DisplayStrategySummary(TaskCommand):
     def __init__(self, task_controller):
         self.task_controller = task_controller
@@ -34,6 +35,7 @@ class DisplayStrategySummary(TaskCommand):
 
     def execute(self):
         self.task_controller.display_strategy_summary()
+
 
 class PerformTasksCommand(TaskCommand):
     def __init__(self, task_controller):
@@ -57,6 +59,7 @@ class GetHistoricalDataCommand(TaskCommand):
 
     def execute(self):
         self.task_controller.get_historical_data()
+
 
 class DisplayStrategyCommand(TaskCommand):
     def __init__(self, trading_strategy_controller):

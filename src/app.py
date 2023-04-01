@@ -14,7 +14,7 @@ from imatrade.command.add_task_command import (
     QuitCommand,
     DisplayAllStrategiesCommand,
     DisplayStrategySummary,
-    GetHistoricalDataCommand
+    GetHistoricalDataCommand,
 )
 
 from imatrade.data_providers.oanda_data import OandaDataProvider
@@ -45,7 +45,7 @@ def display_menu(commands):
 def main():
     load_dotenv()
 
-    oanda_data_provider = OandaDataProvider(api_key=os.getenv('OANDA_API_KEY'))
+    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
 
     count_strategy = TaskCountStrategy()
     priority_strategy = TaskPriorityStrategy()
@@ -66,9 +66,11 @@ def main():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_strategy_controller = TradingStrategyController(strategy_factory, oanda_data_provider)
+    trading_strategy_controller = TradingStrategyController(
+        strategy_factory, oanda_data_provider
+    )
     # load all strategies builders
-    trading_strategy_controller.load_strategies_builders()
+    trading_strategy_controller.load_strategies_builder()
     # Créer toutes les stratégies à partir du fichier strategies.yaml
     strategies = trading_strategy_controller.create_all_strategies()
     print("--- strategies --- ", strategies)
@@ -91,96 +93,96 @@ def main():
             "low": 1.2380,
         },
         {
-        "date": "2022-01-01",
-        "open": 1.2380,
-        "close": 1.2350,
-        "high": 1.2390,
-        "low": 1.2310
-    },
-    {
-        "date": "2022-01-02",
-        "open": 1.2340,
-        "close": 1.2320,
-        "high": 1.2380,
-        "low": 1.2300
-    },
-    {
-        "date": "2022-01-03",
-        "open": 1.2320,
-        "close": 1.2340,
-        "high": 1.2350,
-        "low": 1.2300
-    },
-    {
-        "date": "2022-01-04",
-        "open": 1.2330,
-        "close": 1.2325,
-        "high": 1.2370,
-        "low": 1.2310
-    },
-    {
-        "date": "2022-01-05",
-        "open": 1.2325,
-        "close": 1.2310,
-        "high": 1.2340,
-        "low": 1.2290
-    },
-    {
-        "date": "2022-01-06",
-        "open": 1.2310,
-        "close": 1.2325,
-        "high": 1.2335,
-        "low": 1.2280
-    },
-    {
-        "date": "2022-01-07",
-        "open": 1.2325,
-        "close": 1.2315,
-        "high": 1.2330,
-        "low": 1.2295
-    },
-    {
-        "date": "2022-01-08",
-        "open": 1.2315,
-        "close": 1.2335,
-        "high": 1.2345,
-        "low": 1.2310
-    },
-    {
-        "date": "2022-01-09",
-        "open": 1.2335,
-        "close": 1.2350,
-        "high": 1.2370,
-        "low": 1.2325
-    },
-    {
-        "date": "2022-01-10",
-        "open": 1.2350,
-        "close": 1.2330,
-        "high": 1.2375,
-        "low": 1.2325
-    },
-    {
-        "date": "2022-01-11",
-        "open": 1.2330,
-        "close": 1.2345,
-        "high": 1.2365,
-        "low": 1.2315
-    },
-    {
-        "date": "2022-01-12",
-        "open": 1.2345,
-        "close": 1.2360,
-        "high": 1.2365,
-        "low": 1.2325
-    },
-    {
-        "date": "2022-01-13",
-        "open": 1.2360,
-        "close": 1.2370,
-        "high": 1.2385,
-        "low": 1.2335
-    },
+            "date": "2022-01-01",
+            "open": 1.2380,
+            "close": 1.2350,
+            "high": 1.2390,
+            "low": 1.2310,
+        },
+        {
+            "date": "2022-01-02",
+            "open": 1.2340,
+            "close": 1.2320,
+            "high": 1.2380,
+            "low": 1.2300,
+        },
+        {
+            "date": "2022-01-03",
+            "open": 1.2320,
+            "close": 1.2340,
+            "high": 1.2350,
+            "low": 1.2300,
+        },
+        {
+            "date": "2022-01-04",
+            "open": 1.2330,
+            "close": 1.2325,
+            "high": 1.2370,
+            "low": 1.2310,
+        },
+        {
+            "date": "2022-01-05",
+            "open": 1.2325,
+            "close": 1.2310,
+            "high": 1.2340,
+            "low": 1.2290,
+        },
+        {
+            "date": "2022-01-06",
+            "open": 1.2310,
+            "close": 1.2325,
+            "high": 1.2335,
+            "low": 1.2280,
+        },
+        {
+            "date": "2022-01-07",
+            "open": 1.2325,
+            "close": 1.2315,
+            "high": 1.2330,
+            "low": 1.2295,
+        },
+        {
+            "date": "2022-01-08",
+            "open": 1.2315,
+            "close": 1.2335,
+            "high": 1.2345,
+            "low": 1.2310,
+        },
+        {
+            "date": "2022-01-09",
+            "open": 1.2335,
+            "close": 1.2350,
+            "high": 1.2370,
+            "low": 1.2325,
+        },
+        {
+            "date": "2022-01-10",
+            "open": 1.2350,
+            "close": 1.2330,
+            "high": 1.2375,
+            "low": 1.2325,
+        },
+        {
+            "date": "2022-01-11",
+            "open": 1.2330,
+            "close": 1.2345,
+            "high": 1.2365,
+            "low": 1.2315,
+        },
+        {
+            "date": "2022-01-12",
+            "open": 1.2345,
+            "close": 1.2360,
+            "high": 1.2365,
+            "low": 1.2325,
+        },
+        {
+            "date": "2022-01-13",
+            "open": 1.2360,
+            "close": 1.2370,
+            "high": 1.2385,
+            "low": 1.2335,
+        },
     ]
     # Convertir la liste de dictionnaires en DataFrame pandas
     market_data = pd.DataFrame(market_data)

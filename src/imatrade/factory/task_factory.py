@@ -3,7 +3,12 @@ from imatrade.model import TaskBuilder
 from imatrade.decorator.task_decorator import TaskWithLogging
 from abc import ABC
 
+# q: pourquoi on a besoin de ABC?
+# r: pour forcer les classes filles à implémenter les méthodes abstraites
 
+
+# q: c'est quoi le but de cette classe?
+# r: c'est une classe abstraite qui va servir de base pour les classes filles
 class TaskFactory:
     """
     Factory pour créer des instances de tâches.

@@ -9,9 +9,9 @@ class TradingStrategyController:
         self.strategy_factory = strategy_factory
         self.oanda_data_provider = oanda_data_provider
         self.strategies = {}  # Stocker les stratégies créées
-    
-    def load_strategies_builders(self):
-        self.strategy_factory.load_builders()
+
+    def load_strategies_builder(self):
+        self.strategy_factory.load_builder()
 
     def create_all_strategies(self):
         for strategy_name in self.strategy_factory.get_registered_strategy_names():
@@ -21,10 +21,10 @@ class TradingStrategyController:
 
     def get_historical_data(self):
         market_data = self.oanda_data_provider.get_historical_data(
-                instrument="EUR_USD", start="2021-01-01", end="2021-12-31", granularity="D"
-            )
+            instrument="EUR_USD", start="2021-01-01", end="2021-12-31", granularity="D"
+        )
         return market_data
-    
+
     def create_strategy(self, strategy_type):
         strategy_name, strategy = self.strategy_factory.create_strategy(strategy_type)
         self.add_strategy(
@@ -44,14 +44,16 @@ class TradingStrategyController:
 
     def display_strategy_summary(self):
         print()
-        print(f"Récapitulatif des stratégies de trading, total {len(self.strategies)} :")
+        print(
+            f"Récapitulatif des stratégies de trading, total {len(self.strategies)} :"
+        )
         print()
         for _, strategy in self.strategies.items():
             TradingStrategyView.display_strategy_summary(strategy)
-    
+
     def get_strategy(self, strategy_name):
         return self.strategies.get(strategy_name)
-    
+
     def display_all_strategies(self):
         for strategy_name, strategy in self.strategies.items():
             print(f"\nStrategy name: {strategy_name}")
