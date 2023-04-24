@@ -50,20 +50,30 @@ requirements-dev: env-init requirements-lock Pipfile ##  Génère un fichier req
 
 install-requirements-prod: requirements-prod ##  Installe les dépendances de production en utilisant le fichier requirements-prod.txt.
 	@echo "Installer les dépendances de production en utilisant le fichier requirements-prod.txt."
-	pip3 install -r requirements-prod.txt
+	pip3 install -r requirements-prod.txt --user
 
 install-requirements-dev: requirements-dev ## Installe les dépendances de développement en utilisant le fichier requirements-dev.txt.
 	@echo "Installer les dépendances de développement en utilisant le fichier requirements-dev.txt."
-	pip3 install -r requirements-dev.txt
+	pip3 install -r requirements-dev.txt --user
 
 .PHONY: env-activate env-create kivy-install env-init requirements-prod requirements-dev install-requirements-prod install-requirements-dev requirements-lock get-vscode-extensions install-vscode-extensions env-variables
+
+
+#####################
+###### Jupyter ######
+#####################
+jupyter: ## Lance le serveur Jupyter Notebook.
+	@echo "Lancement du serveur Jupyter Notebook..."
+	@jupyter notebook
+.PHONY: jupyter
 
 ###################
 ###### Behave ######
 ###################
 behave: ## Exécuter les tests comportementaux en utilisant l'outil Behave.
 	@echo "Lancement des tests comportementaux en utilisant l'outil Behave..."
-	behave --no-capture
+	@behave --no-capture
+.PHONY: behave
 ###################
 ###### Build ######
 ###################

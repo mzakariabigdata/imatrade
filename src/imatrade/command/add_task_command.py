@@ -86,6 +86,18 @@ class DisplayAllStrategiesCommand(TaskCommand):
         self.trading_strategy_controller.display_all_strategies()
 
 
+class ProcessMarketDataCommand(TaskCommand):
+    def __init__(self, trading_strategy_controller):
+        self.trading_strategy_controller = trading_strategy_controller
+
+    @property
+    def description(self):
+        return "Market Data Processor"
+
+    def execute(self):
+        self.trading_strategy_controller.process_market_data()
+
+
 class QuitCommand(TaskCommand):
     description = "Quitter"
 

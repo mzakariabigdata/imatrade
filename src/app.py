@@ -15,6 +15,7 @@ from imatrade.command.add_task_command import (
     DisplayAllStrategiesCommand,
     DisplayStrategySummary,
     GetHistoricalDataCommand,
+    ProcessMarketDataCommand,
 )
 
 from imatrade.data_providers.oanda_data import OandaDataProvider
@@ -202,6 +203,7 @@ def main():
         5: DisplayAllStrategiesCommand(trading_strategy_controller),
         6: DisplayStrategySummary(trading_strategy_controller),
         7: GetHistoricalDataCommand(trading_strategy_controller),
+        8: ProcessMarketDataCommand(trading_strategy_controller),
         0: QuitCommand(),
     }
 

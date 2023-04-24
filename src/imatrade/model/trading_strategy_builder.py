@@ -4,18 +4,6 @@ Contient les classes Builder (MACrossoverStrategyBuilder, RSIStrategyBuilder)
 import importlib
 from imobject import ObjDict
 from abc import ABC, abstractmethod
-from .trading_strategy import (
-    MACrossoverStrategy,
-    RSIStrategy,
-    BollingerBandsStrategy,
-    StochasticOscillatorStrategy,
-    ATRStrategy,
-    MACDStrategy,
-    IchimokuCloudStrategy,
-    BreakoutStrategy,
-    RSIDivergenceStrategy,
-    MAEnvelopeStrategy,
-)
 
 # q: pourquoi on a besoin de ABC?
 # r: pour forcer les classes filles à implémenter les méthodes abstraites
