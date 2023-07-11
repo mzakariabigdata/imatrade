@@ -201,14 +201,20 @@ def trade_menu():
         trading_strategy_controller.execute_strategy(strategy_name, market_data)
 
     commands = {
-        1: AddTaskCommand(task_controller),
-        2: DisplayTasksCommand(task_controller),
-        3: PerformTasksCommand(task_controller),
-        4: DisplayStrategyCommand(trading_strategy_controller),
-        5: DisplayAllStrategiesCommand(trading_strategy_controller),
-        6: DisplayStrategySummary(trading_strategy_controller),
-        7: GetHistoricalDataCommand(trading_strategy_controller),
-        8: ProcessMarketDataCommand(trading_strategy_controller),
+        "1": "--------- 1. Tâches---------",
+        1_1: AddTaskCommand(task_controller),
+        1_2: DisplayTasksCommand(task_controller),
+        1_3: PerformTasksCommand(task_controller),
+        "2": "---------2. Indicateurs---------",
+        # 2_1: DisplayIndecatorsCommand(trading_strategy_controller),
+        "3": "---------3. Stratégies---------",
+        3_1: DisplayStrategyCommand(trading_strategy_controller),
+        3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
+        3_3: DisplayStrategySummary(trading_strategy_controller),
+        "4": "---------4. Données de marché---------",
+        4_1: GetHistoricalDataCommand(trading_strategy_controller),
+        4_2: ProcessMarketDataCommand(trading_strategy_controller),
+        "5": "---------Quitter---------",
         0: QuitCommand(),
     }
 

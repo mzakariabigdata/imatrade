@@ -7,11 +7,18 @@ class Menu:
     def __init__(self, commands):
         self.commands = commands
 
+    def last_digit(self, number):
+        """method to get the last digit of a number."""
+        return int(str(number)[-1])
+
     def display(self):
         """method to display the menu."""
         print("\nOptions :")
         for key, command in self.commands.items():
-            print(f"{key}. {command.description}")
+            if isinstance(key, str):
+                print(f"{command}")
+                continue
+            print(f"{self.last_digit(key)}. {command.description}")
 
     def run(self):
         """method to run the menu."""
