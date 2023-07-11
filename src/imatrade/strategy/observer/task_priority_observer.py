@@ -1,4 +1,7 @@
-from imatrade.strategy.observer.observer_strategy import ObserverStrategy
+"""Module qui contient la stratégie d'observateur qui met à jour 
+le comptage des priorités de tâches."""
+
+from src.imatrade.strategy.observer.observer_strategy import ObserverStrategy
 
 
 class TaskPriorityStrategy(ObserverStrategy):
@@ -8,6 +11,9 @@ class TaskPriorityStrategy(ObserverStrategy):
 
     def __init__(self):
         self.priority_counts = {}
+
+    def __str__(self):
+        return "TaskPriorityStrategy"
 
     def execute(self, task):
         priority_level = task.priority_level

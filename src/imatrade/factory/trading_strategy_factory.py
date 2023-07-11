@@ -2,8 +2,7 @@
 Contient la classe TradingStrategyFactory pour créer des stratégies
 """
 import importlib
-from typing import List
-from imatrade.utils.config import APPLICATION
+from src.imatrade.utils.config import APPLICATION
 
 
 class Singleton(type):
@@ -18,6 +17,8 @@ class Singleton(type):
 
 
 class TradingStrategyFactory(metaclass=Singleton):
+    """Classe pour créer des stratégies de trading"""
+
     def __init__(self):
         self._builder = None
         self.strategies = []

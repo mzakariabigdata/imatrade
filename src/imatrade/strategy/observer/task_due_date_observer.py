@@ -1,7 +1,9 @@
-from imatrade.strategy.observer.observer_strategy import ObserverStrategy
+"""module définissant la stratégie d'observateur qui affiche la date d'échéance de la tâche."""
+
+from src.imatrade.strategy.observer.observer_strategy import ObserverStrategy
 
 
-class TaskDueDateStrategy(ObserverStrategy):
+class TaskDueDateStrategy(ObserverStrategy):  # pylint: disable=too-few-public-methods
     """
     Stratégie d'observateur qui affiche la date d'échéance de la tâche.
     """

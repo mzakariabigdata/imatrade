@@ -33,8 +33,10 @@ env-init: ## Installe l'outil pipenv dans l'environnement système.
 
 env-activate: ## Active l'environnement virtuel "imatrade" créé précédemment et définit la variable PYTHONPATH pour qu'elle pointe vers le répertoire de travail courant.
 	@echo "Activation l'environnement virtuel \"imatrade\"..."
-	source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade
-	export PYTHONPATH=$(pwd)/src
+	@echo "source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade"
+	@echo 'PYTHONPATH="$$(pwd)"'
+	@source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade
+	@export PYTHONPATH="$(pwd)"
 
 requirements-lock: ## Verrouille les dépendances de production dans un fichier Pipfile.lock à partir du fichier Pipfile.
 	@echo "Verrouillage des dépendances de production dans  Pipfile.lock..."
@@ -95,7 +97,7 @@ app-install: ## Installer 'imobject' localement
 app: src/app.py  ## Lance l'application principale en exécutant le fichier src/app.py.
 	@echo "Lancement de l'application principale en exécutant le fichier src/app.py..."
 	pyclean . -q
-	cd src && python app.py
+	cd src && python app.py trade menu
 	pyclean . -q
 format: ## Formate le code source en utilisant l'outil Black.
 	@echo "Formatage du code source..."

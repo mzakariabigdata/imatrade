@@ -1,13 +1,21 @@
+"""Module to display and run a menu."""
+
+
 class Menu:
+    """Class to display and run a menu."""
+
     def __init__(self, commands):
         self.commands = commands
 
     def display(self):
+        """method to display the menu."""
         print("\nOptions :")
         for key, command in self.commands.items():
             print(f"{key}. {command.description}")
 
     def run(self):
+        """method to run the menu."""
+
         while True:
             self.display()
             choice = int(input("Choisissez une option : "))

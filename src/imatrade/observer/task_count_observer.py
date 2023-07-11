@@ -1,7 +1,8 @@
-from imatrade.observer.task_observer import TaskObserver
+"""Module définissant la classe TaskCountObserver."""
+from src.imatrade.observer.task_observer import TaskObserver
 
 
-class TaskCountObserver(TaskObserver):
+class TaskCountObserver(TaskObserver):  # pylint: disable=too-few-public-methods
     """
     Observateur de tâches qui suit le nombre total de tâches.
     """

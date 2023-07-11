@@ -1,7 +1,8 @@
+"""Model package."""
 # -- Task --
-from imatrade.model.task_builder import TaskBuilder
-from imatrade.model.task import Task, TaskV1, TaskV2
+from src.imatrade.model.task_builder import TaskBuilder
+from src.imatrade.model.task import Task, TaskV1, TaskV2
 
 
 # -- TradingStrategy --
-from imatrade.model.trading_strategy import MACrossoverStrategy, RSIStrategy
+from src.imatrade.model.trading_indicator import MACrossoverIndicator, RSIIndicator

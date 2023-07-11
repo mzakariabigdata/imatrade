@@ -1,7 +1,9 @@
-from imatrade.observer.task_observer import TaskObserver
+"""Module des observateurs de tâches qui suivent les priorités des tâches."""
+
+from src.imatrade.observer.task_observer import TaskObserver
 
 
-class TaskPriorityObserver(TaskObserver):
+class TaskPriorityObserver(TaskObserver):  # pylint: disable=too-few-public-methods
     """
     Observateur de tâches qui suit les priorités des tâches.
     """
@@ -10,4 +12,5 @@ class TaskPriorityObserver(TaskObserver):
         self.strategy = strategy
 
     def update(self, task):
+        """Met à jour le comptage des priorités des tâches."""
         self.strategy.execute(task)

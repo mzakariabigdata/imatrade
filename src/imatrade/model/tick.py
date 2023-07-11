@@ -2,6 +2,8 @@
 
 
 class Tick:
+    """Tick class definition."""
+
     def __init__(self, timestamp, price, volume):
         self.timestamp = timestamp
         self.price = price

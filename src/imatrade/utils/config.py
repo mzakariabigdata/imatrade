@@ -1,26 +1,36 @@
+"""Module de configuration de l'application"""
+
 # utils/config.py
 import os
 import yaml
 from imobject import ObjDict
 
-global APPLICATION
 
 APPLICATION = ObjDict()
 
 
-class Config:
+class Config:  # pylint: disable=too-few-public-methods
+    """Classe de configuration"""
+
     def __init__(self, config_file):
         self._config_file = config_file
 
-    def _load_config(self):
-        with open(self._config_file, "r") as f:
-            return yaml.safe_load(f)
+    def load_config(self):
+        """Chargement de la configuration"""
+        with open(self._config_file, "r", encoding="UTF-8") as file:
+            return yaml.safe_load(file)
+
+    def save_config(self, config):
+        """Sauvegarde de la configuration"""
+        with open(self._config_file, "w", encoding="UTF-8") as file:
+            yaml.dump(config, file)
 
 
 # Chargement de la configuration des stratégies
+
 APPLICATION.strategies_config = Config(
     os.path.join(os.path.dirname(__file__), "..\\..", "config", "strategies.yaml")
-)._load_config()
+).load_config()
 
 # strategies_config =
 

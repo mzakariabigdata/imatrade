@@ -1,12 +1,12 @@
-import pandas as pd
+"""Module for the command line interface."""
 import os
+import pandas as pd
 from dotenv import load_dotenv
+import click
 
-from imatrade.menu import Menu
+from src.imatrade.menu import Menu
 
-from imatrade.utils.config import APPLICATION
-
-from imatrade.command.add_task_command import (
+from src.imatrade.command.add_task_command import (
     AddTaskCommand,
     DisplayStrategyCommand,
     DisplayTasksCommand,
@@ -18,32 +18,36 @@ from imatrade.command.add_task_command import (
     ProcessMarketDataCommand,
 )
 
-from imatrade.data_providers.oanda_data import OandaDataProvider
+from src.imatrade.data_providers.oanda_data import OandaDataProvider
 
-from imatrade.controller.task_controller import TaskController
-from imatrade.strategy.task import TitleSortingStrategy
-from imatrade.strategy.task import PrioritySortingStrategy
+from src.imatrade.controller.task_controller import TaskController
+from src.imatrade.strategy.task import TitleSortingStrategy
+from src.imatrade.strategy.task import PrioritySortingStrategy
 
-from imatrade.observer import TaskCountObserver
-from imatrade.observer import TaskPriorityObserver
-from imatrade.observer import TaskDueDateObserver
+from src.imatrade.observer import TaskCountObserver
+from src.imatrade.observer import TaskPriorityObserver
+from src.imatrade.observer import TaskDueDateObserver
 
-from imatrade.strategy.observer import TaskCountStrategy
-from imatrade.strategy.observer import TaskPriorityStrategy
-from imatrade.strategy.observer import TaskDueDateStrategy
+from src.imatrade.strategy.observer import TaskCountStrategy
+from src.imatrade.strategy.observer import TaskPriorityStrategy
+from src.imatrade.strategy.observer import TaskDueDateStrategy
 
 
-from imatrade.factory.trading_strategy_factory import TradingStrategyFactory
-from imatrade.controller.trading_strategy_controller import TradingStrategyController
+from src.imatrade.factory.trading_strategy_factory import TradingStrategyFactory
+from src.imatrade.controller.trading_strategy_controller import (
+    TradingStrategyController,
+)
 
 
 def display_menu(commands):
+    """Display the menu."""
     print("\nOptions :")
     for key, command in commands.items():
         print(f"{key}. {command.description}")
 
 
-def main():
+def trade_menu():
+    """Trade menu."""
     load_dotenv()
 
     oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
@@ -56,6 +60,7 @@ def main():
     priority_observer = TaskPriorityObserver(priority_strategy)
     due_date_observer = TaskDueDateObserver(due_date_strategy)
 
+    sorting_strategy = TitleSortingStrategy()  # Utiliser la stratégie de tri par titre
     sorting_strategy = (
         PrioritySortingStrategy()
     )  # Utiliser la stratégie de tri par priorité
@@ -192,7 +197,7 @@ def main():
     # Définir la colonne "date" comme index
     market_data.set_index("date", inplace=True)
     # Exécuter les stratégies et afficher les signaux de trading
-    for strategy_name, strategy in strategies.items():
+    for strategy_name, _ in strategies.items():
         trading_strategy_controller.execute_strategy(strategy_name, market_data)
 
     commands = {
@@ -207,9 +212,75 @@ def main():
         0: QuitCommand(),
     }
 
-    menu = Menu(commands)
-    menu.run()
+    trade_options = Menu(commands)
+    trade_options.run()
 
+
+@click.group()
+def config_cmds():
+    """Configuration commands."""
+
+
+@click.group()
+def trade_cmds():
+    """Trade commands."""
+
+
+@trade_cmds.command()
+def menu():
+    """Trade menu."""
+    trade_menu()
+
+
+@trade_cmds.command()
+def plan():
+    """Trade plan."""
+    print("plan")
+
+
+@trade_cmds.command()
+def state():
+    """Trade state."""
+    print("state")
+
+
+@config_cmds.command()
+def explain():
+    """Explain configuration."""
+    print("explain")
+
+
+@config_cmds.command()
+def schemas():
+    """Configuration schemas."""
+    print("schemas")
+
+
+@config_cmds.command()
+def validate():
+    """Validate configuration."""
+    print("validate")
+
+
+@click.group()
+def cli():
+    """Imatrade command line interface."""
+
+
+@cli.command()
+def trade():
+    """Trade commands."""
+    trade_cmds()
+
+
+@cli.command()
+def config():
+    """Configuration commands."""
+    config_cmds()
+
+
+cli.add_command(config_cmds, name="config")
+cli.add_command(trade_cmds, name="trade")
 
 if __name__ == "__main__":
-    main()
+    cli()

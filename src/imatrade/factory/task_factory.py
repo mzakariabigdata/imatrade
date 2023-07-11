@@ -1,7 +1,6 @@
-from imatrade.model import Task, TaskV1, TaskV2
-from imatrade.model import TaskBuilder
-from imatrade.decorator.task_decorator import TaskWithLogging
-from abc import ABC
+"""Module pour la création de tâches."""
+from src.imatrade.model import TaskV1, TaskV2
+from src.imatrade.decorator.task_decorator import TaskWithLogging
 
 # q: pourquoi on a besoin de ABC?
 # r: pour forcer les classes filles à implémenter les méthodes abstraites
@@ -9,41 +8,36 @@ from abc import ABC
 
 # q: c'est quoi le but de cette classe?
 # r: c'est une classe abstraite qui va servir de base pour les classes filles
-class TaskFactory:
-    """
-    Factory pour créer des instances de tâches.
-    """
-
-    @staticmethod
-    def create_task(title, priority):
-        return TaskBuilder().set_title(title).set_priority(priority).build()
 
 
-class TaskV1Factory(TaskFactory):
+class TaskV1Factory:  # pylint: disable=too-few-public-methods
     """
     Factory pour créer des instances de tâches de version 1.
     """
 
-    def create_task(self, title, description, priority_level):
-        return TaskV1(title, description, priority_level)
+    def create_task(self, title, priority_level, description):
+        """Méthode pour créer une tâche."""
+        return TaskV1(title, priority_level, description)
 
 
-class TaskV2Factory(TaskFactory):
+class TaskV2Factory:  # pylint: disable=too-few-public-methods
     """
     Factory pour créer des instances de tâches de version 2.
     """
 
     def create_task(self, title, description, due_date):
+        """Méthode pour créer une tâche."""
         return TaskV2(title, description, due_date)
 
 
-class ExtendedTaskFactory:
+class ExtendedTaskFactory:  # pylint: disable=too-few-public-methods
     """
     Factory étendue pour créer des instances de tâches en fonction de la version.
     """
 
     @staticmethod
     def create_task(version, *args, **kwargs):
+        """Méthode pour créer une tâche."""
         task_factory_map = {
             "v1": TaskV1Factory,
             "v2": TaskV2Factory,
@@ -54,5 +48,4 @@ class ExtendedTaskFactory:
             factory = factory_class()
             task = factory.create_task(*args, **kwargs)
             return TaskWithLogging(task)
-        else:
-            raise ValueError(f"Unsupported task version: {version}")
+        raise ValueError(f"Unsupported task version: {version}")
