@@ -149,6 +149,57 @@ class GetHistoricalDataCommand(TaskCommand):
         self.task_controller.get_historical_data()
 
 
+class LoadDataCommand(TaskCommand):
+    """Class for loading data."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Load data"
+
+    def execute(self):
+        """Execute the command."""
+        num_file = input("Number of file: ")
+        if not num_file:
+            num_file = 1
+        self.task_controller.load_data(num_file)
+
+
+class PrintDataCommand(TaskCommand):
+    """Class for printing data."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Print data"
+
+    def execute(self):
+        """Execute the command."""
+        self.task_controller.print_data()
+
+
+class SaveDataCommand(TaskCommand):
+    """Class for saving data."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Save data"
+
+    def execute(self):
+        """Execute the command."""
+        self.task_controller.save_data()
+
+
 class DisplayIndicatorCommand(TaskCommand):
     """Class for displaying an indicator."""
 

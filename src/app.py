@@ -20,6 +20,9 @@ from src.imatrade.command.add_task_command import (
     DisplayIndicatorsSummaryCommand,
     DisplayIndicatorCommand,
     PerformIndicatorCommand,
+    LoadDataCommand,
+    PrintDataCommand,
+    SaveDataCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -45,6 +48,7 @@ from src.imatrade.controller.trading_strategy_controller import (
 from src.imatrade.controller.trading_indicators_controller import (
     TradingIndicatorsController,
 )
+from src.imatrade.controller.treading_data_controller import TreadingDataController
 
 
 def display_menu(commands):
@@ -111,6 +115,9 @@ def trade_menu():
     #######################
     ###Données de marché###
     #######################
+
+    # Créer une instance du contrôleur avec la factory
+    treading_data_controller = TreadingDataController(oanda_data_provider)
     # Exemple de données de marché
     market_data = [
         {
@@ -249,6 +256,9 @@ def trade_menu():
         "4": "---------4. Market data---------",
         4_1: GetHistoricalDataCommand(trading_strategy_controller),
         4_2: ProcessMarketDataCommand(trading_strategy_controller),
+        4_3: LoadDataCommand(treading_data_controller),
+        4_4: PrintDataCommand(treading_data_controller),
+        4_5: SaveDataCommand(treading_data_controller),
         "5": "---------5. Quit---------",
         0: QuitCommand(),
     }

@@ -133,3 +133,6 @@ gitconfig.txt
 
 # jupyter
 jupyter/
+
+# data
+data/
