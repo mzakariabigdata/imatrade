@@ -14,6 +14,7 @@ class AddTaskCommand(TaskCommand):
     def description(self):
         """Return the description of the command."""
         return "Add a task"
+
     def execute(self):
         """Execute the command."""
         self.task_controller.add_task()
@@ -50,6 +51,7 @@ class DisplayIndicatorsCommand(TaskCommand):
         """Execute the command."""
         self.task_controller.display_indicators()
 
+
 class DisplayStrategiesSummary(TaskCommand):
     """Class for displaying strategy summary."""
 
@@ -64,6 +66,7 @@ class DisplayStrategiesSummary(TaskCommand):
     def execute(self):
         """Execute the command."""
         self.task_controller.display_strategies_summary()
+
 
 class DisplayIndicatorsSummaryCommand(TaskCommand):
     """Class for displaying indicators summary."""
@@ -80,6 +83,7 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
         """Execute the command."""
         self.task_controller.display_indicators_summary()
 
+
 class DisplayAllIndicatorsCommand(TaskCommand):
     """Class for displaying all indicators."""
 
@@ -94,6 +98,7 @@ class DisplayAllIndicatorsCommand(TaskCommand):
     def execute(self):
         """Execute the command."""
         self.task_controller.display_all_indicators()
+
 
 class PerformTasksCommand(TaskCommand):
     """Class for performing tasks."""
@@ -125,6 +130,23 @@ class GetHistoricalDataCommand(TaskCommand):
     def execute(self):
         """Execute the command."""
         self.task_controller.get_historical_data()
+
+
+class DisplayIndicatorCommand(TaskCommand):
+    """Class for displaying an indicator."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Display an indicator"
+
+    def execute(self):
+        """Execute the command."""
+        indicator_name = input("Name of the indicator: ")
+        self.task_controller.display_indicator(indicator_name)
 
 
 class DisplayStrategyCommand(TaskCommand):

@@ -18,6 +18,7 @@ from src.imatrade.command.add_task_command import (
     ProcessMarketDataCommand,
     DisplayAllIndicatorsCommand,
     DisplayIndicatorsSummaryCommand,
+    DisplayIndicatorCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -84,15 +85,13 @@ def trade_menu():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     indicators_factory = TradingIndicatorsFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_indicators_controller = TradingIndicatorsController(
-        indicators_factory
-    )
+    trading_indicators_controller = TradingIndicatorsController(indicators_factory)
     # load all indicators builders
     # trading_indicators_controller.load_indicators_builder()
     # Créer toutes les indicators à partir du fichier indicators.yaml
     indicators = trading_indicators_controller.create_all_indicators()
-    # print("--- indicators --- ", indicators)
-    
+    print("--- indicators --- ", indicators)
+
     ################
     ###Strategies###
     ################
@@ -238,8 +237,9 @@ def trade_menu():
         1_2: DisplayTasksCommand(task_controller),
         1_3: PerformTasksCommand(task_controller),
         "2": "---------2. Indicators---------",
-        2_1: DisplayAllIndicatorsCommand(trading_indicators_controller),
-        2_2: DisplayIndicatorsSummaryCommand(trading_indicators_controller),
+        2_1: DisplayIndicatorCommand(trading_indicators_controller),
+        2_2: DisplayAllIndicatorsCommand(trading_indicators_controller),
+        2_3: DisplayIndicatorsSummaryCommand(trading_indicators_controller),
         "3": "---------3. Strategies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),

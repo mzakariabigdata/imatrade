@@ -6,6 +6,7 @@ from abc import ABC, abstractmethod
 import importlib
 from imobject import ObjDict
 
+
 class ABSTradingIndicatorBuilder(ABC):  # pylint: disable=too-few-public-methods
     """Classe abstraite pour les builders d'indicateurs de trading"""
 
@@ -19,10 +20,10 @@ class TradingIndicatorBuilder(
 ):  # pylint: disable=too-few-public-methods
     """Builder pour les stratégies de trading"""
 
-    def build(self, indicator_config):
-        print("indicators_config 0 ", indicator_config)
+    def build(self, indicators_config):
+        print("indicators_config 0 ", indicators_config)
         # indicator_config = ObjDict(indicator_config[0])
-        indicators = TradingIndicatorsBuilder().build(indicator_config)
+        indicators = TradingIndicatorsBuilder().build(indicators_config)
         return indicators[0]
 
 

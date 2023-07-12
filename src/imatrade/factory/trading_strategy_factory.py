@@ -3,17 +3,7 @@ Contient la classe TradingStrategyFactory pour créer des stratégies
 """
 import importlib
 from src.imatrade.utils.config import APPLICATION
-
-
-class Singleton(type):
-    """Singleton class for TradingStrategyFactory"""
-
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+from src.imatrade import Singleton
 
 
 class TradingStrategyFactory(metaclass=Singleton):

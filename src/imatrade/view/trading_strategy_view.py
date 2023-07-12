@@ -3,7 +3,6 @@ Contient les classes de vue pour afficher les stratégies et les données
 """
 
 
-
 class TradingStrategyView:
     """Classe de vue pour afficher les stratégies de trading"""
 

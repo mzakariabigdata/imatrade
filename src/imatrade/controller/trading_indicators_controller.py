@@ -46,16 +46,23 @@ class TradingIndicatorsController:
     def display_indicators_summary(self):
         """Afficher un résumé de tous les indicators"""
         print()
-        print(f"Récapitulatif des indicators de trading, total {len(self.indicators)} :")
+        print(
+            f"Récapitulatif des indicators de trading, total {len(self.indicators)} :"
+        )
         print()
         for _, indicator in self.indicators.items():
             TradingIndicatorView.display_indicator_summary(indicator)
-    
+
     def display_all_indicators(self):
         """Afficher toutes les stratégies"""
         for indicator_name, indicator in self.indicators.items():
             print(f"\nStrategy name: {indicator_name}")
             TradingIndicatorView.display_indicator(indicator)
+
+    def display_indicator(self, indicator_name):
+        """Afficher un indicator"""
+        if indicator_name in self.indicators:
+            TradingIndicatorView.display_indicator(self.indicators[indicator_name])
 
     def get_indicator(self, indicator_name):
         """Récupérer un indicator"""

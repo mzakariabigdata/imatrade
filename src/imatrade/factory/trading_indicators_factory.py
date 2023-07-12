@@ -4,17 +4,9 @@ Contient la classe TradingIndicatorsFactory pour créer des indicators
 
 import importlib
 from src.imatrade.utils.config import APPLICATION
+from src.imatrade import Singleton
 
-class Singleton(type):
-    """Singleton class for TradingStrategyFactory"""
 
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
-    
 class TradingIndicatorsFactory(metaclass=Singleton):
     """Classe pour créer des indicators de trading"""
 
@@ -60,6 +52,8 @@ class TradingIndicatorsFactory(metaclass=Singleton):
             raise ValueError("Builder not loaded")
         if indicator_name not in self.indicators:
             raise ValueError(f"Invalid indicator name: {indicator_name}")
-        indicator_config = self.indicators_composer.indicators.where(name=indicator_name)
+        indicator_config = self.indicators_composer.indicators.where(
+            name=indicator_name
+        )
         print("indicator_config", indicator_config)
         return self._builder.build(indicator_config)

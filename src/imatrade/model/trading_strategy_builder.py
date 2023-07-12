@@ -2,9 +2,8 @@
 Contient les classes Builder (MACrossoverStrategyBuilder, RSIStrategyBuilder)
 """
 from abc import ABC, abstractmethod
-import importlib
 from imobject import ObjDict
-from imatrade.model.trading_indicator_builder import TradingIndicatorsBuilder
+from src.imatrade.model.trading_indicator_builder import TradingIndicatorsBuilder
 
 # q: pourquoi on a besoin de ABC?
 # r: pour forcer les classes filles à implémenter les méthodes abstraites
@@ -18,7 +17,6 @@ class ABSTradingStrategyBuilder(ABC):  # pylint: disable=too-few-public-methods
     @abstractmethod
     def build(self, strategy_config):
         """Méthode abstraite pour construire une stratégie de trading"""
-
 
 
 class TradingStrategyBuilder(
@@ -36,5 +34,3 @@ class TradingStrategyBuilder(
         # strategy_class = getattr(module, f"{strategy_config.class_name}")
         # return strategy_class(**strategy_config)
         return indicators[0]
-
-
