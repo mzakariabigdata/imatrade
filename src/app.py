@@ -232,20 +232,20 @@ def trade_menu():
     ######Menu######
     ################
     commands = {
-        "1": "--------- 1. Tâches---------",
+        "1": "---------1. Tasks---------",
         1_1: AddTaskCommand(task_controller),
         1_2: DisplayTasksCommand(task_controller),
         1_3: PerformTasksCommand(task_controller),
-        "2": "---------2. Indicateurs---------",
+        "2": "---------2. Indicators---------",
         2_1: DisplayAllIndicatorsCommand(trading_indicators_controller),
-        "3": "---------3. Stratégies---------",
+        "3": "---------3. Strategies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
         3_3: DisplayStrategySummary(trading_strategy_controller),
-        "4": "---------4. Données de marché---------",
+        "4": "---------4. Market data---------",
         4_1: GetHistoricalDataCommand(trading_strategy_controller),
         4_2: ProcessMarketDataCommand(trading_strategy_controller),
-        "5": "---------Quitter---------",
+        "5": "---------5. Quit---------",
         0: QuitCommand(),
     }
 

@@ -13,8 +13,7 @@ class AddTaskCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Ajouter une tâche"
-
+        return "Add a task"
     def execute(self):
         """Execute the command."""
         self.task_controller.add_task()
@@ -29,7 +28,7 @@ class DisplayTasksCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Afficher les tâches"
+        return "Display tasks"
 
     def execute(self):
         """Execute the command."""
@@ -45,7 +44,7 @@ class DisplayIndicatorsCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Afficher les indicateurs"
+        return "Display indicators"
 
     def execute(self):
         """Execute the command."""
@@ -60,7 +59,7 @@ class DisplayStrategySummary(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Récapitulatif des stratégies de trading"
+        return "Display strategy summary"
 
     def execute(self):
         """Execute the command."""
@@ -75,7 +74,7 @@ class DisplayAllIndicatorsCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Afficher tous les indicateurs"
+        return "Display all indicators"
 
     def execute(self):
         """Execute the command."""
@@ -90,7 +89,7 @@ class PerformTasksCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Perform les tâches"
+        return "Perform tasks"
 
     def execute(self):
         """Execute the command."""
@@ -122,11 +121,11 @@ class DisplayStrategyCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Afficher la stratégie"
+        return "Display a strategy"
 
     def execute(self):
         """Execute the command."""
-        strategy_name = input("Entrez Strategy name : ")
+        strategy_name = input("Name of the strategy: ")
         self.trading_strategy_controller.display_strategy(strategy_name)
 
 
@@ -139,7 +138,7 @@ class DisplayAllStrategiesCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Afficher toutes les stratégies"
+        return "Display all strategies"
 
     def execute(self):
         """Execute the command."""
@@ -172,5 +171,5 @@ class QuitCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        print("Au revoir !")
+        print("Quitting...")
         sys.exit(0)
