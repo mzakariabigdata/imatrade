@@ -36,6 +36,21 @@ class DisplayTasksCommand(TaskCommand):
         self.task_controller.display_tasks()
 
 
+class DisplayIndicatorsCommand(TaskCommand):
+    """Class for displaying indicators."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Afficher les indicateurs"
+
+    def execute(self):
+        """Execute the command."""
+        self.task_controller.display_indicators()
+
 class DisplayStrategySummary(TaskCommand):
     """Class for displaying strategy summary."""
 
@@ -51,6 +66,20 @@ class DisplayStrategySummary(TaskCommand):
         """Execute the command."""
         self.task_controller.display_strategy_summary()
 
+class DisplayAllIndicatorsCommand(TaskCommand):
+    """Class for displaying all indicators."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Afficher tous les indicateurs"
+
+    def execute(self):
+        """Execute the command."""
+        self.task_controller.display_all_indicators()
 
 class PerformTasksCommand(TaskCommand):
     """Class for performing tasks."""

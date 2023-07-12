@@ -2,7 +2,6 @@
 Contient les classes de vue pour afficher les stratégies et les données
 """
 
-# view/trading_strategy_view.py
 
 
 class TradingStrategyView:

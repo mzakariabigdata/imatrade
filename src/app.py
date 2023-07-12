@@ -16,6 +16,7 @@ from src.imatrade.command.add_task_command import (
     DisplayStrategySummary,
     GetHistoricalDataCommand,
     ProcessMarketDataCommand,
+    DisplayAllIndicatorsCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -34,8 +35,12 @@ from src.imatrade.strategy.observer import TaskDueDateStrategy
 
 
 from src.imatrade.factory.trading_strategy_factory import TradingStrategyFactory
+from src.imatrade.factory.trading_indicators_factory import TradingIndicatorsFactory
 from src.imatrade.controller.trading_strategy_controller import (
     TradingStrategyController,
+)
+from src.imatrade.controller.trading_indicators_controller import (
+    TradingIndicatorsController,
 )
 
 
@@ -52,6 +57,9 @@ def trade_menu():
 
     oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
 
+    ################
+    #####Tâches#####
+    ################
     count_strategy = TaskCountStrategy()
     priority_strategy = TaskPriorityStrategy()
     due_date_strategy = TaskDueDateStrategy()
@@ -69,19 +77,39 @@ def trade_menu():
         observers=[count_observer, priority_observer, due_date_observer],
     )
 
+    ################
+    ###Indicators###
+    ################
+    # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
+    indicators_factory = TradingIndicatorsFactory()
+    # Créer une instance du contrôleur avec la factory
+    trading_indicators_controller = TradingIndicatorsController(
+        indicators_factory
+    )
+    # load all indicators builders
+    # trading_indicators_controller.load_indicators_builder()
+    # Créer toutes les indicators à partir du fichier indicators.yaml
+    indicators = trading_indicators_controller.create_all_indicators()
+    # print("--- indicators --- ", indicators)
+    
+    ################
+    ###Strategies###
+    ################
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
     # Créer une instance du contrôleur avec la factory
     trading_strategy_controller = TradingStrategyController(
         strategy_factory, oanda_data_provider
     )
-    # load all strategies builders
-    trading_strategy_controller.load_strategies_builder()
+    # # load all strategies builders
+    # trading_strategy_controller.load_strategies_builder()
     # Créer toutes les stratégies à partir du fichier strategies.yaml
     strategies = trading_strategy_controller.create_all_strategies()
     print("--- strategies --- ", strategies)
 
-    # Créer une stratégie de trading en utilisant la factory
+    #######################
+    ###Données de marché###
+    #######################
     # Exemple de données de marché
     market_data = [
         {
@@ -200,13 +228,16 @@ def trade_menu():
     for strategy_name, _ in strategies.items():
         trading_strategy_controller.execute_strategy(strategy_name, market_data)
 
+    ################
+    ######Menu######
+    ################
     commands = {
         "1": "--------- 1. Tâches---------",
         1_1: AddTaskCommand(task_controller),
         1_2: DisplayTasksCommand(task_controller),
         1_3: PerformTasksCommand(task_controller),
         "2": "---------2. Indicateurs---------",
-        # 2_1: DisplayIndecatorsCommand(trading_strategy_controller),
+        2_1: DisplayAllIndicatorsCommand(trading_indicators_controller),
         "3": "---------3. Stratégies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
