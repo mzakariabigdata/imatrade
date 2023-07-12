@@ -48,7 +48,7 @@ class TradingStrategyController:
         if strategy_name in self.strategies:
             del self.strategies[strategy_name]
 
-    def display_strategy_summary(self):
+    def display_strategies_summary(self):
         """Afficher un résumé de toutes les stratégies"""
         print()
         print(
@@ -56,7 +56,7 @@ class TradingStrategyController:
         )
         print()
         for _, strategy in self.strategies.items():
-            TradingStrategyView.display_strategy_summary(strategy)
+            TradingStrategyView.display_strategies_summary(strategy)
 
     def get_strategy(self, strategy_name):
         """Récupérer une stratégie"""

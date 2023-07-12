@@ -50,7 +50,7 @@ class DisplayIndicatorsCommand(TaskCommand):
         """Execute the command."""
         self.task_controller.display_indicators()
 
-class DisplayStrategySummary(TaskCommand):
+class DisplayStrategiesSummary(TaskCommand):
     """Class for displaying strategy summary."""
 
     def __init__(self, task_controller):
@@ -59,11 +59,26 @@ class DisplayStrategySummary(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Display strategy summary"
+        return "Display strategies summary"
 
     def execute(self):
         """Execute the command."""
-        self.task_controller.display_strategy_summary()
+        self.task_controller.display_strategies_summary()
+
+class DisplayIndicatorsSummaryCommand(TaskCommand):
+    """Class for displaying indicators summary."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Display indicators summary"
+
+    def execute(self):
+        """Execute the command."""
+        self.task_controller.display_indicators_summary()
 
 class DisplayAllIndicatorsCommand(TaskCommand):
     """Class for displaying all indicators."""

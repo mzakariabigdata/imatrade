@@ -26,7 +26,7 @@ class TradingStrategyView:
         print()
 
     @staticmethod
-    def display_strategy_summary(strategy):
+    def display_strategies_summary(strategy):
         """Affiche un résumé de la stratégie de trading"""
         print(f"Nom : {strategy.name}")
         print(f"Paramètres : {strategy.parameters}")

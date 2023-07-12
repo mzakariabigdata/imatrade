@@ -43,7 +43,7 @@ class TradingIndicatorsController:
         if indicator_name in self.indicators:
             del self.indicators[indicator_name]
 
-    def display_indicator_summary(self):
+    def display_indicators_summary(self):
         """Afficher un résumé de tous les indicators"""
         print()
         print(f"Récapitulatif des indicators de trading, total {len(self.indicators)} :")

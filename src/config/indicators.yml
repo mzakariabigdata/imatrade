@@ -53,3 +53,14 @@ indicators_composer:
         rsi_period: 14
         overbought: 70
         oversold: 30
+
+    - name: StochasticOscillator
+      display_name: Stochastic
+      description: Un indicateur qui mesure la position du prix par rapport à son plus haut et son plus bas sur une période donnée.
+      class_name: StochasticOscillatorIndicator
+      module_path: trading_indicator
+      parameters:
+        stochastic_period: 14
+        signal_period: 3
+        overbought: 80
+        oversold: 20

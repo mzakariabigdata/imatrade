@@ -13,10 +13,11 @@ from src.imatrade.command.add_task_command import (
     PerformTasksCommand,
     QuitCommand,
     DisplayAllStrategiesCommand,
-    DisplayStrategySummary,
+    DisplayStrategiesSummary,
     GetHistoricalDataCommand,
     ProcessMarketDataCommand,
     DisplayAllIndicatorsCommand,
+    DisplayIndicatorsSummaryCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -238,10 +239,11 @@ def trade_menu():
         1_3: PerformTasksCommand(task_controller),
         "2": "---------2. Indicators---------",
         2_1: DisplayAllIndicatorsCommand(trading_indicators_controller),
+        2_2: DisplayIndicatorsSummaryCommand(trading_indicators_controller),
         "3": "---------3. Strategies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
-        3_3: DisplayStrategySummary(trading_strategy_controller),
+        3_3: DisplayStrategiesSummary(trading_strategy_controller),
         "4": "---------4. Market data---------",
         4_1: GetHistoricalDataCommand(trading_strategy_controller),
         4_2: ProcessMarketDataCommand(trading_strategy_controller),
