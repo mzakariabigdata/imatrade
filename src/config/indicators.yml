@@ -1,0 +1,55 @@
+
+
+indicators_composer:
+  builder: 
+    class_name: TradingIndicatorBuilder
+    module_path: trading_indicator_builder
+
+  indicators:
+    - name: BollingerBands
+      display_name: Bollinger Bands
+      description: Un indicateur de volatilité qui trace deux bandes au-dessus et en dessous d'une moyenne mobile.
+      class_name: BollingerBandsIndicator
+      module_path: trading_indicator
+      parameters:
+        window: 20
+        num_std: 2
+
+    - name: MACrossover
+      display_name: MA Crossover
+      description: Un indicateur qui trace deux moyennes mobiles et génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.
+      class_name: MACrossoverIndicator
+      module_path: trading_indicator
+      parameters:
+        short_window: 50
+        long_window: 200
+
+    - name: RSIDivergence
+      display_name: RSI Divergence
+      description: Un indicateur qui détecte les divergences entre le mouvement des prix et l'indicateur RSI pour anticiper les retournements de marché.
+      class_name: RSIDivergenceIndicator
+      module_path: trading_indicator
+      parameters:
+        signal_period: 14
+        long_rsi_period: 70
+        short_rsi_period: 30
+
+    - name: MACD
+      display_name: MACD
+      description: Un indicateur qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
+      class_name: MACDIndicator
+      module_path: trading_indicator
+      parameters:
+        fast_period: 12
+        slow_period: 26
+        signal_period: 9
+
+    - name: RSI 
+      display_name: RSI
+      description: Un indicateur qui mesure la force et la vitesse du mouvement des prix en comparant le prix actuel à son prix de clôture précédent.
+      class_name: RSIIndicator
+      module_path: trading_indicator
+      parameters:
+        rsi_period: 14
+        overbought: 70
+        oversold: 30
