@@ -64,6 +64,12 @@ class TradingIndicatorsController:
         if indicator_name in self.indicators:
             TradingIndicatorView.display_indicator(self.indicators[indicator_name])
 
+    def perform_indicator(self, indicator_name):
+        """Exécuter un indicator"""
+        if indicator_name in self.indicators:
+            # self.indicators[indicator_name].perform()
+            print("perform_indicator", self.indicators[indicator_name])
+
     def get_indicator(self, indicator_name):
         """Récupérer un indicator"""
         if indicator_name in self.indicators:

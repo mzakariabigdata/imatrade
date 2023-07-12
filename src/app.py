@@ -19,6 +19,7 @@ from src.imatrade.command.add_task_command import (
     DisplayAllIndicatorsCommand,
     DisplayIndicatorsSummaryCommand,
     DisplayIndicatorCommand,
+    PerformIndicatorCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -240,6 +241,7 @@ def trade_menu():
         2_1: DisplayIndicatorCommand(trading_indicators_controller),
         2_2: DisplayAllIndicatorsCommand(trading_indicators_controller),
         2_3: DisplayIndicatorsSummaryCommand(trading_indicators_controller),
+        2_4: PerformIndicatorCommand(trading_indicators_controller),
         "3": "---------3. Strategies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),

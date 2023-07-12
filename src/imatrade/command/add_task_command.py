@@ -84,6 +84,23 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
         self.task_controller.display_indicators_summary()
 
 
+class PerformIndicatorCommand(TaskCommand):
+    """Class for performing indicators."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Perform indicator"
+
+    def execute(self):
+        """Execute the command."""
+        indicator_name = input("Name of the indicator: ")
+        self.task_controller.perform_indicator(indicator_name)
+
+
 class DisplayAllIndicatorsCommand(TaskCommand):
     """Class for displaying all indicators."""
 
