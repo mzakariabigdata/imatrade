@@ -19,7 +19,6 @@ class TradingStrategyController:
         """Créer toutes les stratégies à partir du fichier strategies.yaml"""
         self.load_strategies_builder()  # Charger les constructeurs de stratégies
         for strategy_name in self.strategy_factory.get_registered_strategy_names():
-            print(f"strategy_name: {strategy_name}")
             strategy = self.strategy_factory.create_strategy(strategy_name)
             self.add_strategy(strategy_name, strategy)
         return self.strategies

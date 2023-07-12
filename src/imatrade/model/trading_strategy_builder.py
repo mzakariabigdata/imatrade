@@ -29,7 +29,6 @@ class TradingStrategyBuilder(
         # module = importlib.import_module(
         #     f"imatrade.model.{strategy_config.module_path}"
         # )
-        print("strategy_config", strategy_config)
         indicators = TradingIndicatorsBuilder().build(strategy_config.indicators)
         # strategy_class = getattr(module, f"{strategy_config.class_name}")
         # return strategy_class(**strategy_config)

@@ -226,8 +226,8 @@ def trade_menu():
     # Définir la colonne "date" comme index
     market_data.set_index("date", inplace=True)
     # Exécuter les stratégies et afficher les signaux de trading
-    for strategy_name, _ in strategies.items():
-        trading_strategy_controller.execute_strategy(strategy_name, market_data)
+    # for strategy_name, _ in strategies.items():
+    #     trading_strategy_controller.execute_strategy(strategy_name, market_data)
 
     ################
     ######Menu######

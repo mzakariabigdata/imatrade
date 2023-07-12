@@ -55,5 +55,4 @@ class TradingIndicatorsFactory(metaclass=Singleton):
         indicator_config = self.indicators_composer.indicators.where(
             name=indicator_name
         )
-        print("indicator_config", indicator_config)
         return self._builder.build(indicator_config)

@@ -21,7 +21,6 @@ class TradingIndicatorBuilder(
     """Builder pour les stratégies de trading"""
 
     def build(self, indicators_config):
-        print("indicators_config 0 ", indicators_config)
         # indicator_config = ObjDict(indicator_config[0])
         indicators = TradingIndicatorsBuilder().build(indicators_config)
         return indicators[0]
@@ -35,7 +34,6 @@ class TradingIndicatorsBuilder(
     def build(self, indicators_config):
         # indicators_config = ObjDict(indicators_config)
         indicators = []
-        print("indicators_config 1 ", indicators_config)
         for indicator_config in indicators_config:
             indicator_config = ObjDict(indicator_config)
             module = importlib.import_module(
@@ -44,5 +42,4 @@ class TradingIndicatorsBuilder(
             indicator_class = getattr(module, f"{indicator_config.class_name}")
             indicator = indicator_class(**indicator_config)
             indicators.append(indicator)
-        print("indicators", indicators)
         return indicators
