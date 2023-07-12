@@ -8,10 +8,10 @@ import pandas as pd
 class TreadingDataController:
     """Contrôleur des données"""
 
-    def __init__(self, data_factory):
-        self.data_factory = data_factory  # Factory de données
+    def __init__(self, oanda_data_provider):
         self.data = pd.DataFrame()  # Stocker les données du marché
         self.file_name = None  # Stocker le nom du fichier
+        self.oanda_data_provider = oanda_data_provider
 
     def get_file_name(self, file_path):
         """Récupérer le nom du fichier"""
@@ -74,3 +74,10 @@ class TreadingDataController:
         self.data.to_excel(save_file, index=False)
         print(f"Data saved to data/saves/{self.file_name}_{suffix}.xlsx")
         return save_file
+
+    def get_historical_data(self):
+        """Récupérer les données historiques du marché"""
+        market_data = self.oanda_data_provider.get_historical_data(
+            instrument="EUR_USD", start="2021-01-01", end="2021-12-31", granularity="D"
+        )
+        return market_data

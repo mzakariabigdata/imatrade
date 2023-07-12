@@ -103,9 +103,7 @@ def trade_menu():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_strategy_controller = TradingStrategyController(
-        strategy_factory, oanda_data_provider
-    )
+    trading_strategy_controller = TradingStrategyController(strategy_factory)
     # # load all strategies builders
     # trading_strategy_controller.load_strategies_builder()
     # Créer toutes les stratégies à partir du fichier strategies.yaml
@@ -254,7 +252,7 @@ def trade_menu():
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
         3_3: DisplayStrategiesSummary(trading_strategy_controller),
         "4": "---------4. Market data---------",
-        4_1: GetHistoricalDataCommand(trading_strategy_controller),
+        4_1: GetHistoricalDataCommand(treading_data_controller),
         4_2: ProcessMarketDataCommand(trading_strategy_controller),
         4_3: LoadDataCommand(treading_data_controller),
         4_4: PrintDataCommand(treading_data_controller),

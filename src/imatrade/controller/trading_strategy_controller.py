@@ -6,9 +6,8 @@ from src.imatrade.view.trading_strategy_view import TradingStrategyView
 class TradingStrategyController:
     """Contrôleur des stratégies de trading"""
 
-    def __init__(self, strategy_factory, oanda_data_provider):
+    def __init__(self, strategy_factory):
         self.strategy_factory = strategy_factory
-        self.oanda_data_provider = oanda_data_provider
         self.strategies = {}  # Stocker les stratégies créées
 
     def load_strategies_builder(self):
@@ -22,13 +21,6 @@ class TradingStrategyController:
             strategy = self.strategy_factory.create_strategy(strategy_name)
             self.add_strategy(strategy_name, strategy)
         return self.strategies
-
-    def get_historical_data(self):
-        """Récupérer les données historiques du marché"""
-        market_data = self.oanda_data_provider.get_historical_data(
-            instrument="EUR_USD", start="2021-01-01", end="2021-12-31", granularity="D"
-        )
-        return market_data
 
     def create_strategy(self, strategy_type):
         """Créer une stratégie de trading"""
