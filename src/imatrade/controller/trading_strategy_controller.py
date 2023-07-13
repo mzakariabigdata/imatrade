@@ -23,12 +23,15 @@ class TradingStrategyController(metaclass=Singleton):
         if data is None:
             print("No data to prepare for strategies !")
             return None
-        if strategy_name in self.strategies:
+        elif strategy_name in self.strategies:
             strategy = self.get_strategy(strategy_name)
             print("strategy", strategy)
-            # strategy.prepare_data(data)
-            return strategy
-        return None
+            print("indicator", strategy.indicators)
+            for indicator in strategy.indicators:
+                data = indicator.prepare_data(data)
+            print("data", data)
+        self.data_controller.set_data(data)
+        return data
 
     def create_all_strategies(self):
         """Créer toutes les stratégies à partir du fichier strategies.yaml"""
