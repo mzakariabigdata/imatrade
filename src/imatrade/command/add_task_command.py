@@ -98,6 +98,8 @@ class PerformIndicatorCommand(TaskCommand):
     def execute(self):
         """Execute the command."""
         indicator_name = input("Name of the indicator: ")
+        if not indicator_name:
+            indicator_name = "BollingerBands"
         self.task_controller.perform_indicator(indicator_name)
 
 

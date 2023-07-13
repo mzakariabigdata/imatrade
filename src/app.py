@@ -64,6 +64,12 @@ def trade_menu():
 
     oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
 
+    #####################
+    ###data controller###
+    #####################
+    # Créer une instance du contrôleur avec la factory
+    treading_data_controller = TreadingDataController(oanda_data_provider)
+
     ################
     #####Tâches#####
     ################
@@ -90,7 +96,9 @@ def trade_menu():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     indicators_factory = TradingIndicatorsFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_indicators_controller = TradingIndicatorsController(indicators_factory)
+    trading_indicators_controller = TradingIndicatorsController(
+        indicators_factory, treading_data_controller
+    )
     # load all indicators builders
     # trading_indicators_controller.load_indicators_builder()
     # Créer toutes les indicators à partir du fichier indicators.yaml
@@ -114,8 +122,6 @@ def trade_menu():
     ###Données de marché###
     #######################
 
-    # Créer une instance du contrôleur avec la factory
-    treading_data_controller = TreadingDataController(oanda_data_provider)
     # Exemple de données de marché
     market_data = [
         {

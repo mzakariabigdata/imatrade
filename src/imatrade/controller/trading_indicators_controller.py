@@ -1,35 +1,17 @@
 """Module pour le contrôleur des indicators de trading"""
 
-import glob
-from pathlib import Path
-import pandas as pd
 from src.imatrade.view.trading_indicator_view import TradingIndicatorView
+from src.imatrade import Singleton
 
 
-class TradingIndicatorsController:
+class TradingIndicatorsController(metaclass=Singleton):
     """Contrôleur des indicators de trading"""
 
-    def __init__(self, indicator_factory):
+    def __init__(self, indicator_factory, data_controller):
         self.indicator_factory = indicator_factory  # Factory d'indicators
         self.indicators = {}  # Stocker les indicators créés
         self.data = None  # Stocker les données du marché
-
-    def load_data(self, num_files=1):
-        """Charger les données du marché"""
-        script_path = Path(__file__).resolve()
-        # Ajouter '../data/' à script_path
-        new_path = script_path.parent / "../../data/"
-
-        # Résoudre le chemin pour éliminer le '..'
-        new_path = new_path.resolve()
-        files = glob.glob(str(new_path) + "/" + str(num_files) + "*.xlsx")
-        print("new_path", new_path)
-        print("files", files)
-        if not files:
-            print("No files found that match the prefix.")
-            return None
-        dataframe = pd.read_excel(files[0])
-        return dataframe
+        self.data_controller = data_controller  # Contrôleur des données
 
     def load_indicators_builder(self):
         """Charger les constructeurs d'indicators"""
@@ -85,11 +67,16 @@ class TradingIndicatorsController:
 
     def perform_indicator(self, indicator_name):
         """Exécuter un indicator"""
-        self.data = self.load_data()
-        print("data", self.data)
+        data = self.data_controller.get_data()
+        if data is None:
+            print("No data to perform indicator")
+            return None
         if indicator_name in self.indicators:
-            # self.indicators[indicator_name].perform()
+            prepared_date = self.indicators[indicator_name].prepare_data(data)
+            self.data_controller.set_data(prepared_date)
             print("perform_indicator", self.indicators[indicator_name])
+        print(prepared_date)
+        return True
 
     def get_indicator(self, indicator_name):
         """Récupérer un indicator"""

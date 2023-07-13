@@ -100,6 +100,8 @@ class IchimokuCloudIndicator(TradingIndicator):
         self.market_data["senkou_span_b"] = ((high_values + low_values) / 2).shift(
             self.parameters["displacement"]
         )
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Ichimoku Cloud."""
@@ -156,6 +158,8 @@ class ATRIndicator(TradingIndicator):
             window=self.parameters["window"],
         )
         self.market_data["atr"] = atr.average_true_range()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Average True Range."""
@@ -210,6 +214,8 @@ class MACDIndicator(TradingIndicator):
         self.market_data["macd"] = macd.macd()
         self.market_data["macd_signal"] = macd.macd_signal()
         self.market_data["macd_diff"] = macd.macd_diff()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Moving Average Convergence Divergence."""
@@ -268,6 +274,8 @@ class MACrossoverIndicator(TradingIndicator):
             .rolling(window=self.parameters["long_window"])
             .mean()
         )
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Moving Average Crossover."""
@@ -323,6 +331,9 @@ class RSIIndicator(TradingIndicator):
         )
         self.market_data["RSI"] = rsi_indicator.rsi()
 
+        self.market_data = self.market_data.dropna()
+        return self.market_data
+
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Relative Strength Index."""
         signals = pd.DataFrame(index=self.market_data.index)
@@ -375,6 +386,10 @@ class BollingerBandsIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def get_prepare_data(self):
+        """Prépare les données pour l'indicateur Bollinger Bands."""
+        return self.market_data
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Bollinger Bands."""
         self.market_data = market_data.copy()
@@ -385,6 +400,8 @@ class BollingerBandsIndicator(TradingIndicator):
         )
         self.market_data["bollinger_high"] = bollinger.bollinger_hband()
         self.market_data["bollinger_low"] = bollinger.bollinger_lband()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Bollinger Bands."""
@@ -438,6 +455,8 @@ class StochasticOscillatorIndicator(TradingIndicator):
         )
         self.market_data["stoch_k"] = stochastic.stoch()
         self.market_data["stoch_d"] = stochastic.stoch_signal()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Stochastic Oscillator."""
@@ -487,6 +506,8 @@ class RSIDivergenceIndicator(TradingIndicator):
         self.market_data = market_data.copy()
         rsi = RSI(self.market_data["close"], window=self.parameters["signal_period"])
         self.market_data["rsi"] = rsi.rsi()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur RSI Divergence."""
@@ -551,6 +572,8 @@ class MAEnvelopeIndicator(TradingIndicator):
         self.market_data["lower_band"] = self.market_data["ma"] * (
             1 - self.parameters["ma_distance"]
         )
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def moving_average(self, data, window):
         """
@@ -608,6 +631,8 @@ class BreakoutIndicator(TradingIndicator):
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Breakout."""
         self.market_data = market_data.copy()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
 
     def generate_signals(self):
         """Génère les signaux pour l'indicateur Breakout."""

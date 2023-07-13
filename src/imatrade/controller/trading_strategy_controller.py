@@ -1,9 +1,10 @@
 """Module pour le contrôleur des stratégies de trading""" ""
 
 from src.imatrade.view.trading_strategy_view import TradingStrategyView
+from src.imatrade import Singleton
 
 
-class TradingStrategyController:
+class TradingStrategyController(metaclass=Singleton):
     """Contrôleur des stratégies de trading"""
 
     def __init__(self, strategy_factory):

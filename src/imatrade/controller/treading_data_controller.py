@@ -3,15 +3,24 @@ import os
 import glob
 from pathlib import Path
 import pandas as pd
+from src.imatrade import Singleton
 
 
-class TreadingDataController:
+class TreadingDataController(metaclass=Singleton):
     """Contrôleur des données"""
 
     def __init__(self, oanda_data_provider):
         self.data = pd.DataFrame()  # Stocker les données du marché
         self.file_name = None  # Stocker le nom du fichier
         self.oanda_data_provider = oanda_data_provider
+
+    def get_data(self):
+        """Récupérer les données du marché"""
+        return self.data
+
+    def set_data(self, data):
+        """ReDéfinir les données du marché"""
+        self.data = data
 
     def get_file_name(self, file_path):
         """Récupérer le nom du fichier"""

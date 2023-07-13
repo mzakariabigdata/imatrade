@@ -60,7 +60,7 @@ indicators_composer:
       class_name: StochasticOscillatorIndicator
       module_path: trading_indicator
       parameters:
-        stochastic_period: 14
-        signal_period: 3
-        overbought: 80
+        k_window: 14
+        d_window: 3
         oversold: 20
+        overbought: 80
