@@ -65,7 +65,7 @@ class TradingIndicatorsController(metaclass=Singleton):
         if indicator_name in self.indicators:
             TradingIndicatorView.display_indicator(self.indicators[indicator_name])
 
-    def perform_indicator(self, indicator_name):
+    def prepare_indicator(self, indicator_name):
         """Exécuter un indicator"""
         data = self.data_controller.get_data()
         if data is None:
@@ -74,7 +74,7 @@ class TradingIndicatorsController(metaclass=Singleton):
         if indicator_name in self.indicators:
             prepared_date = self.indicators[indicator_name].prepare_data(data)
             self.data_controller.set_data(prepared_date)
-            print("perform_indicator", self.indicators[indicator_name])
+            print("prepare_indicator", self.indicators[indicator_name])
         print(prepared_date)
         return True
 

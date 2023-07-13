@@ -84,7 +84,7 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
         self.task_controller.display_indicators_summary()
 
 
-class PerformIndicatorCommand(TaskCommand):
+class PrepareIndicatorCommand(TaskCommand):
     """Class for performing indicators."""
 
     def __init__(self, task_controller):
@@ -93,14 +93,14 @@ class PerformIndicatorCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Perform indicator"
+        return "Prepare indicator"
 
     def execute(self):
         """Execute the command."""
         indicator_name = input("Name of the indicator: ")
         if not indicator_name:
             indicator_name = "BollingerBands"
-        self.task_controller.perform_indicator(indicator_name)
+        self.task_controller.prepare_indicator(indicator_name)
 
 
 class DisplayAllIndicatorsCommand(TaskCommand):
