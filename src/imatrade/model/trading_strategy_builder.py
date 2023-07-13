@@ -28,7 +28,7 @@ class TradingStrategyBuilder(
     def build(self, strategy_config):
         strategy_config = ObjDict(strategy_config)
         module = importlib.import_module(
-            f"imatrade.model.{strategy_config.module_path}"
+            f"src.imatrade.model.{strategy_config.module_path}"
         )
         strategy_class = getattr(module, f"{strategy_config.class_name}")
 

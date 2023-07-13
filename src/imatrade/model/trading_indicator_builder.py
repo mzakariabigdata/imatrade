@@ -37,7 +37,7 @@ class TradingIndicatorsBuilder(
         for indicator_config in indicators_config:
             indicator_config = ObjDict(indicator_config)
             module = importlib.import_module(
-                f"imatrade.model.{indicator_config.module_path}"
+                f"src.imatrade.model.{indicator_config.module_path}"
             )
             indicator_class = getattr(module, f"{indicator_config.class_name}")
             indicator = indicator_class(**indicator_config)

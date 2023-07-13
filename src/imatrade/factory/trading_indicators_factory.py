@@ -3,28 +3,29 @@ Contient la classe TradingIndicatorsFactory pour créer des indicators
 """
 
 import importlib
-from src.imatrade.utils.config import APPLICATION
 from src.imatrade import Singleton
 
 
 class TradingIndicatorsFactory(metaclass=Singleton):
     """Classe pour créer des indicators de trading"""
 
-    def __init__(self):
+    def __init__(self, indicators_composer):
         self._builder = None
         self.indicators = []
-        self.indicators_composer = APPLICATION.indicators_config.indicators_composer
+        self.indicators_composer = indicators_composer
 
     def load_builder(self):
         """Charger le builder d'indicators de trading"""
         module = importlib.import_module(
-            f"imatrade.model.{self.indicators_composer.builder.module_path}"
+            f"src.imatrade.model.{self.indicators_composer.builder.module_path}"
         )
         builder_class = getattr(
             module, f"{self.indicators_composer.builder.class_name}"
         )
+
         builder_instance = builder_class()
         self._builder = builder_instance
+
         self.load_indicators()
 
     def load_indicators(self):

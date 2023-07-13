@@ -72,7 +72,7 @@ class TradingIndicatorsController(metaclass=Singleton):
             print("No data to prepare for indicators !")
             return None
         if indicator_name in self.indicators:
-            prepared_date = self.indicators.get(indicator_name)[0].prepare_data(data)
+            prepared_date = self.indicators.get(indicator_name).prepare_data(data)
             self.data_controller.set_data(prepared_date)
         self.data = prepared_date
         print(prepared_date)

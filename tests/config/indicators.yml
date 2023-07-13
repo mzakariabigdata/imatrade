@@ -1,0 +1,39 @@
+
+
+indicators_composer:
+  builder: 
+    class_name: TradingIndicatorBuilder
+    module_path: trading_indicator_builder
+
+  indicators:
+   
+    - name: MACD
+      display_name: MACD
+      description: Un indicateur qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
+      class_name: MACDIndicator
+      module_path: trading_indicator
+      parameters:
+        fast_period: 12
+        slow_period: 26
+        signal_period: 9
+
+    - name: RSI 
+      display_name: RSI
+      description: Un indicateur qui mesure la force et la vitesse du mouvement des prix en comparant le prix actuel à son prix de clôture précédent.
+      class_name: RSIIndicator
+      module_path: trading_indicator
+      parameters:
+        rsi_period: 14
+        overbought: 70
+        oversold: 30
+
+    - name: StochasticOscillator
+      display_name: Stochastic
+      description: Un indicateur qui mesure la position du prix par rapport à son plus haut et son plus bas sur une période donnée.
+      class_name: StochasticOscillatorIndicator
+      module_path: trading_indicator
+      parameters:
+        k_window: 14
+        d_window: 3
+        oversold: 20
+        overbought: 80

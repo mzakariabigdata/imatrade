@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 import click
 
 from src.imatrade.menu import Menu
+from src.imatrade.utils.config import APPLICATION
+
 
 from src.imatrade.command.add_task_command import (
     AddTaskCommand,
@@ -95,7 +97,9 @@ def trade_menu():
     ###Indicators###
     ################
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
-    indicators_factory = TradingIndicatorsFactory()
+    indicators_factory = TradingIndicatorsFactory(
+        APPLICATION.indicators_config.indicators_composer
+    )
     # Créer une instance du contrôleur avec la factory
     trading_indicators_controller = TradingIndicatorsController(
         indicators_factory, treading_data_controller
@@ -110,7 +114,9 @@ def trade_menu():
     ###Strategies###
     ################
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
-    strategy_factory = TradingStrategyFactory()
+    strategy_factory = TradingStrategyFactory(
+        APPLICATION.strategies_config.strategies_composer
+    )
     # Créer une instance du contrôleur avec la factory
     trading_strategy_controller = TradingStrategyController(
         strategy_factory, treading_data_controller

@@ -2,22 +2,21 @@
 Contient la classe TradingStrategyFactory pour créer des stratégies
 """
 import importlib
-from src.imatrade.utils.config import APPLICATION
 from src.imatrade import Singleton
 
 
 class TradingStrategyFactory(metaclass=Singleton):
     """Classe pour créer des stratégies de trading"""
 
-    def __init__(self):
+    def __init__(self, strategies_composer):
         self._builder = None
         self.strategies = []
-        self.strategies_composer = APPLICATION.strategies_config.strategies_composer
+        self.strategies_composer = strategies_composer
 
     def load_builder(self):
         """Charger le builder de stratégie de trading"""
         module = importlib.import_module(
-            f"imatrade.model.{self.strategies_composer.builder.module_path}"
+            f"src.imatrade.model.{self.strategies_composer.builder.module_path}"
         )
         builder_class = getattr(
             module, f"{self.strategies_composer.builder.class_name}"
