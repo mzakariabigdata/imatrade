@@ -23,7 +23,7 @@ class TradingIndicatorBuilder(
     def build(self, indicators_config):
         # indicator_config = ObjDict(indicator_config[0])
         indicators = TradingIndicatorsBuilder().build(indicators_config)
-        return indicators[0]
+        return indicators
 
 
 class TradingIndicatorsBuilder(

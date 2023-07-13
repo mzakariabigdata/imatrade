@@ -7,13 +7,27 @@ from src.imatrade import Singleton
 class TradingStrategyController(metaclass=Singleton):
     """Contrôleur des stratégies de trading"""
 
-    def __init__(self, strategy_factory):
+    def __init__(self, strategy_factory, data_controller):
         self.strategy_factory = strategy_factory
         self.strategies = {}  # Stocker les stratégies créées
+        self.data_controller = data_controller  # Contrôleur des données
+        self.data = None  # Stocker les données du marché
 
     def load_strategies_builder(self):
         """Charger les constructeurs de stratégies"""
         self.strategy_factory.load_builder()
+
+    def prepare_strategy_data(self, strategy_name):
+        """Préparer les données pour les stratégies"""
+        data = self.data_controller.get_data()
+        if data is None:
+            print("No data to prepare for strategies !")
+            return None
+        if strategy_name in self.strategies:
+            strategy = self.get_strategy(strategy_name)
+            print("strategy", strategy)
+            # strategy.prepare_data(data)
+            # return strategy
 
     def create_all_strategies(self):
         """Créer toutes les stratégies à partir du fichier strategies.yaml"""

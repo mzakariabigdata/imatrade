@@ -9,11 +9,13 @@ class TradingStrategyView:
     @staticmethod
     def display_strategy(strategy):
         """Affiche une stratégie de trading"""
-        print(f"Stratégie de trading : {strategy.display_name}")
+        print(f"Stratégie de trading : {strategy.name}")
         print(f"déscription: {strategy.description}")
-        print("Paramètres :")
-        for key, value in strategy.parameters.items():
-            print(f"  {key}: {value}")
+        for indicator in strategy.indicators:
+            print(f"  indicator: {indicator.name}")
+            print("     Paramètres :")
+            for key, value in indicator.parameters.items():
+                print(f"        {key}: {value}")
         print()
 
     @staticmethod
@@ -28,7 +30,10 @@ class TradingStrategyView:
     def display_strategies_summary(strategy):
         """Affiche un résumé de la stratégie de trading"""
         print(f"Nom : {strategy.name}")
-        print(f"Paramètres : {strategy.parameters}")
+        print(f"Description : {strategy.description}")
+        for indicator in strategy.indicators:
+            print(f"  indicator: {indicator.name}")
+            print(f"    Paramètres : {indicator.parameters}")
         print()
 
     @staticmethod

@@ -83,8 +83,25 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
         """Execute the command."""
         self.task_controller.display_indicators_summary()
 
+class PrepareStrategyDataCommand(TaskCommand):
+    """Class for preparing a strategy."""
 
-class PrepareIndicatorCommand(TaskCommand):
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Prepare strategy data"
+
+    def execute(self):
+        """Execute the command."""
+        strategy_name = input("Name of the strategy: ")
+        if not strategy_name:
+            strategy_name = "BollingerBands"
+        self.task_controller.prepare_strategy_data(strategy_name)
+
+class PrepareIndicatorDataCommand(TaskCommand):
     """Class for performing indicators."""
 
     def __init__(self, task_controller):
@@ -93,14 +110,14 @@ class PrepareIndicatorCommand(TaskCommand):
     @property
     def description(self):
         """Return the description of the command."""
-        return "Prepare indicator"
+        return "Prepare indicator data"
 
     def execute(self):
         """Execute the command."""
         indicator_name = input("Name of the indicator: ")
         if not indicator_name:
             indicator_name = "BollingerBands"
-        self.task_controller.prepare_indicator(indicator_name)
+        self.task_controller.prepare_indicator_data(indicator_name)
 
 
 class DisplayAllIndicatorsCommand(TaskCommand):

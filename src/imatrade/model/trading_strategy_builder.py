@@ -2,6 +2,7 @@
 Contient les classes Builder (MACrossoverStrategyBuilder, RSIStrategyBuilder)
 """
 from abc import ABC, abstractmethod
+import importlib
 from imobject import ObjDict
 from src.imatrade.model.trading_indicator_builder import TradingIndicatorsBuilder
 
@@ -26,10 +27,14 @@ class TradingStrategyBuilder(
 
     def build(self, strategy_config):
         strategy_config = ObjDict(strategy_config)
-        # module = importlib.import_module(
-        #     f"imatrade.model.{strategy_config.module_path}"
-        # )
+        module = importlib.import_module(
+            f"imatrade.model.{strategy_config.module_path}"
+        )
+        strategy_class = getattr(module, f"{strategy_config.class_name}")
+
         indicators = TradingIndicatorsBuilder().build(strategy_config.indicators)
-        # strategy_class = getattr(module, f"{strategy_config.class_name}")
-        # return strategy_class(**strategy_config)
-        return indicators[0]
+
+        strategy = strategy_class(name=strategy_config.name, indicators=indicators, description=strategy_config.description)
+        # print("strategy name: ", strategy.name, "strategy indicators: ", indicators)
+
+        return strategy

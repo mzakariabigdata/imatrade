@@ -16,6 +16,9 @@ class TreadingDataController(metaclass=Singleton):
 
     def get_data(self):
         """Récupérer les données du marché"""
+        if self.data.empty:
+            print("No data to return.")
+            return None
         return self.data
 
     def set_data(self, data):

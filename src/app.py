@@ -19,10 +19,11 @@ from src.imatrade.command.add_task_command import (
     DisplayAllIndicatorsCommand,
     DisplayIndicatorsSummaryCommand,
     DisplayIndicatorCommand,
-    PrepareIndicatorCommand,
+    PrepareIndicatorDataCommand,
     LoadDataCommand,
     PrintDataCommand,
     SaveDataCommand,
+    PrepareStrategyDataCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -111,7 +112,7 @@ def trade_menu():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_strategy_controller = TradingStrategyController(strategy_factory)
+    trading_strategy_controller = TradingStrategyController(strategy_factory, treading_data_controller)
     # # load all strategies builders
     # trading_strategy_controller.load_strategies_builder()
     # Créer toutes les stratégies à partir du fichier strategies.yaml
@@ -252,11 +253,12 @@ def trade_menu():
         2_1: DisplayIndicatorCommand(trading_indicators_controller),
         2_2: DisplayAllIndicatorsCommand(trading_indicators_controller),
         2_3: DisplayIndicatorsSummaryCommand(trading_indicators_controller),
-        2_4: PrepareIndicatorCommand(trading_indicators_controller),
+        2_4: PrepareIndicatorDataCommand(trading_indicators_controller),
         "3": "---------3. Strategies---------",
         3_1: DisplayStrategyCommand(trading_strategy_controller),
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
         3_3: DisplayStrategiesSummary(trading_strategy_controller),
+        3_4: PrepareStrategyDataCommand(trading_strategy_controller),
         "4": "---------4. Market data---------",
         4_1: GetHistoricalDataCommand(treading_data_controller),
         4_2: ProcessMarketDataCommand(trading_strategy_controller),
