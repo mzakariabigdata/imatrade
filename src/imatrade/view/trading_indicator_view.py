@@ -11,6 +11,7 @@ class TradingIndicatorView:
         """Affiche un indicator de trading"""
         print(f"Indicator de trading : {indicator.display_name}")
         print(f"déscription: {indicator.description}")
+        print(f"Object: {indicator}")
         print("Paramètres :")
         for key, value in indicator.parameters.items():
             print(f"  {key}: {value}")

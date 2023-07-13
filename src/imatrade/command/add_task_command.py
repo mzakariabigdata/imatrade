@@ -104,7 +104,7 @@ class PrepareStrategyDataCommand(TaskCommand):
 
 
 class PrepareIndicatorDataCommand(TaskCommand):
-    """Class for performing indicators."""
+    """Class for preparing data for an indicator."""
 
     def __init__(self, task_controller):
         self.task_controller = task_controller

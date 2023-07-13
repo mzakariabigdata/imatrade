@@ -13,6 +13,7 @@ class TradingStrategyView:
         print(f"déscription: {strategy.description}")
         for indicator in strategy.indicators:
             print(f"  indicator: {indicator.name}")
+            print(f"     Object: {indicator}")
             print("     Paramètres :")
             for key, value in indicator.parameters.items():
                 print(f"        {key}: {value}")
