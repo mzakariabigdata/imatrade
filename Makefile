@@ -3,7 +3,26 @@
 ###################
 # Inclusion du fichier de fonctions
 include Makefile-Functions.mk
+PYTHON = python
 
+###################
+####### Ci ########
+###################
+
+run-ci: ## Run ci
+	@echo "Run ci..."
+	@docker run -it --rm --name imatrade-ci --mount type=bind,source="${PWD}"/.,target=/app imatrade-ci:1.0.0 bash
+
+build-ci: ## Build ci
+	@echo "Build ci..."
+	@cp Pipfile ci/
+	@docker build -t imatrade-ci:1.0.0 -f ci/Dockerfile .
+
+rm-ci: ## Remove ci
+	@echo "Remove ci..."
+	@docker rm -f imatrade-ci:1.0.0
+
+.PHONY: build-ci rm-ci
 ###################
 ### Virtual ENV ###
 ###################
@@ -11,9 +30,19 @@ env-create: ## Crée un environnement virtuel "imatrade" utilisant Python 3.11 a
 	@echo "Creation de l'environnement virtuel \"imatrade\" utilisant Python 3.11 avec conda..."
 	conda create -n imatrade python=3.11
 
+env-deactivate: ## Désactive l'environnement virtuel "imatrade" créé précédemment.
+	@echo "Désactivation de l'environnement virtuel \"imatrade\"..."
+	conda deactivate
+
 env-delete: ## Supprime l'environnement virtuel "imatrade" créé précédemment avec conda.
 	@echo "Suppression l'environnement virtuel \"imatrade\"..."
 	conda env remove -n imatrade
+
+env-activate: ## Active l'environnement virtuel "imatrade" créé précédemment et définit la variable PYTHONPATH pour qu'elle pointe vers le répertoire de travail courant.
+	@echo "Activation l'environnement virtuel \"imatrade\"..."
+	@echo "source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade"
+	@echo 'PYTHONPATH="$$(pwd)"'
+	@source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade
 
 env-variables: ## Ajouter costums variables au Shell
 	@echo "Ajout des variables d'environnement personnalisées au Shell..."
@@ -31,12 +60,6 @@ env-init: ## Installe l'outil pipenv dans l'environnement système.
 	@echo "Installation l'outil pipenv..."
 	pip install pipenv
 
-env-activate: ## Active l'environnement virtuel "imatrade" créé précédemment et définit la variable PYTHONPATH pour qu'elle pointe vers le répertoire de travail courant.
-	@echo "Activation l'environnement virtuel \"imatrade\"..."
-	@echo "source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade"
-	@echo 'PYTHONPATH="$$(pwd)"'
-	@source ~/anaconda3/etc/profile.d/conda.sh; conda activate imatrade
-	@export PYTHONPATH="$(pwd)"
 
 requirements-lock: ## Verrouille les dépendances de production dans un fichier Pipfile.lock à partir du fichier Pipfile.
 	@echo "Verrouillage des dépendances de production dans  Pipfile.lock..."
@@ -81,51 +104,53 @@ behave: ## Exécuter les tests comportementaux en utilisant l'outil Behave.
 ###################
 app-examples: ## Lancer les exemples de l'application.
 	@echo "Lancement des exemples de l'application..."
-	@cd examples && python run_examples.py
+	@cd examples && $(PYTHON) run_examples.py
 app-clean: ## Nettoie les fichiers générés précédemment pour l'application.
 	@echo "Nettoyage des fichiers générés par dist..."
 	rm -f dist/*.gz
 app-dist: app-clean  ## Crée une distribution de l'application.
 	@echo "Création d'une distribution de l'application..."
-	python setup.py sdist
+	$(PYTHON) setup.py sdist
 app-deploy: app-dist ## Déploie l'application en envoyant la distribution sur PyPI.
 	@echo "Déploiement d'une distribution de l'application sur PyPI."
 	twine upload dist/*
-app-install: ## Installer 'imobject' localement
-	@echo "Installation de 'imobject' localement..."
+app-install: ## Installer 'imatrade' localement
+	@echo "Installation de 'imatrade' localement..."
 	pip install -e .
 app: src/app.py  ## Lance l'application principale en exécutant le fichier src/app.py.
 	@echo "Lancement de l'application principale en exécutant le fichier src/app.py..."
-	pyclean . -q
-	cd src && python app.py trade menu
-	pyclean . -q
+	$(PYTHON) -m pyclean . -q
+	export PYTHONPATH=$$(pwd) ;\
+	cd src && $(PYTHON) app.py trade menu
+	$(PYTHON) -m pyclean . -q
 format: ## Formate le code source en utilisant l'outil Black.
 	@echo "Formatage du code source..."
-	@python -m black .
+	@$(PYTHON) -m black .
 format-check: ## Formate check en utilisant l'outil Black.
-	python -m black . --check
-lint: ## Vérifier le code source avec pylint.
-	@echo "Vérification du code source avec pylint..."
-	@python -m pylint src/. tests/.
+	$(PYTHON) -m black . --check
+lint: ## Verifie le code source avec pylint.
+	@echo "Verification du code source avec pylint..."
+	@$(PYTHON) -m pylint src/. tests/.
 	@echo "Vérification terminée."
 
-tests: clean-py ## Exécute les tests unitaires en utilisant l'outil pytest.
-	@echo "Exécution des tests unitaires..."
-	@python -m pytest -s -vv
+tests: clean-py ## Execute unit tests.
+	@echo "Execute unit tests..."
+	@$(PYTHON) -m pytest -s -vv
 	@echo "Exécution terminée."
 
-cov: ## Exécute les tests unitaires et génère un rapport de couverture de code en HTML dans le dossier reports/.
-	@echo "Exécution des tests unitaires avec covergae HTML..."
-	@python -m pytest -s -vvv --cov-report term-missing:skip-covered --cov-report=html:reports/ --cov=src/imobject tests/
+cov: ## Execute unit tests with coverage HTML.
+	@echo "Execute unit tests with coverage HTML..."
+	@$(PYTHON) -m pytest -s -vvv --cov-report term-missing:skip-covered --cov-report=html:reports/ --cov=src/imatrade tests/
 
-cov-xml: ## Exécute les tests unitaires et génère un rapport de couverture de code au format XML dans le dossier reports/.
-	@echo "Exécution des tests unitaires avec covergae XML..."
-	@python -m pytest  -rX -vvv --cov-report term-missing:skip-covered --cov-report=xml:reports/coverage.xml --cov=src/imobject tests/
+cov-xml: ## Execute unit tests with coverage XML.
+	@echo "Execute unit tests with coverage XML..."
+	@$(PYTHON) -m pytest  -rX -vvv --cov-report term-missing:skip-covered --cov-report=xml:reports/coverage.xml --cov=src/imatrade tests/
 
-clean-py: ## Nettoie les fichiers générés précédemment en utilisant l'outil pyclean.
-	@echo "Nettoyage des fichiers cachés..."
-	pyclean . -q
-fl: format lint ## Formatage et vérification de code.
+clean-py: ## Clean cache files.
+	@echo "Clean cache files..."
+	$(PYTHON) -m pyclean . -q
+fl: format lint ## Format and lint code.
+	
 .PHONY: tests clean-py lint format app app-clean fl app-examples
 
 ###################
@@ -197,7 +222,7 @@ build-news: ## Génère les fichiers de sortie pour les nouvelles sections de ch
 
 costum-changelogs: ## Génération des journaux de changement personnalisés.
 	@echo "Génération des journaux de changement personnalisés..."
-	cd changelogs/costum && python changelogs.py
+	cd changelogs/costum && $(PYTHON) changelogs.py
 	@echo "Génération terminée."
 
 .PHONY: newsfragment add-fragments build-news costum-changelogs

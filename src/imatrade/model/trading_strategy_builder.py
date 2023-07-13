@@ -34,7 +34,11 @@ class TradingStrategyBuilder(
 
         indicators = TradingIndicatorsBuilder().build(strategy_config.indicators)
 
-        strategy = strategy_class(name=strategy_config.name, indicators=indicators, description=strategy_config.description)
+        strategy = strategy_class(
+            name=strategy_config.name,
+            indicators=indicators,
+            description=strategy_config.description,
+        )
         # print("strategy name: ", strategy.name, "strategy indicators: ", indicators)
 
         return strategy

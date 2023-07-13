@@ -27,7 +27,7 @@ class TradingStrategyController(metaclass=Singleton):
             strategy = self.get_strategy(strategy_name)
             print("strategy", strategy)
             # strategy.prepare_data(data)
-            # return strategy
+            return strategy
 
     def create_all_strategies(self):
         """Créer toutes les stratégies à partir du fichier strategies.yaml"""

@@ -32,6 +32,10 @@ class MACrossoverStrategy(TradingStrategy):
         print(f"Fast MA: {self.fast_ma}")
         print(f"Slow MA: {self.slow_ma}")
 
+    def __str__(self) -> str:
+        return super().__str__() + f"fast_ma: {self.fast_ma}, slow_ma: {self.slow_ma}"
+
+
 class RSIStrategy(TradingStrategy):
     """Stratégie de trading RSI"""
 
@@ -47,6 +51,14 @@ class RSIStrategy(TradingStrategy):
         print(f"RSI period: {self.rsi_period}")
         print(f"RSI upper: {self.rsi_upper}")
         print(f"RSI lower: {self.rsi_lower}")
+
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"rsi_period: {self.rsi_period}, rsi_upper: {self.rsi_upper}, "
+            + f"rsi_lower: {self.rsi_lower}"
+        )
+
 
 class StochasticStrategy(TradingStrategy):
     """Stratégie de trading Stochastic"""
@@ -64,6 +76,14 @@ class StochasticStrategy(TradingStrategy):
         print(f"Stochastic upper: {self.stochastic_upper}")
         print(f"Stochastic lower: {self.stochastic_lower}")
 
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"stochastic_period: {self.stochastic_period}, stochastic_upper: "
+            + f"{self.stochastic_upper}, stochastic_lower: {self.stochastic_lower}"
+        )
+
+
 class BollingerBandsStrategy(TradingStrategy):
     """Stratégie de trading BollingerBands"""
 
@@ -79,6 +99,14 @@ class BollingerBandsStrategy(TradingStrategy):
         print(f"BollingerBands period: {self.bollinger_bands_period}")
         print(f"BollingerBands upper: {self.bollinger_bands_upper}")
         print(f"BollingerBands lower: {self.bollinger_bands_lower}")
+
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"bollinger_bands_period: {self.bollinger_bands_period}, bollinger_bands_upper: "
+            + f"{self.bollinger_bands_upper}, bollinger_bands_lower: {self.bollinger_bands_lower}"
+        )
+
 
 class RSIDivergenceStrategy(TradingStrategy):
     """Stratégie de trading RSIDivergence"""
@@ -96,14 +124,28 @@ class RSIDivergenceStrategy(TradingStrategy):
         print(f"RSI upper: {self.rsi_upper}")
         print(f"RSI lower: {self.rsi_lower}")
 
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"rsi_period: {self.rsi_period}, rsi_upper: {self.rsi_upper},"
+            + f" rsi_lower: {self.rsi_lower}"
+        )
+
+
 class StochasticOscillatorStrategy(TradingStrategy):
     """Stratégie de trading StochasticOscillator"""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.stochastic_oscillator_period = kwargs.get("stochastic_oscillator_period", None)
-        self.stochastic_oscillator_upper = kwargs.get("stochastic_oscillator_upper", None)
-        self.stochastic_oscillator_lower = kwargs.get("stochastic_oscillator_lower", None)
+        self.stochastic_oscillator_period = kwargs.get(
+            "stochastic_oscillator_period", None
+        )
+        self.stochastic_oscillator_upper = kwargs.get(
+            "stochastic_oscillator_upper", None
+        )
+        self.stochastic_oscillator_lower = kwargs.get(
+            "stochastic_oscillator_lower", None
+        )
 
     def execute(self):
         """Exécute la stratégie de trading StochasticOscillator"""
@@ -111,6 +153,15 @@ class StochasticOscillatorStrategy(TradingStrategy):
         print(f"StochasticOscillator period: {self.stochastic_oscillator_period}")
         print(f"StochasticOscillator upper: {self.stochastic_oscillator_upper}")
         print(f"StochasticOscillator lower: {self.stochastic_oscillator_lower}")
+
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"stochastic_oscillator_period: {self.stochastic_oscillator_period}, "
+            + f"stochastic_oscillator_upper: {self.stochastic_oscillator_upper}, "
+            + f"stochastic_oscillator_lower: {self.stochastic_oscillator_lower}"
+        )
+
 
 class MAEnvelopeStrategy(TradingStrategy):
     """Stratégie de trading MAEnvelope"""
@@ -128,6 +179,14 @@ class MAEnvelopeStrategy(TradingStrategy):
         print(f"MAEnvelope upper: {self.ma_envelope_upper}")
         print(f"MAEnvelope lower: {self.ma_envelope_lower}")
 
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"ma_envelope_period: {self.ma_envelope_period}, ma_envelope_upper: "
+            + f"{self.ma_envelope_upper}, ma_envelope_lower: {self.ma_envelope_lower}"
+        )
+
+
 class BreakoutStrategy(TradingStrategy):
     """Stratégie de trading Breakout"""
 
@@ -143,6 +202,14 @@ class BreakoutStrategy(TradingStrategy):
         print(f"Breakout period: {self.breakout_period}")
         print(f"Breakout upper: {self.breakout_upper}")
         print(f"Breakout lower: {self.breakout_lower}")
+
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"breakout_period: {self.breakout_period}, breakout_upper: "
+            + f"{self.breakout_upper}, breakout_lower: {self.breakout_lower}"
+        )
+
 
 class IchimokuCloudStrategy(TradingStrategy):
     """Stratégie de trading IchimokuCloud"""
@@ -160,6 +227,14 @@ class IchimokuCloudStrategy(TradingStrategy):
         print(f"IchimokuCloud upper: {self.ichimoku_cloud_upper}")
         print(f"IchimokuCloud lower: {self.ichimoku_cloud_lower}")
 
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"ichimoku_cloud_period: {self.ichimoku_cloud_period}, ichimoku_cloud_upper: "
+            + f"{self.ichimoku_cloud_upper}, ichimoku_cloud_lower: {self.ichimoku_cloud_lower}"
+        )
+
+
 class ATRStrategy(TradingStrategy):
     """Stratégie de trading ATR"""
 
@@ -176,6 +251,14 @@ class ATRStrategy(TradingStrategy):
         print(f"ATR upper: {self.atr_upper}")
         print(f"ATR lower: {self.atr_lower}")
 
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"atr_period: {self.atr_period}, atr_upper: {self.atr_upper}"
+            + f", atr_lower: {self.atr_lower}"
+        )
+
+
 class MACDStrategy(TradingStrategy):
     """Stratégie de trading MACD"""
 
@@ -191,3 +274,10 @@ class MACDStrategy(TradingStrategy):
         print(f"MACD period: {self.macd_period}")
         print(f"MACD upper: {self.macd_upper}")
         print(f"MACD lower: {self.macd_lower}")
+
+    def __str__(self) -> str:
+        return (
+            super().__str__()
+            + f"macd_period: {self.macd_period}, macd_upper: {self.macd_upper}"
+            + f", macd_lower: {self.macd_lower}"
+        )

@@ -112,7 +112,9 @@ def trade_menu():
     # Créer une instance de la factory TradingStrategyFactory avec les stratégies disponibles
     strategy_factory = TradingStrategyFactory()
     # Créer une instance du contrôleur avec la factory
-    trading_strategy_controller = TradingStrategyController(strategy_factory, treading_data_controller)
+    trading_strategy_controller = TradingStrategyController(
+        strategy_factory, treading_data_controller
+    )
     # # load all strategies builders
     # trading_strategy_controller.load_strategies_builder()
     # Créer toutes les stratégies à partir du fichier strategies.yaml

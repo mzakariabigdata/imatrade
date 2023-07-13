@@ -28,10 +28,10 @@ class Config:  # pylint: disable=too-few-public-methods
 
 # Chargement de la configuration des stratégies
 APPLICATION.strategies_config = Config(
-    os.path.join(os.path.dirname(__file__), "..\\..", "config", "strategies.yml")
+    os.path.join(os.path.dirname(__file__), "../..", "config", "strategies.yml")
 ).load_config()
 
 # chargement de la configuration des indicateurs
 APPLICATION.indicators_config = Config(
-    os.path.join(os.path.dirname(__file__), "..\\..", "config", "indicators.yml")
+    os.path.join(os.path.dirname(__file__), "../..", "config", "indicators.yml")
 ).load_config()

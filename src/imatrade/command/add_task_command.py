@@ -83,6 +83,7 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
         """Execute the command."""
         self.task_controller.display_indicators_summary()
 
+
 class PrepareStrategyDataCommand(TaskCommand):
     """Class for preparing a strategy."""
 
@@ -100,6 +101,7 @@ class PrepareStrategyDataCommand(TaskCommand):
         if not strategy_name:
             strategy_name = "BollingerBands"
         self.task_controller.prepare_strategy_data(strategy_name)
+
 
 class PrepareIndicatorDataCommand(TaskCommand):
     """Class for performing indicators."""
