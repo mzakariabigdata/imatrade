@@ -1,14 +1,9 @@
 
 
 backtests_composer:
-  builder: 
-    class_name: TradingBacktestBuilder
-    module_path: trading_backtest_builder
 
   backtests:
     - name: dolar_euro_macd
-      module_path: trading_backtest
-      class_name: TradingBacktest
       display_name: Dolar Euro MACD
       description: Backtesting de la stratégie MACD sur la paire de devises EUR/USD.
       fourward_testing: 0.3
@@ -30,16 +25,12 @@ backtests_composer:
           indicators:
             - name: MACD
               display_name: Moving Average Convergence Divergence
-              class_name: MACDIndicator
-              module_path: trading_indicator
               parameters:
                 fast_period: 12
                 slow_period: 26
                 signal_period: 9
             - name: RSI 
               display_name: Relative Strength Index
-              class_name: RSIIndicator
-              module_path: trading_indicator
               parameters:
                 rsi_period: 14
                 overbought: 70
@@ -81,8 +72,6 @@ backtests_composer:
     
     
     - name: dolar_euro_macd 2
-      module_path: trading_backtest
-      class_name: TradingBacktest
       display_name: Dolar Euro MACD
       description: Backtesting de la stratégie MACD sur la paire de devises EUR/USD.
       fourward_testing: 0.3
@@ -104,16 +93,12 @@ backtests_composer:
           indicators:
             - name: MACD
               display_name: Moving Average Convergence Divergence
-              class_name: MACDIndicator
-              module_path: trading_indicator
               parameters:
                 fast_period: 12
                 slow_period: 26
                 signal_period: 9
             - name: RSI 
               display_name: Relative Strength Index
-              class_name: RSIIndicator
-              module_path: trading_indicator
               parameters:
                 rsi_period: 14
                 overbought: 70

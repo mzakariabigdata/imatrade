@@ -16,12 +16,8 @@ class TradingIndicatorsFactory(metaclass=Singleton):
 
     def load_builder(self):
         """Charger le builder d'indicators de trading"""
-        module = importlib.import_module(
-            f"src.imatrade.model.{self.indicators_composer.builder.module_path}"
-        )
-        builder_class = getattr(
-            module, f"{self.indicators_composer.builder.class_name}"
-        )
+        module = importlib.import_module("src.imatrade.model.trading_indicator_builder")
+        builder_class = getattr(module, "TradingIndicatorBuilder")
 
         builder_instance = builder_class()
         self._builder = builder_instance

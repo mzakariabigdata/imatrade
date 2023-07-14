@@ -15,12 +15,8 @@ class TradingStrategyFactory(metaclass=Singleton):
 
     def load_builder(self):
         """Charger le builder de stratégie de trading"""
-        module = importlib.import_module(
-            f"src.imatrade.model.{self.strategies_composer.builder.module_path}"
-        )
-        builder_class = getattr(
-            module, f"{self.strategies_composer.builder.class_name}"
-        )
+        module = importlib.import_module("src.imatrade.model.trading_strategy_builder")
+        builder_class = getattr(module, "TradingStrategyBuilder")
         builder_instance = builder_class()
         self._builder = builder_instance
         self.load_strategies()

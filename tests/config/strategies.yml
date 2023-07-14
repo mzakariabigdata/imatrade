@@ -1,28 +1,18 @@
 
 strategies_composer:
-  builder: 
-    class_name: TradingStrategyBuilder
-    module_path: trading_strategy_builder
-
   strategies:
     - name: BollingerBands
       display_name: Bollinger Bands
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
-      class_name: BollingerBandsStrategy
-      module_path: trading_strategy
       parameters:
         window: 20
         num_std: 2
       indicators:
         - name: BollingerBands
-          class_name: BollingerBandsIndicator
-          module_path: trading_indicator
           parameters:
             window: 20
             num_std: 2
         - name: RSI 
-          class_name: RSIIndicator
-          module_path: trading_indicator
           parameters:
             rsi_period: 14
             overbought: 70
@@ -31,21 +21,15 @@ strategies_composer:
     - name: MA_Crossover
       display_name: MA Crossover
       description: Une stratégie de croisement de moyennes mobiles, qui génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.
-      class_name: MACrossoverStrategy
-      module_path: trading_strategy
       parameters:
         short_window: 50
         long_window: 200
       indicators:
         - name: MACrossover
-          class_name: MACrossoverIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 50
             long_window: 200
         - name: BollingerBands
-          class_name: BollingerBandsIndicator
-          module_path: trading_indicator
           parameters:
             window: 20
             num_std: 2
@@ -53,23 +37,17 @@ strategies_composer:
     - name: RSIDivergence
       display_name: RSI Divergence
       description: Une stratégie basée sur la divergence de l'indice de force relative (RSI), qui détecte les divergences entre le mouvement des prix et l'indicateur RSI pour anticiper les retournements de marché.
-      class_name: RSIDivergenceStrategy
-      module_path: trading_strategy
       parameters:
         signal_period: 14
         long_rsi_period: 70
         short_rsi_period: 30
       indicators:
         - name: RSIDivergence
-          class_name: RSIDivergenceIndicator
-          module_path: trading_indicator
           parameters:
             signal_period: 14
             long_rsi_period: 70
             short_rsi_period: 30
         - name: MACrossover
-          class_name: MACrossoverIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 50
             long_window: 200 
@@ -77,16 +55,12 @@ strategies_composer:
     - name: MACD
       display_name: MACD
       description: Une stratégie basée sur la convergence/divergence des moyennes mobiles (MACD), qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
-      class_name: MACDStrategy
-      module_path: trading_strategy
       parameters:
         short_window: 12
         long_window: 26
         signal_window: 9
       indicators:
         - name: MACD
-          class_name: MACDIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 12
             long_window: 26
@@ -95,14 +69,10 @@ strategies_composer:
     - name: ATR_strategy_for_test
       display_name: ATR
       description: Une stratégie basée sur l'indicateur Average True Range (ATR), qui utilise la volatilité pour déterminer les niveaux de stop-loss et de prise de bénéfices.
-      class_name: ATRStrategy
-      module_path: trading_strategy
       parameters:
         window: 14
       indicators:
         - name: ATR
-          class_name: ATRIndicator
-          module_path: trading_indicator
           parameters:
             window: 14
 

@@ -1,23 +1,15 @@
 
 strategies_composer:
-  builder: 
-    class_name: TradingStrategyBuilder
-    module_path: trading_strategy_builder
-
   strategies:
     - name: BollingerBands
       display_name: Bollinger Bands
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
       indicators:
         - name: BollingerBands
-          class_name: BollingerBandsIndicator
-          module_path: trading_indicator
           parameters:
             window: 20
             num_std: 2
         - name: RSI 
-          class_name: RSIIndicator
-          module_path: trading_indicator
           parameters:
             rsi_period: 14
             overbought: 70
@@ -28,14 +20,10 @@ strategies_composer:
       description: Une stratégie de croisement de moyennes mobiles, qui génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.
       indicators:
         - name: MACrossover
-          class_name: MACrossoverIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 50
             long_window: 200
         - name: BollingerBands
-          class_name: BollingerBandsIndicator
-          module_path: trading_indicator
           parameters:
             window: 20
             num_std: 2
@@ -45,15 +33,11 @@ strategies_composer:
       description: Une stratégie basée sur la divergence de l'indice de force relative (RSI), qui détecte les divergences entre le mouvement des prix et l'indicateur RSI pour anticiper les retournements de marché.
       indicators:
         - name: RSIDivergence
-          class_name: RSIDivergenceIndicator
-          module_path: trading_indicator
           parameters:
             signal_period: 14
             long_rsi_period: 70
             short_rsi_period: 30
         - name: MACrossover
-          class_name: MACrossoverIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 50
             long_window: 200 
@@ -63,8 +47,6 @@ strategies_composer:
       description: Une stratégie basée sur la convergence/divergence des moyennes mobiles (MACD), qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
       indicators:
         - name: MACD
-          class_name: MACDIndicator
-          module_path: trading_indicator
           parameters:
             short_window: 12
             long_window: 26
@@ -75,8 +57,6 @@ strategies_composer:
       description: Une stratégie basée sur l'indicateur Average True Range (ATR), qui utilise la volatilité pour déterminer les niveaux de stop-loss et de prise de bénéfices.
       indicators:
         - name: ATR
-          class_name: ATRIndicator
-          module_path: trading_indicator
           parameters:
             window: 14
 
@@ -85,8 +65,6 @@ strategies_composer:
       description: Une stratégie basée sur l'indicateur Ichimoku Kinko Hyo (nuage d'Ichimoku), qui combine plusieurs moyennes mobiles pour identifier la tendance et les niveaux de support/résistance.
       indicators:
         - name: IchimokuCloud
-          class_name: IchimokuCloudIndicator
-          module_path: trading_indicator
           parameters:
             conversion_line_period: 9
             base_line_period: 26
@@ -98,8 +76,6 @@ strategies_composer:
       description: Une stratégie de rupture, qui identifie les situations où les prix sortent d'une période de consolidation et génère des signaux d'achat et de vente en fonction des marges spécifiées.
       indicators:
         - name: Breakout
-          class_name: BreakoutIndicator
-          module_path: trading_indicator
           parameters:
             lookback_window: 20
             buy_margin: 0.05
@@ -110,8 +86,6 @@ strategies_composer:
       description: Une stratégie basée sur l'enveloppe de moyenne mobile, qui utilise des bandes autour d'une moyenne mobile pour identifier les situations de surachat et de survente.
       indicators:
         - name: MAEnvelope
-          class_name: MAEnvelopeIndicator
-          module_path: trading_indicator
           parameters:
             ma_period: 20
             ma_type: simple
@@ -122,8 +96,6 @@ strategies_composer:
       description: Une stratégie basée sur l'oscillateur stochastique, qui génère des signaux d'achat et de vente en fonction des niveaux de surachat et de survente identifiés par l'indicateur.
       indicators:
         - name: StochasticOscillator
-          class_name: StochasticOscillatorIndicator
-          module_path: trading_indicator
           parameters:
             k_window: 14
             d_window: 3

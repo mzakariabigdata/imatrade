@@ -14,10 +14,8 @@ class TradingBacktestsFactory:
 
     def load_builder(self):
         """Method to load backtests builder."""
-        module = importlib.import_module(
-            f"src.imatrade.model.{self.backtests_composer.builder.module_path}"
-        )
-        builder_class = getattr(module, f"{self.backtests_composer.builder.class_name}")
+        module = importlib.import_module("src.imatrade.model.trading_backtest_builder")
+        builder_class = getattr(module, "TradingBacktestBuilder")
 
         builder_instance = builder_class()
         self._builder = builder_instance

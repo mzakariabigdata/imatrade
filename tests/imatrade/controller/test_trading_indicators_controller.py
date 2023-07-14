@@ -7,5 +7,5 @@ def test_create_all_indicators(trading_indicators_controller):
     """Test hello world."""
 
     indicators = trading_indicators_controller.create_all_indicators()
-    assert isinstance(indicators.get("MACD_indicator_for_test"), TradingIndicator)
+    assert isinstance(indicators.get("MACD"), TradingIndicator)
     assert len(indicators) == 3
