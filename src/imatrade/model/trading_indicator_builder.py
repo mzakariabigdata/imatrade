@@ -1,5 +1,5 @@
 """
-Contient les classes indicateur de trading builder
+Module pour les builders d'indicateurs de trading.
 """
 
 from abc import ABC, abstractmethod
@@ -21,6 +21,7 @@ class TradingIndicatorBuilder(
     """Builder pour les stratégies de trading"""
 
     def build(self, indicators_config):
+        """Méthode pour construire un indicateur de trading"""
         # indicator_config = ObjDict(indicator_config[0])
         indicators = TradingIndicatorsBuilder().build(indicators_config)
         return indicators

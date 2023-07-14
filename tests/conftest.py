@@ -18,6 +18,30 @@ from src.imatrade.controller.trading_strategy_controller import (
     TradingStrategyController,
 )
 from src.imatrade.factory.trading_strategy_factory import TradingStrategyFactory
+from src.imatrade.controller.trading_backtest_controller import (
+    TradingBacktestController,
+)
+from src.imatrade.factory.trading_backtests_factory import TradingBacktestsFactory
+
+
+@pytest.fixture()
+def trading_backtest_controller():
+    """Fixture to return hello world."""
+    app_for_test = ObjDict()
+    app_for_test.backtests_config = Config(
+        os.path.join(os.path.dirname(__file__), "config", "backtests.yml")
+    ).load_config()
+
+    backtests_factory = TradingBacktestsFactory(
+        app_for_test.backtests_config.backtests_composer
+    )
+    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
+    treading_data_controller = TreadingDataController(oanda_data_provider)
+    trading_backtest_controller_fixture = TradingBacktestController(
+        backtests_factory, treading_data_controller
+    )
+
+    return trading_backtest_controller_fixture
 
 
 @pytest.fixture()

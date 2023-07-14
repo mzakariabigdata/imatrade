@@ -19,13 +19,13 @@ class TradingStrategyView:
                 print(f"        {key}: {value}")
         print()
 
-    @staticmethod
-    def display_data(data):
-        """Affiche les données du marché"""
-        print("Données du marché :")
-        for row in data:
-            print(f"  {row}")
-        print()
+    # @staticmethod
+    # def display_data(data):
+    #     """Affiche les données du marché"""
+    #     print("Données du marché :")
+    #     for row in data:
+    #         print(f"  {row}")
+    #     print()
 
     @staticmethod
     def display_strategies_summary(strategy):
@@ -37,10 +37,10 @@ class TradingStrategyView:
             print(f"    Paramètres : {indicator.parameters}")
         print()
 
-    @staticmethod
-    def display_signals(signals):
-        """Affiche les signaux de trading"""
-        print("Signaux de trading :")
-        for signal in signals:
-            print(f"  {signal}")
-        print()
+    # @staticmethod
+    # def display_signals(signals):
+    #     """Affiche les signaux de trading"""
+    #     print("Signaux de trading :")
+    #     for signal in signals:
+    #         print(f"  {signal}")
+    #     print()

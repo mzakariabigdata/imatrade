@@ -35,3 +35,7 @@ APPLICATION.strategies_config = Config(
 APPLICATION.indicators_config = Config(
     os.path.join(os.path.dirname(__file__), "../..", "config", "indicators.yml")
 ).load_config()
+
+APPLICATION.backtests_config = Config(
+    os.path.join(os.path.dirname(__file__), "../..", "config", "backtests.yml")
+).load_config()

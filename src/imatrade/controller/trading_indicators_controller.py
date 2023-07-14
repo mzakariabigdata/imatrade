@@ -15,15 +15,23 @@ class TradingIndicatorsController(metaclass=Singleton):
 
     def load_indicators_builder(self):
         """Charger les constructeurs d'indicators"""
-        self.indicator_factory.load_builder()
+        self.indicator_factory.load_builder()  # Charger les constructeurs d'indicators
 
     def create_all_indicators(self):
         """Créer tous les indicators à partir du fichier indicators.yaml"""
         self.load_indicators_builder()  # Charger les constructeurs d'indicators
-        for indicator_name in self.indicator_factory.get_registered_indicator_names():
-            indicator = self.indicator_factory.create_indicator(indicator_name)
-            self.add_indicator(indicator_name, indicator)
-        return self.indicators
+        for (
+            indicator_name
+        ) in (
+            self.indicator_factory.get_registered_indicator_names()
+        ):  # Créer tous les indicators
+            indicator = self.indicator_factory.create_indicator(
+                indicator_name
+            )  # Créer un indicator
+            self.add_indicator(
+                indicator_name, indicator
+            )  # Ajouter l'indicator au dictionnaire
+        return self.indicators  # Retourner les indicators
 
     def create_indicator(self, indicator_type):
         """Créer un indicator de trading"""
@@ -56,9 +64,7 @@ class TradingIndicatorsController(metaclass=Singleton):
 
     def display_all_indicators(self):
         """Afficher toutes les stratégies"""
-        for indicator_name, indicator in self.indicators.items():
-            print(f"\nStrategy name: {indicator_name}")
-            TradingIndicatorView.display_indicator(indicator)
+        TradingIndicatorView.display_all_indicators(self.indicators)
 
     def display_indicator(self, indicator_name):
         """Afficher un indicator"""

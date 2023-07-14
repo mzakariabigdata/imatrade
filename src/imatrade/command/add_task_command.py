@@ -52,7 +52,7 @@ class DisplayIndicatorsCommand(TaskCommand):
         self.task_controller.display_indicators()
 
 
-class DisplayStrategiesSummary(TaskCommand):
+class DisplayStrategiesSummaryCommand(TaskCommand):
     """Class for displaying strategy summary."""
 
     def __init__(self, task_controller):
@@ -120,6 +120,22 @@ class PrepareIndicatorDataCommand(TaskCommand):
         if not indicator_name:
             indicator_name = "BollingerBands"
         self.task_controller.prepare_indicator_data(indicator_name)
+
+
+class DisplayAllBacktestsCommand(TaskCommand):
+    """Class for displaying all backtests."""
+
+    def __init__(self, backtest_controller):
+        self.backtest_controller = backtest_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Display all backtests"
+
+    def execute(self):
+        """Execute the command."""
+        self.backtest_controller.display_all_backtests()
 
 
 class DisplayAllIndicatorsCommand(TaskCommand):

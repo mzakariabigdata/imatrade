@@ -136,7 +136,7 @@ lint: ## Verifie le code source avec pylint.
 tests: clean-py ## Execute unit tests.
 	@echo "Execute unit tests..."
 	@$(PYTHON) -m pytest -s -vv
-	@echo "Exécution terminée."
+	@echo "Execution ended."
 
 cov: ## Execute unit tests with coverage HTML.
 	@echo "Execute unit tests with coverage HTML..."
@@ -194,7 +194,7 @@ pre-commit-install: ## Installation des hooks pre-commit.
 pre-commit-run: ## Exécution des hooks pre-commit sur tous les fichiers.
 	@echo "Exécution des hooks pre-commit sur tous les fichiers..."
 	pre-commit run --all-files
-	@echo "Exécution terminée."
+	@echo "execution ended."
 
 .PHONY: pre-commit-install pre-commit-run
 

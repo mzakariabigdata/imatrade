@@ -23,7 +23,7 @@ class TradingStrategyController(metaclass=Singleton):
         if data is None:
             print("No data to prepare for strategies !")
             return None
-        elif strategy_name in self.strategies:
+        if strategy_name in self.strategies:
             strategy = self.get_strategy(strategy_name)
             print("strategy", strategy)
             print("indicator", strategy.indicators)
@@ -83,20 +83,20 @@ class TradingStrategyController(metaclass=Singleton):
         strategy = self.get_strategy(strategy_name)
         TradingStrategyView.display_strategy(strategy)
 
-    def display_data(self, data):
-        """Afficher les données du marché"""
-        TradingStrategyView.display_data(data)
+    # def display_data(self, data):
+    #     """Afficher les données du marché"""
+    #     TradingStrategyView.display_data(data)
 
-    def display_signals(self, signals):
-        """Afficher les signaux de trading"""
-        TradingStrategyView.display_signals(signals)
+    # def display_signals(self, signals):
+    #     """Afficher les signaux de trading"""
+    #     TradingStrategyView.display_signals(signals)
 
     def execute_strategy(self, strategy_name, market_data):
         """Exécuter une stratégie de trading"""
         strategy = self.get_strategy(strategy_name)
         strategy.prepare_data(market_data)
         signals = strategy.generate_signals()
-        self.display_signals(signals)
+        # self.display_signals(signals)
         return signals
 
     def __enter__(self):

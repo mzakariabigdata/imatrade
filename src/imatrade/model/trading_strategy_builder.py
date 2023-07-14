@@ -1,5 +1,5 @@
 """
-Contient les classes Builder (MACrossoverStrategyBuilder, RSIStrategyBuilder)
+Module pour les builders de stratégies de trading.
 """
 from abc import ABC, abstractmethod
 import importlib
