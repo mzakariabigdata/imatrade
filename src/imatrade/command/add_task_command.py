@@ -303,6 +303,8 @@ class DisplayStrategyCommand(TaskCommand):
     def execute(self):
         """Execute the command."""
         strategy_name = input("Name of the strategy: ")
+        if not strategy_name:
+            strategy_name = "BollingerBands"
         self.trading_strategy_controller.display_strategy(strategy_name)
 
 

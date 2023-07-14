@@ -35,4 +35,4 @@ class TradingBacktest:
             strategy.run()
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"'Name: {self.name}, Instance of : {type(self).__name__}'"

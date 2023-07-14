@@ -7,7 +7,7 @@ indicators_composer:
 
   indicators:
    
-    - name: MACD
+    - name: MACD_indicator_for_test
       display_name: MACD
       description: Un indicateur qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
       class_name: MACDIndicator

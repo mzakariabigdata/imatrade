@@ -92,7 +92,7 @@ strategies_composer:
             long_window: 26
             signal_window: 9
 
-    - name: ATR
+    - name: ATR_strategy_for_test
       display_name: ATR
       description: Une stratégie basée sur l'indicateur Average True Range (ATR), qui utilise la volatilité pour déterminer les niveaux de stop-loss et de prise de bénéfices.
       class_name: ATRStrategy

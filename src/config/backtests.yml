@@ -29,11 +29,17 @@ backtests_composer:
           description: Stratégie de trading avancée combinant les indicateurs MACD et RSI avec contrôle du risque et diversification
           indicators:
             - name: MACD
+              display_name: Moving Average Convergence Divergence
+              class_name: MACDIndicator
+              module_path: trading_indicator
               parameters:
                 fast_period: 12
                 slow_period: 26
                 signal_period: 9
             - name: RSI 
+              display_name: Relative Strength Index
+              class_name: RSIIndicator
+              module_path: trading_indicator
               parameters:
                 rsi_period: 14
                 overbought: 70
@@ -97,11 +103,17 @@ backtests_composer:
           description: Stratégie de trading avancée combinant les indicateurs MACD et RSI avec contrôle du risque et diversification
           indicators:
             - name: MACD
+              display_name: Moving Average Convergence Divergence
+              class_name: MACDIndicator
+              module_path: trading_indicator
               parameters:
                 fast_period: 12
                 slow_period: 26
                 signal_period: 9
             - name: RSI 
+              display_name: Relative Strength Index
+              class_name: RSIIndicator
+              module_path: trading_indicator
               parameters:
                 rsi_period: 14
                 overbought: 70
