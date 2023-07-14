@@ -26,6 +26,8 @@ from src.imatrade.command.add_task_command import (
     SaveDataCommand,
     PrepareStrategyDataCommand,
     DisplayAllBacktestsCommand,
+    DisplayBacktestsSummaryCommand,
+    DisplayBacktestCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -195,14 +197,16 @@ def trade_menu():
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
         3_3: DisplayStrategiesSummaryCommand(trading_strategy_controller),
         3_4: PrepareStrategyDataCommand(trading_strategy_controller),
-        "4": "---------4. Market data ---------",
-        4_1: GetHistoricalDataCommand(treading_data_controller),
-        4_2: ProcessMarketDataCommand(trading_strategy_controller),
-        4_3: LoadDataCommand(treading_data_controller),
-        4_4: PrintDataCommand(treading_data_controller),
-        4_5: SaveDataCommand(treading_data_controller),
-        "5": "--------- 5. Backtests ---------",
-        5_1: DisplayAllBacktestsCommand(trading_backtest_controller),
+        "4": "--------- 4. Backtests ---------",
+        4_1: DisplayBacktestCommand(trading_backtest_controller),
+        4_2: DisplayAllBacktestsCommand(trading_backtest_controller),
+        4_3: DisplayBacktestsSummaryCommand(trading_backtest_controller),
+        "5": "--------- 5. Market data ---------",
+        5_1: GetHistoricalDataCommand(treading_data_controller),
+        5_2: ProcessMarketDataCommand(trading_strategy_controller),
+        5_3: LoadDataCommand(treading_data_controller),
+        5_4: PrintDataCommand(treading_data_controller),
+        5_5: SaveDataCommand(treading_data_controller),
         "6": "--------- 6. Quit ---------",
         0: QuitCommand(),
     }

@@ -53,3 +53,11 @@ class TradingBacktestController:
     def display_all_backtests(self):
         """Method to display all backtests."""
         TradingBacktestView.display_all_backtests(self.backtests)
+
+    def display_backtests_summary(self):
+        """Method to display backtests summary."""
+        TradingBacktestView.display_backtests_summary(self.backtests)
+
+    def display_backtest(self, backtest_name):
+        """Method to display a backtest."""
+        TradingBacktestView.display_backtest(self.backtests.get(backtest_name) or None)

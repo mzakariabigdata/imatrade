@@ -72,4 +72,72 @@ backtests_composer:
                 - 0.1
               risk_management:
                 - risk_per_trade: 0.02
-            
+    
+    
+    - name: dolar_euro_macd 2
+      module_path: trading_backtest
+      class_name: TradingBacktest
+      display_name: Dolar Euro MACD
+      description: Backtesting de la stratégie MACD sur la paire de devises EUR/USD.
+      fourward_testing: 0.3
+      historical_data:
+        - date_start: 2019-01-01
+          date_end: 2020-01-01
+          timeframe: 1d
+        - date_start: 2020-01-01
+          date_end: 2021-01-01
+          timeframe: 20m
+      data_feeds:
+        - asset: EURUSD
+          source: Oanda
+        - asset: EURUSD
+          source: AlphaVantage
+      strategies:
+        - name: MACD with RSI
+          description: Stratégie de trading avancée combinant les indicateurs MACD et RSI avec contrôle du risque et diversification
+          indicators:
+            - name: MACD
+              parameters:
+                fast_period: 12
+                slow_period: 26
+                signal_period: 9
+            - name: RSI 
+              parameters:
+                rsi_period: 14
+                overbought: 70
+                oversold: 30
+          algorithm:
+            - name: algorithm_1
+              description: Algorithme de trading qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
+              buy:
+                limit_buy: 0.01
+                rules:
+                  - (MACD.line > MACD.signal) AND (RSI.value < 30)
+                  - price++
+              sell:
+                limit_sell: 0.01
+                rules:
+                  - (MACD.line < MACD.signal) AND (RSI.value > 70)
+              stop_loss:
+                - 0.05
+              take_profit:
+                - 0.1
+              risk_management:
+                - risk_per_trade: 0.02
+            - name: algorithm_2
+              description: Algorithme de trading qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
+              buy:
+                limit_buy: 0.01
+                rules :
+                  - (MACD.line > MACD.signal) AND (RSI.value < 20)
+              sell:
+                limit_sell: 0.01
+                rules :
+                  - (MACD.line < MACD.signal) AND (RSI.value > 80)
+              stop_loss:
+                - 0.05
+              take_profit:
+                - 0.1
+              risk_management:
+                - risk_per_trade: 0.02
+        

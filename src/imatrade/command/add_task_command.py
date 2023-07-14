@@ -52,6 +52,41 @@ class DisplayIndicatorsCommand(TaskCommand):
         self.task_controller.display_indicators()
 
 
+class DisplayBacktestsSummaryCommand(TaskCommand):
+    """Class for displaying backtests."""
+
+    def __init__(self, backtest_controller):
+        self.backtest_controller = backtest_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Display backtests summary"
+
+    def execute(self):
+        """Execute the command."""
+        self.backtest_controller.display_backtests_summary()
+
+
+class DisplayBacktestCommand(TaskCommand):
+    """Class for displaying a backtest."""
+
+    def __init__(self, backtest_controller):
+        self.backtest_controller = backtest_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Display a backtest"
+
+    def execute(self):
+        """Execute the command."""
+        backtest_name = input("Name of the backtest: ")
+        if not backtest_name:
+            backtest_name = "dolar_euro_macd"
+        self.backtest_controller.display_backtest(backtest_name)
+
+
 class DisplayStrategiesSummaryCommand(TaskCommand):
     """Class for displaying strategy summary."""
 
