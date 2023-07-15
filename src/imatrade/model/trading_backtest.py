@@ -18,11 +18,11 @@ class TradingBacktest:
     """Class for trading backtests."""
 
     def __init__(self, **kwargs):
-        self._kwargs = ObjDict(kwargs)
-        self.name = self._kwargs.name
-        self.display_name = self._kwargs.display_name
-        self.description = self._kwargs.description
-        self.strategies = self._kwargs.strategies
+        self.config = ObjDict(kwargs)
+        self.name = self.config.name
+        self.display_name = self.config.display_name
+        self.description = self.config.description
+        self.strategies = self.config.strategies
 
     def run(self):
         """Method to run a trading backtest."""

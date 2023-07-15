@@ -19,6 +19,15 @@ class TradingStrategyView:
                 print(f"        {key}: {value}")
         print()
 
+    @staticmethod
+    def display_all_strategies(strategies, num_spaces=0):
+        """Affiche toutes les stratégies de trading"""
+        spaces = " " * num_spaces
+        print(f"{spaces}Stratégies de trading :")
+        for strategy_name, strategy in strategies.items():
+            print(f"{spaces}Strategy name: {strategy_name}")
+            TradingStrategyView.display_strategy(strategy)
+
     # @staticmethod
     # def display_data(data):
     #     """Affiche les données du marché"""

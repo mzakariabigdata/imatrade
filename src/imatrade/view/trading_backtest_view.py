@@ -1,5 +1,7 @@
 """Module for trading backtest view."""
 
+from src.imatrade.view.trading_strategy_view import TradingStrategyView
+
 
 class TradingBacktestView:
     """Class for trading backtest view."""
@@ -27,7 +29,10 @@ class TradingBacktestView:
             return
         print(f"Display name: {backtest.display_name}")
         print(f"Description: {backtest.description}")
-        print(f"Strategies: {backtest.strategies}")
+        print(f"Data feeds: {backtest.config.data_feeds}")
+        print(f"Historical data: {backtest.config.historical_data}")
+        print(f"Fourward testing: {backtest.config.fourward_testing}")
+        TradingStrategyView.display_all_strategies(backtest.strategies, num_spaces=3)
         print()
 
     @staticmethod

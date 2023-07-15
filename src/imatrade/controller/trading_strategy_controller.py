@@ -74,9 +74,7 @@ class TradingStrategyController(metaclass=Singleton):
 
     def display_all_strategies(self):
         """Afficher toutes les stratégies"""
-        for strategy_name, strategy in self.strategies.items():
-            print(f"\nStrategy name: {strategy_name}")
-            TradingStrategyView.display_strategy(strategy)
+        TradingStrategyView.display_all_strategies(self.strategies)
 
     def display_strategy(self, strategy_name):
         """Afficher une stratégie"""

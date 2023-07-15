@@ -11,11 +11,11 @@ class TradingStrategyBuilder:
 
     def build_strategies(self, strategies_config):
         """Méthode pour construire des stratégies de trading"""
-        strategies = []
+        strategies = {}
         for strategy_config in strategies_config:
             strategy_config = ObjDict(strategy_config)
             strategy = self.build(strategy_config)
-            strategies.append(strategy)
+            strategies[strategy_config.name] = strategy
         return strategies
 
     def build(self, strategy_config):
@@ -24,10 +24,8 @@ class TradingStrategyBuilder:
 
         indicators = TradingIndicatorsBuilder().build(strategy_config.indicators)
 
-        strategy = TradingStrategy(
-            name=strategy_config.name,
-            indicators=indicators,
-            description=strategy_config.description,
-        )
+        strategy_config.indicators = indicators
+
+        strategy = TradingStrategy(**strategy_config)
 
         return strategy

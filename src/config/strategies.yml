@@ -14,6 +14,22 @@ strategies_composer:
             rsi_period: 14
             overbought: 70
             oversold: 30
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Price_Above_Upper_Band
+              condition: price > BollingerBands.upper
+            - name: RSI_Below_Oversold
+              condition: RSI.value < RSI.oversold
+        exit:
+          action: sell
+          conditions:
+            - name: Price_Below_Lower_Band
+              condition: price < BollingerBands.lower
+            - name: RSI_Above_Overbought
+              condition: RSI.value > RSI.overbought
+      
 
     - name: MA_Crossover
       display_name: MA Crossover
@@ -27,6 +43,21 @@ strategies_composer:
           parameters:
             window: 20
             num_std: 2
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: MACrossover_Up
+              condition: MACrossover.short > MACrossover.long
+            - name: Price_Above_Upper_Band
+              condition: price > BollingerBands.upper
+        exit:
+          action: sell
+          conditions:
+            - name: MACrossover_Down
+              condition: MACrossover.short < MACrossover.long
+            - name: Price_Below_Lower_Band
+              condition: price < BollingerBands.lower
 
     - name: RSIDivergence
       display_name: RSI Divergence
@@ -41,7 +72,23 @@ strategies_composer:
           parameters:
             short_window: 50
             long_window: 200 
-    
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: RSIDivergence_Bullish
+              condition: RSIDivergence.divergence == "bullish"
+            - name: MACrossover_Up
+              condition: MACrossover.short > MACrossover.long
+        exit:
+          action: sell
+          conditions:
+            - name: RSIDivergence_Bearish
+              condition: RSIDivergence.divergence == "bearish"
+            - name: MACrossover_Down
+              condition: MACrossover.short < MACrossover.long
+        
+
     - name: MACD
       display_name: MACD
       description: Une stratégie basée sur la convergence/divergence des moyennes mobiles (MACD), qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
@@ -51,6 +98,17 @@ strategies_composer:
             short_window: 12
             long_window: 26
             signal_window: 9
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: MACD_Crossover_Up
+              condition: MACD.line > MACD.signal
+        exit:
+          action: sell
+          conditions:
+            - name: MACD_Crossover_Down
+              condition: MACD.line < MACD.signal
 
     - name: ATR
       display_name: ATR
@@ -59,6 +117,17 @@ strategies_composer:
         - name: ATR
           parameters:
             window: 14
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: ATR_Breakout_Up
+              condition: price > (price + ATR.value)
+        exit:
+          action: sell
+          conditions:
+            - name: ATR_Breakout_Down
+              condition: price < (price - ATR.value)
 
     - name: IchimokuCloud
       display_name: Ichimoku Cloud
@@ -70,6 +139,17 @@ strategies_composer:
             base_line_period: 26
             lagging_span_periods: 52
             displacement: 26
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Price_Above_Cloud
+              condition: price > IchimokuCloud.cloud_top
+        exit:
+          action: sell
+          conditions:
+            - name: Price_Below_Cloud
+              condition: price < IchimokuCloud.cloud_bottom
 
     - name: Breakout
       display_name: Breakout
@@ -80,6 +160,17 @@ strategies_composer:
             lookback_window: 20
             buy_margin: 0.05
             sell_margin: 0.05
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Breakout_Up
+              condition: price > Breakout.high
+        exit:
+          action: sell
+          conditions:
+            - name: Breakout_Down
+              condition: price < Breakout.low
 
     - name: MAEnvelope
       display_name: MA Envelope
@@ -90,6 +181,17 @@ strategies_composer:
             ma_period: 20
             ma_type: simple
             ma_distance: 0.02
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Price_Above_MA
+              condition: price > MAEnvelope.upper
+        exit:
+          action: sell
+          conditions:
+            - name: Price_Below_MA
+              condition: price < MAEnvelope.lower
 
     - name: StochasticOscillator
       display_name: Stochastic Oscillator
@@ -101,3 +203,14 @@ strategies_composer:
             d_window: 3
             oversold: 20
             overbought: 80
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: StochasticOscillator_Crossover_Up
+              condition: StochasticOscillator.k > StochasticOscillator.d
+        exit:
+          action: sell
+          conditions:
+            - name: StochasticOscillator_Crossover_Down
+              condition: StochasticOscillator.k < StochasticOscillator.d
