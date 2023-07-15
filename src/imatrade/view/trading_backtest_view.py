@@ -47,6 +47,14 @@ class TradingBacktestView:
     @staticmethod
     def display_backtest_summary(backtest):
         """Display an backtest summary."""
-        print(f"Nom : {backtest.name}")
-        print(f"Paramètres : {backtest.strategies}")
+        if backtest is None:
+            print("Backtest not found !")
+            return
+        print(f"Display name: {backtest.display_name}")
+        print(f"Description: {backtest.description}")
+        print(f"Data feeds: {backtest.config.data_feeds}")
+        print(f"Historical data: {backtest.config.historical_data}")
+        print(f"Fourward testing: {backtest.config.fourward_testing}")
+        for _, strategy in backtest.strategies.items():
+            TradingStrategyView.display_strategies_summary(strategy)
         print()
