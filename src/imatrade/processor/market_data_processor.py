@@ -37,6 +37,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
     def __init__(self, data_frame: pd.DataFrame, strategy=None):
         self.data_frame = data_frame
         self.tick_handler = TickHandler(strategy)
+        self.indicators = strategy.indicators
         self.window_size = 20
         self.window_data = deque(maxlen=self.window_size)
 
@@ -62,10 +63,8 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
 
         # When enough data is available, calculate SMA
         if len(self.window_data) == self.window_size:
-            sma = sum(self.window_data) / self.window_size
-
-            # Add the SMA value to your bar data
-            bar["SMA"] = sma
+            for indicator in self.indicators:
+                bar[indicator.name] = indicator.calculate(list(self.window_data))
 
         # Print the entire bar
         self.display_bar(index, bar)
