@@ -68,6 +68,16 @@ class TradingStrategyController(metaclass=Singleton):
         for _, strategy in self.strategies.items():
             TradingStrategyView.display_strategies_summary(strategy)
 
+    def run_strategy(self, strategy_name):
+        """Exécuter une stratégie de trading"""
+        strategy = self.get_strategy(strategy_name)
+        self.data_controller.load_data()
+        data = self.prepare_strategy_data(strategy_name)
+        if data is None:
+            return None
+        data_with_indicators_and_signals = strategy.run(data)
+        return data_with_indicators_and_signals
+
     def get_strategy(self, strategy_name):
         """Récupérer une stratégie"""
         return self.strategies.get(strategy_name)

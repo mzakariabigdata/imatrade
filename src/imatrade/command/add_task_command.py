@@ -324,6 +324,25 @@ class DisplayAllStrategiesCommand(TaskCommand):
         self.trading_strategy_controller.display_all_strategies()
 
 
+class RunStrategyCommand(TaskCommand):
+    """Class for running a strategy."""
+
+    def __init__(self, trading_strategy_controller):
+        self.trading_strategy_controller = trading_strategy_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Run a strategy"
+
+    def execute(self):
+        """Execute the command."""
+        strategy_name = input("Name of the strategy: ")
+        if not strategy_name:
+            strategy_name = "MACD"
+        self.trading_strategy_controller.run_strategy(strategy_name)
+
+
 class ProcessMarketDataCommand(TaskCommand):
     """Class for processing market data."""
 

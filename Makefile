@@ -131,7 +131,7 @@ format-check: ## Formate check en utilisant l'outil Black.
 lint: ## Verifie le code source avec pylint.
 	@echo "Verification du code source avec pylint..."
 	@$(PYTHON) -m pylint src/. tests/.
-	@echo "Vérification terminée."
+	@echo "Verification ended."
 
 tests: clean-py ## Execute unit tests.
 	@echo "Execute unit tests..."

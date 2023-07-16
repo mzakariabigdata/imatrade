@@ -28,6 +28,7 @@ from src.imatrade.command.add_task_command import (
     DisplayAllBacktestsCommand,
     DisplayBacktestsSummaryCommand,
     DisplayBacktestCommand,
+    RunStrategyCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -197,6 +198,7 @@ def trade_menu():
         3_2: DisplayAllStrategiesCommand(trading_strategy_controller),
         3_3: DisplayStrategiesSummaryCommand(trading_strategy_controller),
         3_4: PrepareStrategyDataCommand(trading_strategy_controller),
+        3_5: RunStrategyCommand(trading_strategy_controller),
         "4": "--------- 4. Backtests ---------",
         4_1: DisplayBacktestCommand(trading_backtest_controller),
         4_2: DisplayAllBacktestsCommand(trading_backtest_controller),
