@@ -30,6 +30,27 @@ strategies_composer:
             - name: RSI_Above_Overbought
               condition: RSI.value > RSI.overbought
       
+    - name: RSIStrategy
+      display_name: RSI
+      description: Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui génère des signaux d'achat et de vente en fonction des niveaux de surachat et de survente identifiés par l'indicateur.
+      indicators:
+        - name: RSI
+          parameters:
+            rsi_period: 14
+            overbought: 70
+            oversold: 30
+      rules:
+        entry:
+          action: buy
+          conditions:
+            - name: RSI_Below_Oversold
+              condition: RSI.value < RSI.oversold
+        exit:
+          action: sell
+          conditions:
+            - name: RSI_Above_Overbought
+              condition: RSI.value > RSI.overbought
+
 
     - name: MA_Crossover
       display_name: MA Crossover

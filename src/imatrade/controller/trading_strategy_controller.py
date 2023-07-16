@@ -2,6 +2,7 @@
 
 from src.imatrade.view.trading_strategy_view import TradingStrategyView
 from src.imatrade import Singleton
+from src.imatrade.processor.market_data_processor import MarketDataProcessor
 
 
 class TradingStrategyController(metaclass=Singleton):
@@ -31,6 +32,21 @@ class TradingStrategyController(metaclass=Singleton):
                 data = indicator.prepare_data(data)
             print("data", data)
         self.data_controller.set_data(data)
+        return data
+
+    def prepare_strategy_data_for_bar(self, window_data):
+        """Préparer les données pour bar"""
+        data = window_data
+        if data is None:
+            print("No data to prepare for strategies !")
+            return None
+        for strategy_name, strategy in self.strategies.items():
+            print("strategy", strategy)
+            print("indicator", strategy.indicators)
+            for indicator in strategy.indicators:
+                indicator_for_bar = indicator.prepare_data_for_bar(data)
+                return indicator_for_bar
+            print("data", data)
         return data
 
     def create_all_strategies(self):
@@ -67,6 +83,15 @@ class TradingStrategyController(metaclass=Singleton):
         print()
         for _, strategy in self.strategies.items():
             TradingStrategyView.display_strategies_summary(strategy)
+
+    def process_market_data(self, strategy_name):
+        """Préparer les données du marché"""
+        self.data_controller.load_data()
+        strategy = self.get_strategy(strategy_name)
+        market_data_processor = MarketDataProcessor(
+            self.data_controller.get_data(), strategy
+        )
+        market_data_processor.process_market_data()
 
     def run_strategy(self, strategy_name):
         """Exécuter une stratégie de trading"""

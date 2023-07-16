@@ -356,7 +356,10 @@ class ProcessMarketDataCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        self.trading_strategy_controller.process_market_data()
+        strategy_name = input("Name of the strategy: ")
+        if not strategy_name:
+            strategy_name = "RSIStrategy"
+        self.trading_strategy_controller.process_market_data(strategy_name)
 
 
 class QuitCommand(TaskCommand):
