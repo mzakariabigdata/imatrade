@@ -18,6 +18,10 @@ class TradingStrategyController(metaclass=Singleton):
         """Charger les constructeurs de stratégies"""
         self.strategy_factory.load_builder()
 
+    def get_strategies(self):
+        """Récupérer les stratégies"""
+        return self.strategies
+
     def prepare_strategy_data(self, strategy_name):
         """Préparer les données pour les stratégies"""
         data = self.data_controller.get_data()
@@ -40,7 +44,7 @@ class TradingStrategyController(metaclass=Singleton):
         if data is None:
             print("No data to prepare for strategies !")
             return None
-        for strategy_name, strategy in self.strategies.items():
+        for _, strategy in self.strategies.items():
             print("strategy", strategy)
             print("indicator", strategy.indicators)
             for indicator in strategy.indicators:

@@ -5,6 +5,7 @@ class Tick:
     """Tick class definition."""
 
     def __init__(self, timestamp, price, volume):
+        # timestamp, open_price, high_price, low_price, close_price, volume
         self.timestamp = timestamp
         self.price = price
         self.volume = volume

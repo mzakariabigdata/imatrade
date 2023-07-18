@@ -2,12 +2,16 @@
 Contient les classes d'indicators
 """
 from abc import ABC, abstractmethod
+from typing import List
 import pandas as pd
 from ta.momentum import RSIIndicator as RSI
 from ta.volatility import BollingerBands
 from ta.momentum import StochasticOscillator
 from ta.trend import MACD
 from ta.volatility import AverageTrueRange
+import pandas_ta as ta
+from pandas_ta.momentum import rsi
+
 
 # from ta.trend import IchimokuIndicator
 import numpy as np
@@ -202,6 +206,28 @@ class MACDIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return max(self.parameters["long_window"], self.parameters["short_window"])
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur MACD pour une barre donnée."""
+        window_series = pd.Series(window_data)
+        macd = ta.macd(
+            window_series,
+            fast=self.parameters["short_window"],
+            slow=self.parameters["long_window"],
+            signal=self.parameters["signal_window"],
+        )
+        return (
+            macd.iloc[-1][
+                f"MACD_{self.parameters['short_window']}_{self.parameters['long_window']}"
+                + f"_{self.parameters['signal_window']}"
+            ]
+            if not macd.empty
+            else None
+        )
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Moving Average Convergence Divergence."""
         self.market_data = market_data.copy()
@@ -260,6 +286,24 @@ class MACrossoverIndicator(TradingIndicator):
             "Une stratégie basée sur le croisement de deux moyennes mobiles."
         )
         super().__init__(**kwargs)
+
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return max(self.long_window, self.short_window)
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Calculate short and long moving averages for given window data."""
+        if len(window_data) < self.long_window:
+            return None  # Not enough data to calculate long moving average
+        if len(window_data) < self.short_window:
+            return None  # Not enough data to calculate short moving average
+
+        long_ma = np.mean(window_data[-self.long_window :])
+        short_ma = np.mean(window_data[-self.short_window :])
+
+        return (
+            short_ma - long_ma
+        )  # Return the difference between the short and long moving averages
 
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Moving Average Crossover."""
@@ -323,6 +367,24 @@ class RSIIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def get_window_size(self):
+        """Récupère les données pour la fenêtre."""
+        return self.rsi_period
+
+    def prepare_indicator_data_for_bar(self, prices):
+        """Calcule le RSI pour une liste donnée de prix."""
+        result = {}
+        if len(prices) >= self.get_window_size():
+            deltas = [prices[i + 1] - prices[i] for i in range(len(prices) - 1)]
+            gains = [delta if delta > 0 else 0 for delta in deltas]
+            losses = [-delta if delta < 0 else 0 for delta in deltas]
+            average_gain = sum(gains) / len(gains)
+            average_loss = sum(losses) / len(losses)
+            rs_val = average_gain / average_loss if average_loss != 0 else 0
+            rsi_resultat = 100 - (100 / (1 + rs_val))
+            result["rsi"] = rsi_resultat
+        return result if result else None
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Relative Strength Index."""
         self.market_data = market_data.copy()
@@ -385,6 +447,30 @@ class BollingerBandsIndicator(TradingIndicator):
             "qui sont des bandes de volatilité autour d'une moyenne mobile."
         )
         super().__init__(**kwargs)
+
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return self.parameters["window"]
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur Bollinger Bands pour une barre donnée."""
+        result = {}
+        if len(window_data) >= self.get_window_size():
+            bolband = BollingerBands(
+                close=pd.Series(window_data),
+                window=self.parameters["window"],
+                window_dev=self.parameters["num_std"],
+            )
+            bollinger_hband = bolband.bollinger_hband()
+            bollinger_lband = bolband.bollinger_lband()
+            if not bollinger_hband.empty:
+                result["hband"] = bollinger_hband.iloc[-1]  # Return the last value
+            if not bollinger_lband.empty:
+                result["lband"] = bollinger_lband.iloc[-1]  # Return the last value
+            # if not bollinger_hband.empty:
+            #     return bollinger_hband.iloc[-1]  # Return the last value
+        # return None
+        return result if result else None
 
     def get_prepare_data(self):
         """Prépare les données pour l'indicateur Bollinger Bands."""
@@ -501,11 +587,31 @@ class RSIDivergenceIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return self.parameters["signal_period"]
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur RSI Divergence pour une barre donnée."""
+        signal_period = self.parameters["signal_period"]
+        long_rsi_period = self.parameters["long_rsi_period"]
+        short_rsi_period = self.parameters["short_rsi_period"]
+
+        if len(window_data) < max(signal_period, long_rsi_period, short_rsi_period):
+            return None
+
+        rsi_long = rsi(np.array(window_data), length=long_rsi_period).iloc[-1]
+        rsi_short = rsi(np.array(window_data), length=short_rsi_period).iloc[-1]
+
+        return rsi_long - rsi_short
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur RSI Divergence."""
         self.market_data = market_data.copy()
-        rsi = RSI(self.market_data["close"], window=self.parameters["signal_period"])
-        self.market_data["rsi"] = rsi.rsi()
+        rsi_indic = RSI(
+            self.market_data["close"], window=self.parameters["signal_period"]
+        )
+        self.market_data["rsi"] = rsi_indic.rsi()
         self.market_data = self.market_data.dropna()
         return self.market_data
 

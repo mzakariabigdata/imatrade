@@ -356,9 +356,15 @@ class ProcessMarketDataCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        strategy_name = input("Name of the strategy: ")
-        if not strategy_name:
-            strategy_name = "RSIStrategy"
+        strategies = self.trading_strategy_controller.get_strategies()
+        for i, (key, _) in enumerate(strategies.items(), start=1):
+            print(f"{i}: {key}", end=", ")
+        print()
+        strategy_index = input("Index of the strategy: ")
+        if not strategy_index:
+            strategy_index = 1
+        keys = list(strategies.keys())
+        strategy_name = keys[int(strategy_index) - 1]
         self.trading_strategy_controller.process_market_data(strategy_name)
 
 

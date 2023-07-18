@@ -84,6 +84,19 @@ class TradingIndicatorsController(metaclass=Singleton):
         print(prepared_date)
         return True
 
+    def prepare_indicator_data_for_bar(self, indicator_name, window_data):
+        """Préparer les données pour bar"""
+        data = window_data
+        if data is None:
+            print("No data to prepare for indicators !")
+            return None
+        if indicator_name in self.indicators:
+            indicator_for_bar = self.indicators.get(
+                indicator_name
+            ).prepare_data_for_bar(data)
+            return indicator_for_bar
+        return data
+
     def get_indicator(self, indicator_name):
         """Récupérer un indicator"""
         if indicator_name in self.indicators:
