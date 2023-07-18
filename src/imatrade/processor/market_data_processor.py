@@ -38,10 +38,29 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
         self.data_frame = data_frame
         self.tick_handler = TickHandler(strategy)
         self.indicators = strategy.indicators
+        self.data_frame_processed = pd.DataFrame(columns=self.data_frame.columns)
         self.window_data = {
             indicator: deque(maxlen=indicator.get_window_size())
             for indicator in self.indicators
         }
+
+    def add_row_to_dataframe(self, index, row_data):
+        """
+        Method to add a row of data to the existing dataframe.
+        :param row_data: A dictionary containing the data for the new row.
+        """
+        # Get missing columns
+        missing_columns = set(row_data.keys()) - set(self.data_frame_processed.columns)
+
+        # Concatenate data frames to add missing columns
+        if missing_columns:
+            missing_data = pd.DataFrame(columns=list(missing_columns))
+            self.data_frame_processed = pd.concat(
+                [self.data_frame_processed, missing_data], axis=1
+            )
+
+        # Append row to the data frame
+        self.data_frame_processed.loc[index] = row_data
 
     def set_data_frame(self, data_frame):
         """Method for setting data frame."""
@@ -71,7 +90,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
                 if indicator_values is not None:
                     for key, value in indicator_values.items():
                         bar_data[f"{indicator.name}_{key}"] = value
-
+        self.add_row_to_dataframe(index, bar_data)
         # Print the entire bar
         self.display_bar(index, bar_data)
 
@@ -86,6 +105,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
         except StopIteration:
             pass
 
+        print(self.data_frame_processed.dropna())
         # for _, row in self.data_frame.iterrows():
         #     timestamp = row["timestamp"]
         #     price = row["price"]

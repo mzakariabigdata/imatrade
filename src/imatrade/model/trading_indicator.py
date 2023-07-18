@@ -375,14 +375,19 @@ class RSIIndicator(TradingIndicator):
         """Calcule le RSI pour une liste donnée de prix."""
         result = {}
         if len(prices) >= self.get_window_size():
-            deltas = [prices[i + 1] - prices[i] for i in range(len(prices) - 1)]
-            gains = [delta if delta > 0 else 0 for delta in deltas]
-            losses = [-delta if delta < 0 else 0 for delta in deltas]
-            average_gain = sum(gains) / len(gains)
-            average_loss = sum(losses) / len(losses)
-            rs_val = average_gain / average_loss if average_loss != 0 else 0
-            rsi_resultat = 100 - (100 / (1 + rs_val))
-            result["rsi"] = rsi_resultat
+            # deltas = [prices[i + 1] - prices[i] for i in range(len(prices) - 1)]
+            # gains = [delta if delta > 0 else 0 for delta in deltas]
+            # losses = [-delta if delta < 0 else 0 for delta in deltas]
+            # average_gain = sum(gains) / len(gains)
+            # average_loss = sum(losses) / len(losses)
+            # rs_val = average_gain / average_loss if average_loss != 0 else 0
+            # rsi_resultat = 100 - (100 / (1 + rs_val))
+            # result["rsi"] = rsi_resultat
+            rsi_indicator = RSI(
+                close=pd.Series(prices), window=self.parameters["rsi_period"]
+            )
+            result["rsi"] = rsi_indicator.rsi().iloc[-1]
+        # self.market_data["RSI"] = rsi_indicator.rsi()
         return result if result else None
 
     def prepare_data(self, market_data):

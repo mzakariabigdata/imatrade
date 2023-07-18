@@ -122,8 +122,8 @@ class DisplayIndicatorsSummaryCommand(TaskCommand):
 class PrepareStrategyDataCommand(TaskCommand):
     """Class for preparing a strategy."""
 
-    def __init__(self, task_controller):
-        self.task_controller = task_controller
+    def __init__(self, trading_strategy_controller):
+        self.trading_strategy_controller = trading_strategy_controller
 
     @property
     def description(self):
@@ -132,10 +132,16 @@ class PrepareStrategyDataCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        strategy_name = input("Name of the strategy: ")
-        if not strategy_name:
-            strategy_name = "BollingerBands"
-        self.task_controller.prepare_strategy_data(strategy_name)
+        strategies = self.trading_strategy_controller.get_strategies()
+        for i, (key, _) in enumerate(strategies.items(), start=1):
+            print(f"{i}: {key}", end=", ")
+        print()
+        strategy_index = input("Index of the strategy: ")
+        if not strategy_index:
+            strategy_index = 1
+        keys = list(strategies.keys())
+        strategy_name = keys[int(strategy_index) - 1]
+        self.trading_strategy_controller.prepare_strategy_data(strategy_name)
 
 
 class PrepareIndicatorDataCommand(TaskCommand):
