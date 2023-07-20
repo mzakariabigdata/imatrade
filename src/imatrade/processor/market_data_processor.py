@@ -73,7 +73,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
         for index, row in data_frame.iterrows():
             yield index, row
 
-    def display_bar(self, index, bar_data):
+    def display_bar(self, bar_data, index=None):
         """Method for displaying bar data in a tabular format."""
         data_frame = pd.DataFrame.from_records([bar_data], index=[index])
         data_frame.index.name = "index"  # Add 'index' as the name of the index column
@@ -81,7 +81,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
 
     def apply_startegy(self, bar_data):
         """Method for applying strategy."""
-        self.strategy.run(bar_data)
+        return self.strategy.run(bar_data)
 
     def add_indicators(self, bar_data):
         """Method for adding indicators."""
@@ -94,7 +94,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
                 )
                 if indicator_values is not None:
                     for key, value in indicator_values.items():
-                        bar_data[f"{indicator.name}_{key}"] = value
+                        bar_data[f"{indicator.name}.{key}"] = value
                 else:
                     return None
             else:
@@ -106,9 +106,10 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
 
         bar_data_with_indicator = self.add_indicators(bar_data)
         if bar_data_with_indicator is not None:
-            self.apply_startegy(bar_data_with_indicator)
+            bar_data_with_signals = self.apply_startegy(bar_data_with_indicator)
+            self.display_bar(bar_data_with_signals)
         self.add_row_to_dataframe(index, bar_data)
-        # self.display_bar(index, bar_data)
+        # self.display_bar(bar_data, index)
 
     def process_market_data(self):
         """Method for processing data."""

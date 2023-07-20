@@ -1,8 +1,36 @@
 """
 Contient les classes Stategy
 """
+import re
 
-import pandas as pd
+
+def parse_condition(condition_str, data_f):
+    """Function to parse a condition string."""
+    # Extrayez les noms de colonnes et l'opérateur de la chaîne de condition
+    match = re.match(r"([\w\.]+)\s*([<>=]+)\s*([\w\.]+)", condition_str)
+
+    if match is None:
+        raise ValueError(f"Could not parse condition string: {condition_str}")
+    col1, operation, col2 = match.groups()
+
+    # print(f"Column 1: {col1}", f"Operator: {op}", f"Column 2: {col2}", sep="\n")
+
+    # Récupérez les colonnes du DataFrame
+    series1 = data_f[col1]
+    series2 = data_f[col2]
+
+    # Exécutez l'opération appropriée
+    if operation == "<":
+        return series1 < series2
+    if operation == ">":
+        return series1 > series2
+    if operation == "==":
+        return series1 == series2
+    if operation == "<=":
+        return series1 <= series2
+    if operation == ">=":
+        return series1 >= series2
+    raise ValueError(f"Unknown operator: {operation}")
 
 
 class Condition:  # pylint: disable=too-few-public-methods
@@ -14,48 +42,30 @@ class Condition:  # pylint: disable=too-few-public-methods
 
     def evaluate(self, data):
         """Method to evaluate a condition."""
-        # data = data.copy()
-        print(f"Evaluating condition: {self.name}")
-        print(f"Condition: {self.condition_str}")
-        # Ajouter cette ligne pour récupérer la valeur de BollingerBands_hband et close
-        # bollinger_hband = data["BollingerBands_hband"]
-        # BollingerBands_hband = data["BollingerBands_hband"]
-        # RSI_rsi = data["RSI_rsi"]
-        # # close = data['close']
-
-        # Ajouter cette ligne pour évaluer la condition
-        # condition_result = pd.eval(self.condition_str, engine='python', local_dict=data)
-
-        # # condition_result = eval(self.condition_str, {'BollingerBands_hband': bollinger_hband, 'close': close})
-        # print("condition_result: ", condition_result)
-        # # signals = pd.Series(index=data.index, data=False)
-        # # return signals
-        # return condition_result
+        # print(f"Evaluating condition: {self.name}", end=" ")
+        # print(f"Condition: {self.condition_str}")
+        signals = parse_condition(self.condition_str, data)
+        return signals
 
 
 class Rule:  # pylint: disable=too-few-public-methods
     """Class for trading rules."""
 
-    def __init__(self, action, conditions):
+    def __init__(self, action, conditions, rule_type):
         self.action = action
         self.conditions = [Condition(**condition) for condition in conditions]
+        self.rule_type = rule_type
 
     def applay(self, data):
         """Method to applay a rule."""
-        print(f"Running rule: {self.action}")
-        print(f"Conditions: {self.conditions}")
-        # Initialiser un DataFrame de signaux avec des False
-
-        # signals = pd.Series(index=data.index, data=False)
+        result_conditions = []
         for condition in self.conditions:
-            condition.evaluate(data)
+            result = condition.evaluate(data)
+            result_conditions.append(result)
+            data["C." + condition.name] = result
 
-        # Évaluer chaque condition
-        # for condition in self.conditions:
-        #     signals |= condition.evaluate(data)
-        # print("signals: ", signals)
-
-        # return signals
+        data[f"Signal.{self.action}.{self.rule_type}"] = all(result_conditions)
+        return data
 
 
 class TradingStrategy:
@@ -65,20 +75,13 @@ class TradingStrategy:
         self.indicators = kwargs.get("indicators", [])
         self.name = kwargs.get("name", "Default Trading Strategy")
         self.description = kwargs.get("description", "Default Trading Strategy")
-        self.entry_rule = Rule(**kwargs.get("rules", [])["entry"])
-        self.exit_rule = Rule(**kwargs.get("rules", [])["exit"])
+        self.entry_rule = Rule(rule_type="entry", **kwargs.get("rules", [])["entry"])
+        self.exit_rule = Rule(rule_type="exit", **kwargs.get("rules", [])["exit"])
 
     def run(self, raw_data):
         """Method to run a trading strategy."""
-        print(f"Running strategy: {self.name}")
-        print(f"Indicators: {self.indicators}")
-
-        # Exécuter les règles d'entrée et de sortie
-        entry_signals = self.entry_rule.applay(raw_data)  # bizarre
-        # print()
-        # for indicator in self.indicators:
-        #     indicator.run()
-        # return entry_signals
+        data_with_entry_signals = self.entry_rule.applay(raw_data)
+        return data_with_entry_signals
 
     def __repr__(self):
         return f"'Name: {self.name}, Instance of : {type(self).__name__}'"

@@ -19,14 +19,14 @@ strategies_composer:
           action: buy
           conditions:
             - name: Price_Above_Upper_Band
-              condition: price > BollingerBands.upper
+              condition: close > BollingerBands.hband
             - name: RSI_Below_Oversold
               condition: RSI.value < RSI.oversold
         exit:
           action: sell
           conditions:
             - name: Price_Below_Lower_Band
-              condition: price < BollingerBands.lower
+              condition: close < BollingerBands.lband
             - name: RSI_Above_Overbought
               condition: RSI.value > RSI.overbought
       

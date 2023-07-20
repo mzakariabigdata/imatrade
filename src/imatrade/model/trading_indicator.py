@@ -32,6 +32,9 @@ class TradingIndicator(ABC):  # pylint: disable=too-few-public-methods
     def execute(self):
         """Méthode abstraite pour exécuter la stratégie."""
 
+    def __repr__(self):
+        return f"'Name: {self.name}, Instance of : {type(self).__name__}'"
+
 
 class IchimokuCloudIndicator(TradingIndicator):
     """Classe pour l'indicateur Ichimoku Cloud."""
@@ -386,7 +389,8 @@ class RSIIndicator(TradingIndicator):
             rsi_indicator = RSI(
                 close=pd.Series(prices), window=self.parameters["rsi_period"]
             )
-            result["rsi"] = rsi_indicator.rsi().iloc[-1]
+            result["value"] = rsi_indicator.rsi().iloc[-1]
+            result["oversold"] = self.parameters["oversold"]
         # self.market_data["RSI"] = rsi_indicator.rsi()
         return result if result else None
 
