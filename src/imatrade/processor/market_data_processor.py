@@ -38,6 +38,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
         self.data_frame = data_frame
         self.tick_handler = TickHandler(strategy)
         self.strategy = strategy
+        self.num_columns = len(self.data_frame.columns)
         self.indicators = strategy.indicators
         self.data_frame_processed = pd.DataFrame(columns=self.data_frame.columns)
         self.window_data = {
@@ -80,11 +81,11 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
 
     def apply_startegy(self, bar_data):
         """Method for applying strategy."""
-        print("WWWWWWWWWWwwdata", bar_data)
         self.strategy.run(bar_data)
 
     def add_indicators(self, bar_data):
         """Method for adding indicators."""
+
         for indicator, window in self.window_data.items():
             window.append(bar_data["close"])
             if len(window) == indicator.get_window_size():
@@ -94,13 +95,18 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
                 if indicator_values is not None:
                     for key, value in indicator_values.items():
                         bar_data[f"{indicator.name}_{key}"] = value
+                else:
+                    return None
+            else:
+                return None
+        return bar_data
 
     def on_bar(self, index, bar_data):
         """Method for handling bar."""
 
-        self.add_indicators(bar_data)
-        print("1111111111111111data", bar_data)
-        self.apply_startegy(bar_data)
+        bar_data_with_indicator = self.add_indicators(bar_data)
+        if bar_data_with_indicator is not None:
+            self.apply_startegy(bar_data_with_indicator)
         self.add_row_to_dataframe(index, bar_data)
         # self.display_bar(index, bar_data)
 

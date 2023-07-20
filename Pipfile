@@ -15,6 +15,7 @@ jupyter = "*"
 openai = "*"
 ipykernel = "*"
 pandas-ta = "*"
+watchdog = "*"
 
 [dev-packages]
 pyclean = "*"

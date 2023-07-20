@@ -14,13 +14,14 @@ class Condition:  # pylint: disable=too-few-public-methods
 
     def evaluate(self, data):
         """Method to evaluate a condition."""
+        # data = data.copy()
         print(f"Evaluating condition: {self.name}")
         print(f"Condition: {self.condition_str}")
         # Ajouter cette ligne pour récupérer la valeur de BollingerBands_hband et close
-        print("_____________data: ", data)
-        bollinger_hband = data["BollingerBands_hband"]
-        print("__________________bollinger_hband: ", bollinger_hband)
-        # close = data['close']
+        # bollinger_hband = data["BollingerBands_hband"]
+        # BollingerBands_hband = data["BollingerBands_hband"]
+        # RSI_rsi = data["RSI_rsi"]
+        # # close = data['close']
 
         # Ajouter cette ligne pour évaluer la condition
         # condition_result = pd.eval(self.condition_str, engine='python', local_dict=data)
@@ -46,7 +47,6 @@ class Rule:  # pylint: disable=too-few-public-methods
         # Initialiser un DataFrame de signaux avec des False
 
         # signals = pd.Series(index=data.index, data=False)
-        print("nnnnnnnnnnnnnnndata: ", data)
         for condition in self.conditions:
             condition.evaluate(data)
 
@@ -71,11 +71,10 @@ class TradingStrategy:
     def run(self, raw_data):
         """Method to run a trading strategy."""
         print(f"Running strategy: {self.name}")
-        print(f"Description: {self.description}")
         print(f"Indicators: {self.indicators}")
-        print("44444444444444data: ", raw_data)
+
         # Exécuter les règles d'entrée et de sortie
-        # entry_signals = self.entry_rule.applay(raw_data) # bizarre
+        entry_signals = self.entry_rule.applay(raw_data)  # bizarre
         # print()
         # for indicator in self.indicators:
         #     indicator.run()
