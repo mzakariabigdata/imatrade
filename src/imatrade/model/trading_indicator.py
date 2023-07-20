@@ -9,7 +9,6 @@ from ta.volatility import BollingerBands
 from ta.momentum import StochasticOscillator
 from ta.trend import MACD
 from ta.volatility import AverageTrueRange
-import pandas_ta as ta
 from pandas_ta.momentum import rsi
 
 
@@ -29,8 +28,8 @@ class TradingIndicator(ABC):  # pylint: disable=too-few-public-methods
         self.parameters = kwargs.parameters
 
     @abstractmethod
-    def execute(self):
-        """Méthode abstraite pour exécuter la stratégie."""
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur pour une barre donnée."""
 
     def __repr__(self):
         return f"'Name: {self.name}, Instance of : {type(self).__name__}'"
@@ -51,6 +50,9 @@ class IchimokuCloudIndicator(TradingIndicator):
             " la tendance et les niveaux de support/résistance."
         )
         super().__init__(**kwargs)
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        return super().prepare_indicator_data_for_bar(window_data)
 
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Ichimoku Cloud."""
@@ -110,35 +112,6 @@ class IchimokuCloudIndicator(TradingIndicator):
         self.market_data = self.market_data.dropna()
         return self.market_data
 
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Ichimoku Cloud."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Calculer les signaux pour les positions longues et courtes
-        signals["long_signal"] = (
-            self.market_data["lagging_span"] > self.market_data["senkou_span_a"]
-        ) & (self.market_data["close"] > self.market_data["senkou_span_b"])
-        signals["short_signal"] = (
-            self.market_data["lagging_span"] < self.market_data["senkou_span_a"]
-        ) & (self.market_data["close"] < self.market_data["senkou_span_b"])
-
-        # Combiner les signaux pour obtenir la position totale
-        # signals.loc[signals["long_signal"] is True, "signal"] = 1.0
-        # signals.loc[signals["short_signal"] is True, "signal"] = -1.0
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Ichimoku Cloud."""
-        print(
-            f"Executing Ichimoku Cloud strategy with conversion line period "
-            f"{self.parameters['conversion_line_period']}, "
-            f"base line period {self.parameters['base_line_period']}, "
-            f"lagging span periods {self.parameters['lagging_span_periods']},"
-            f" and displacement {self.parameters['displacement']}"
-        )
-
 
 class ATRIndicator(TradingIndicator):
     """Classe pour l'indicateur Average True Range."""
@@ -155,6 +128,9 @@ class ATRIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        return super().prepare_indicator_data_for_bar(window_data)
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Average True Range."""
         self.market_data = market_data.copy()
@@ -167,30 +143,6 @@ class ATRIndicator(TradingIndicator):
         self.market_data["atr"] = atr.average_true_range()
         self.market_data = self.market_data.dropna()
         return self.market_data
-
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Average True Range."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Vous pouvez définir vos propres règles de signal en
-        #  utilisant la colonne ATR de self.market_data
-        # Par exemple, vous pouvez créer des signaux basés sur des niveaux d'ATR spécifiques
-        # sig_start = self.parameters["window"]
-        # sig_end = len(self.market_data)
-
-        # atr_values = self.market_data["atr"].iloc[sig_start:sig_end].values
-
-        # # Vous pouvez ajuster les seuils selon votre stratégie de trading
-        # signals_array = np.where(
-        #     atr_values > self.parameters["upper_threshold"], 1.0, 0.0
-        # )
-        # signals.iloc[sig_start:sig_end, 0]
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Average True Range."""
-        print(f"Executing ATR strategy with window {self.parameters['window']}")
 
 
 class MACDIndicator(TradingIndicator):
@@ -215,63 +167,19 @@ class MACDIndicator(TradingIndicator):
 
     def prepare_indicator_data_for_bar(self, window_data: List[float]):
         """Prépare les données pour l'indicateur MACD pour une barre donnée."""
-        window_series = pd.Series(window_data)
-        macd = ta.macd(
-            window_series,
-            fast=self.parameters["short_window"],
-            slow=self.parameters["long_window"],
-            signal=self.parameters["signal_window"],
-        )
-        return (
-            macd.iloc[-1][
-                f"MACD_{self.parameters['short_window']}_{self.parameters['long_window']}"
-                + f"_{self.parameters['signal_window']}"
-            ]
-            if not macd.empty
-            else None
-        )
-
-    def prepare_data(self, market_data):
-        """Prépare les données pour l'indicateur Moving Average Convergence Divergence."""
-        self.market_data = market_data.copy()
-        macd = MACD(
-            self.market_data["close"],
-            window_slow=self.parameters["long_window"],
-            window_fast=self.parameters["short_window"],
-            window_sign=self.parameters["signal_window"],
-        )
-        self.market_data["macd"] = macd.macd()
-        self.market_data["macd_signal"] = macd.macd_signal()
-        self.market_data["macd_diff"] = macd.macd_diff()
-        self.market_data = self.market_data.dropna()
-        return self.market_data
-
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Moving Average Convergence Divergence."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Create a signal when the MACD crosses the signal line
-        sig_start = self.parameters["long_window"]
-        sig_end = len(self.market_data)
-
-        macd_diff = self.market_data["macd_diff"].iloc[sig_start:sig_end].values
-
-        signals_array = np.where(macd_diff > 0, 1.0, 0.0)
-        signals.iloc[sig_start:sig_end, 0] = signals_array
-
-        # Calculate trading orders: 1 for buy, -1 for sell, 0 for holding
-        signals["positions"] = signals["signal"].diff()
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Moving Average Convergence Divergence."""
-        print(
-            f"Executing MACD strategy with short window {self.parameters['short_window']}"
-            f", long window {self.parameters['long_window']}, "
-            f"and signal window {self.parameters['signal_window']}"
-        )
+        result = {}
+        if len(window_data) >= self.get_window_size():
+            macd = MACD(
+                pd.Series(window_data),
+                window_slow=self.parameters["long_window"],
+                window_fast=self.parameters["short_window"],
+                window_sign=self.parameters["signal_window"],
+            )
+            result["line"] = macd.macd().iloc[-1]
+            result["signal"] = macd.macd_signal().iloc[-1]
+            result["diff"] = macd.macd_diff().iloc[-1]
+            print("result", result)
+        return result if result else None
 
 
 class MACrossoverIndicator(TradingIndicator):
@@ -324,33 +232,6 @@ class MACrossoverIndicator(TradingIndicator):
         self.market_data = self.market_data.dropna()
         return self.market_data
 
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Moving Average Crossover."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Create a signal when the short moving average crosses the long moving average
-        sig_start = self.parameters["short_window"]
-        sig_end = len(self.market_data)
-
-        short_mavg = self.market_data["short_mavg"].iloc[sig_start:sig_end].values
-        long_mavg = self.market_data["long_mavg"].iloc[sig_start:sig_end].values
-
-        signals_array = np.where(short_mavg > long_mavg, 1.0, 0.0)
-        signals.iloc[sig_start:sig_end, 0] = signals_array
-
-        # Calculate trading orders: 1 for buy, -1 for sell, 0 for holding
-        signals["positions"] = signals["signal"].diff()
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Moving Average Crossover."""
-        print(
-            f"Executing Moving Average Crossover strategy with"
-            f" short window {self.short_window} and long window {self.long_window}"
-        )
-
 
 class RSIIndicator(TradingIndicator):
     """Classe pour l'indicateur Relative Strength Index."""
@@ -374,20 +255,12 @@ class RSIIndicator(TradingIndicator):
         """Récupère les données pour la fenêtre."""
         return self.rsi_period
 
-    def prepare_indicator_data_for_bar(self, prices):
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
         """Calcule le RSI pour une liste donnée de prix."""
         result = {}
-        if len(prices) >= self.get_window_size():
-            # deltas = [prices[i + 1] - prices[i] for i in range(len(prices) - 1)]
-            # gains = [delta if delta > 0 else 0 for delta in deltas]
-            # losses = [-delta if delta < 0 else 0 for delta in deltas]
-            # average_gain = sum(gains) / len(gains)
-            # average_loss = sum(losses) / len(losses)
-            # rs_val = average_gain / average_loss if average_loss != 0 else 0
-            # rsi_resultat = 100 - (100 / (1 + rs_val))
-            # result["rsi"] = rsi_resultat
+        if len(window_data) >= self.get_window_size():
             rsi_indicator = RSI(
-                close=pd.Series(prices), window=self.parameters["rsi_period"]
+                close=pd.Series(window_data), window=self.parameters["rsi_period"]
             )
             result["value"] = rsi_indicator.rsi().iloc[-1]
             result["oversold"] = self.parameters["oversold"]
@@ -404,42 +277,6 @@ class RSIIndicator(TradingIndicator):
 
         self.market_data = self.market_data.dropna()
         return self.market_data
-
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Relative Strength Index."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Generate buy signal when RSI is below the oversold threshold
-        sig_start = self.parameters["rsi_period"]
-        sig_end = len(self.market_data)
-
-        signals.iloc[sig_start:sig_end]["signal"] = np.where(
-            self.market_data["RSI"].iloc[sig_start:sig_end]
-            < self.parameters["oversold"],
-            1.0,
-            0.0,
-        )
-
-        # Generate sell signal when RSI is above the overbought threshold
-        signals.iloc[sig_start:sig_end]["signal"] = np.where(
-            self.market_data["RSI"].iloc[sig_start:sig_end]
-            > self.parameters["overbought"],
-            -1.0,
-            signals["signal"].iloc[sig_start:sig_end],
-        )
-
-        # Calculate trading orders: 1 for buy, -1 for sell, 0 for holding
-        signals["orders"] = signals["signal"].diff()
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Relative Strength Index."""
-        print(
-            f"Executing RSI strategy with RSI period {self.rsi_period},"
-            f" overbought at {self.overbought} and oversold at {self.oversold}"
-        )
 
 
 class BollingerBandsIndicator(TradingIndicator):
@@ -498,30 +335,6 @@ class BollingerBandsIndicator(TradingIndicator):
         self.market_data = self.market_data.dropna()
         return self.market_data
 
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Bollinger Bands."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        signals["signal"][
-            self.market_data["close"] < self.market_data["bollinger_low"]
-        ] = 1.0
-        signals["signal"][
-            self.market_data["close"] > self.market_data["bollinger_high"]
-        ] = -1.0
-
-        # Calculate trading orders: 1 for buy, -1 for sell, 0 for holding
-        signals["positions"] = signals["signal"].diff()
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Bollinger Bands."""
-        print(
-            f"Executing Bollinger Bands strategy with window {self.parameters['window']} "
-            f"and {self.parameters['num_std']} standard deviations"
-        )
-
 
 class StochasticOscillatorIndicator(TradingIndicator):
     """Classe pour l'indicateur Stochastic Oscillator."""
@@ -538,6 +351,9 @@ class StochasticOscillatorIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        return super().prepare_indicator_data_for_bar(window_data)
+    
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Stochastic Oscillator."""
         self.market_data = market_data.copy()
@@ -552,33 +368,6 @@ class StochasticOscillatorIndicator(TradingIndicator):
         self.market_data["stoch_d"] = stochastic.stoch_signal()
         self.market_data = self.market_data.dropna()
         return self.market_data
-
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Stochastic Oscillator."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        signals["signal"][
-            (self.market_data["stoch_k"] < self.parameters["oversold"])
-            & (self.market_data["stoch_d"] < self.parameters["oversold"])
-        ] = 1.0
-        signals["signal"][
-            (self.market_data["stoch_k"] > self.parameters["overbought"])
-            & (self.market_data["stoch_d"] > self.parameters["overbought"])
-        ] = -1.0
-
-        # Calculate trading orders: 1 for buy, -1 for sell, 0 for holding
-        signals["positions"] = signals["signal"].diff()
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Stochastic Oscillator."""
-        print(
-            f"Executing Stochastic Oscillator strategy with K window {self.parameters['k_window']}"
-            f", D window {self.parameters['d_window']}, oversold {self.parameters['oversold']}"
-            f", and overbought {self.parameters['overbought']}"
-        )
 
 
 class RSIDivergenceIndicator(TradingIndicator):
@@ -624,41 +413,6 @@ class RSIDivergenceIndicator(TradingIndicator):
         self.market_data = self.market_data.dropna()
         return self.market_data
 
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur RSI Divergence."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Trouver les divergences en comparant les hauts/bas des prix et RSI
-        price_highs = self.market_data["high"]
-        rsi_highs = self.market_data["rsi"].rolling(window=2).max()
-        bearish_divergence = price_highs < rsi_highs
-
-        price_lows = self.market_data["low"]
-        rsi_lows = self.market_data["rsi"].rolling(window=2).min()
-        bullish_divergence = price_lows > rsi_lows
-
-        # Marquer les signaux de divergence en utilisant les seuils de divergence spécifiés
-        signals.loc[
-            bearish_divergence
-            & (self.market_data["rsi"] > self.parameters["short_rsi_period"]),
-            "signal",
-        ] = -1.0
-        signals.loc[
-            bullish_divergence
-            & (self.market_data["rsi"] < (100 - self.parameters["short_rsi_period"])),
-            "signal",
-        ] = 1.0
-
-        return signals
-
-    def execute(self):
-        print(
-            f"Executing RSIDive strategy with signal_period {self.parameters['signal_period']}"
-            f", long_rsi_period {self.parameters['long_rsi_period']},"
-            f" short_rsi_period {self.parameters['short_rsi_period']}"
-        )
-
 
 class MAEnvelopeIndicator(TradingIndicator):
     """Classe pour l'indicateur MA Envelope."""
@@ -674,6 +428,17 @@ class MAEnvelopeIndicator(TradingIndicator):
             "une moyenne mobile avec des bandes supérieure et inférieure."
         )
         super().__init__(**kwargs)
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur MA Envelope pour une barre donnée."""
+        result = {}
+        if len(window_data) >= self.parameters["ma_period"]:
+            ma = np.mean(window_data[-self.parameters["ma_period"] :])
+            result["ma"] = ma
+            result["price"] = window_data[-1]
+            result["upper_band"] = ma * (1 + self.parameters["ma_distance"])
+            result["lower_band"] = ma * (1 - self.parameters["ma_distance"])
+        return result if result else None
 
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur MA Envelope."""
@@ -703,30 +468,6 @@ class MAEnvelopeIndicator(TradingIndicator):
         """
         return data.rolling(window=window).mean()
 
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur MA Envelope."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        # Acheter lorsque le prix touche la bande inférieure et
-        # vendre lorsque le prix touche la bande supérieure
-        signals.loc[
-            self.market_data["close"] < self.market_data["lower_band"], "signal"
-        ] = 1.0
-        signals.loc[
-            self.market_data["close"] > self.market_data["upper_band"], "signal"
-        ] = -1.0
-
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie MA Envelope."""
-        print(
-            f"Executing MAEnvelope  strategy with ma_period {self.parameters['ma_period']}"
-            f", buy_margin {self.parameters['buy_margin']}, "
-            "and sell_margin {self.parameters['sell_margin']}"
-        )
-
 
 class BreakoutIndicator(TradingIndicator):
     """Classe pour l'indicateur Breakout."""
@@ -743,50 +484,18 @@ class BreakoutIndicator(TradingIndicator):
         )
         super().__init__(**kwargs)
 
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur Breakout pour une barre donnée."""
+        result = {}
+        if len(window_data) >= self.parameters["window"]:
+            ma = np.mean(window_data[-self.parameters["window"] :])
+            result["ma"] = ma
+            result["price"] = window_data[-1]
+            result["breakout"] = window_data[-1] > ma
+        return result if result else None
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Breakout."""
         self.market_data = market_data.copy()
         self.market_data = self.market_data.dropna()
         return self.market_data
-
-    def generate_signals(self):
-        """Génère les signaux pour l'indicateur Breakout."""
-        signals = pd.DataFrame(index=self.market_data.index)
-        signals["signal"] = 0.0
-
-        signals["rolling_max"] = (
-            self.market_data["high"]
-            .rolling(window=self.parameters["lookback_window"], min_periods=1)
-            .max()
-        )
-
-        signals["rolling_min"] = (
-            self.market_data["low"]
-            .rolling(window=self.parameters["lookback_window"], min_periods=1)
-            .min()
-        )
-
-        signals["buy_breakout"] = signals["rolling_max"] - self.market_data["close"] < (
-            self.market_data["close"] * self.parameters["buy_margin"]
-        )
-
-        signals["sell_breakout"] = self.market_data["close"] - signals[
-            "rolling_min"
-        ] < (self.market_data["close"] * self.parameters["sell_margin"])
-
-        signals["signal"] = np.where(
-            signals["buy_breakout"], 1.0, np.where(signals["sell_breakout"], -1.0, 0.0)
-        )
-
-        # Remove intermediate values of signal
-        signals["positions"] = signals["signal"].diff()
-        signals.iloc[0, -1] = signals["signal"].iloc[-1]
-        return signals
-
-    def execute(self):
-        """Exécute la stratégie Breakout."""
-        print(
-            f"Executing Breakout strategy with lookback_window {self.parameters['lookback_window']}"
-            f", buy_margin {self.parameters['buy_margin']}, "
-            f"and sell_margin {self.parameters['sell_margin']}"
-        )

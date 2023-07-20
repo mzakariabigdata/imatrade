@@ -64,6 +64,7 @@ class Rule:  # pylint: disable=too-few-public-methods
             result_conditions.append(result)
             data["C." + condition.name] = result
 
+        print(result_conditions)
         data[f"Signal.{self.action}.{self.rule_type}"] = all(result_conditions)
         return data
 
