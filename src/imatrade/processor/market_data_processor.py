@@ -46,6 +46,10 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
             for indicator in self.indicators
         }
 
+    def get_data_frame_processed(self):
+        """Method for getting data processor."""
+        return self.data_frame_processed
+
     def add_row_to_dataframe(self, index, row_data):
         """
         Method to add a row of data to the existing dataframe.

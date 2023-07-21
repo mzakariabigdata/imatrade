@@ -96,6 +96,9 @@ class TradingStrategyController(metaclass=Singleton):
             self.data_controller.get_data(), strategy
         )
         market_data_processor.process_market_data()
+        data_frame_processed = market_data_processor.get_data_frame_processed()
+        self.data_controller.set_data(data_frame_processed)
+        self.data_controller.save_data()
 
     def run_strategy(self, strategy_name):
         """Exécuter une stratégie de trading"""
