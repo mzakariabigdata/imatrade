@@ -11,6 +11,7 @@ class TradingStrategyView:
         """Affiche une stratégie de trading"""
         print(f"Stratégie de trading : {strategy.name}")
         print(f"déscription: {strategy.description}")
+        print(f"Instruments : {strategy.instruments}")
         for indicator in strategy.indicators:
             print(f"  indicator: {indicator.name}")
             print(f"     Object: {indicator}")
@@ -47,6 +48,7 @@ class TradingStrategyView:
         """Affiche un résumé de la stratégie de trading"""
         print(f"Nom : {strategy.name}")
         print(f"Description : {strategy.description}")
+        print(f"Instruments : {strategy.instruments}")
         for indicator in strategy.indicators:
             print(f"  indicator: {indicator.name}")
             print(f"    Paramètres : {indicator.parameters}")
@@ -55,15 +57,32 @@ class TradingStrategyView:
     @staticmethod
     def display_rules(strategy):
         """Affiche les règles de trading"""
-        print(" Règles de trading :")
-        print(f"  Entry: {strategy.entry_rule.action}")
-        for condition in strategy.entry_rule.conditions:
+        print("Règles de trading :")
+
+        # Pour les règles longues
+        print("Pour les transactions longues :")
+        print(f"  Entry: {strategy.long_rules.entry_rule.action}")
+        for condition in strategy.long_rules.entry_rule.conditions:
             print(f"    name: {condition.name}")
-            print(f"    condition: {condition.condition}")
-        print(f"  Exit: {strategy.exit_rule.action}")
-        for condition in strategy.exit_rule.conditions:
+            print(f"    condition: {condition.condition_str}")
+
+        print(f"  Exit: {strategy.long_rules.exit_rule.action}")
+        for condition in strategy.long_rules.exit_rule.conditions:
             print(f"    name: {condition.name}")
-            print(f"    condition: {condition.condition}")
+            print(f"    condition: {condition.condition_str}")
+
+        # Pour les règles courtes
+        print("Pour les transactions courtes :")
+        print(f"  Entry: {strategy.long_rules.entry_rule.action}")
+        for condition in strategy.long_rules.entry_rule.conditions:
+            print(f"    name: {condition.name}")
+            print(f"    condition: {condition.condition_str}")
+
+        print(f"  Exit: {strategy.long_rules.exit_rule.action}")
+        for condition in strategy.long_rules.exit_rule.conditions:
+            print(f"    name: {condition.name}")
+            print(f"    condition: {condition.condition_str}")
+
         print()
 
     # @staticmethod

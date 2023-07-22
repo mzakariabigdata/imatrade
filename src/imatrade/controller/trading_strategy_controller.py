@@ -45,12 +45,12 @@ class TradingStrategyController(metaclass=Singleton):
             print("No data to prepare for strategies !")
             return None
         for _, strategy in self.strategies.items():
-            print("strategy", strategy)
-            print("indicator", strategy.indicators)
+            # print("strategy", strategy)
+            # print("indicator", strategy.indicators)
             for indicator in strategy.indicators:
                 indicator_for_bar = indicator.prepare_data_for_bar(data)
                 return indicator_for_bar
-            print("data", data)
+            # print("data", data)
         return data
 
     def create_all_strategies(self):

@@ -16,8 +16,19 @@ def parse_condition(condition_str, data_f):
     # print(f"Column 1: {col1}", f"Operator: {op}", f"Column 2: {col2}", sep="\n")
 
     # Récupérez les colonnes du DataFrame
-    series1 = data_f[col1]
-    series2 = data_f[col2]
+    try:
+        # Try to use col1 as a column
+        series1 = data_f[col1]
+    except KeyError:
+        # If that fails, use it as a fixed value
+        series1 = float(col1)
+
+    try:
+        # Try to use col2 as a column
+        series2 = data_f[col2]
+    except KeyError:
+        # If that fails, use it as a fixed value
+        series2 = float(col2)
 
     # Exécutez l'opération appropriée
     if operation == "<":
@@ -51,22 +62,29 @@ class Condition:  # pylint: disable=too-few-public-methods
 class Rule:  # pylint: disable=too-few-public-methods
     """Class for trading rules."""
 
-    def __init__(self, action, conditions, rule_type):
+    def __init__(self, rule_type, action, conditions):
+        self.rule_type = rule_type
         self.action = action
         self.conditions = [Condition(**condition) for condition in conditions]
-        self.rule_type = rule_type
 
-    def applay(self, data):
-        """Method to applay a rule."""
+    def apply(self, data):
+        """Method to apply a rule."""
         result_conditions = []
         for condition in self.conditions:
             result = condition.evaluate(data)
             result_conditions.append(result)
             data["C." + condition.name] = result
 
-        print(result_conditions)
-        data[f"Signal.{self.action}.{self.rule_type}"] = all(result_conditions)
+        data[f"Signal.{self.rule_type}.{self.action}"] = all(result_conditions)
         return data
+
+
+class RuleSet:  # pylint: disable=too-few-public-methods
+    """Class for a set of trading rules."""
+
+    def __init__(self, rule_type, rules):
+        self.entry_rule = Rule(rule_type, "entry", rules.get("entry").get("conditions"))
+        self.exit_rule = Rule(rule_type, "exit", rules.get("exit").get("conditions"))
 
 
 class TradingStrategy:
@@ -76,13 +94,20 @@ class TradingStrategy:
         self.indicators = kwargs.get("indicators", [])
         self.name = kwargs.get("name", "Default Trading Strategy")
         self.description = kwargs.get("description", "Default Trading Strategy")
-        self.entry_rule = Rule(rule_type="entry", **kwargs.get("rules", [])["entry"])
-        self.exit_rule = Rule(rule_type="exit", **kwargs.get("rules", [])["exit"])
+        self.instruments = kwargs.get("instruments", [])
+        self.quantity = kwargs.get("quantity", 1)
+
+        self.short_rules = RuleSet("short", kwargs.get("short_rules", {}))
+        self.long_rules = RuleSet("long", kwargs.get("long_rules", {}))
 
     def run(self, raw_data):
         """Method to run a trading strategy."""
-        data_with_entry_signals = self.entry_rule.applay(raw_data)
-        return data_with_entry_signals
+        data_with_signals = raw_data
+        for rule_set in [self.short_rules, self.long_rules]:
+            data_with_signals = rule_set.entry_rule.apply(data_with_signals)
+            data_with_signals = rule_set.exit_rule.apply(data_with_signals)
+
+        return data_with_signals
 
     def __repr__(self):
         return f"'Name: {self.name}, Instance of : {type(self).__name__}'"

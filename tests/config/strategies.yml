@@ -4,9 +4,6 @@ strategies_composer:
     - name: BollingerBands
       display_name: Bollinger Bands
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
-      parameters:
-        window: 20
-        num_std: 2
       indicators:
         - name: BollingerBands
           parameters:
@@ -17,28 +14,74 @@ strategies_composer:
             rsi_period: 14
             overbought: 70
             oversold: 30
-      rules:
+      long_rules:
         entry:
           action: buy
           conditions:
-            - name: Price_Above_Upper_Band
-              condition: price > BollingerBands.upper
+            - name: Price_Below_Lower_Band
+              condition: close < BollingerBands.lband
             - name: RSI_Below_Oversold
               condition: RSI.value < RSI.oversold
         exit:
           action: sell
           conditions:
-            - name: Price_Below_Lower_Band
-              condition: price < BollingerBands.lower
+            - name: Price_Above_Middle_Band
+              condition: close > BollingerBands.mavg
+            - name: RSI_Above_Middle_Range
+              condition: RSI.value > 50
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: Price_Above_Upper_Band
+              condition: close > BollingerBands.hband
             - name: RSI_Above_Overbought
               condition: RSI.value > RSI.overbought
+        exit:
+          action: buy
+          conditions:
+            - name: Price_Below_Middle_Band
+              condition: close < BollingerBands.mavg
+            - name: RSI_Below_Middle_Range
+              condition: RSI.value < 50
+
+      
+    - name: RSIStrategy
+      display_name: RSI
+      description: Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui génère des signaux d'achat et de vente en fonction des niveaux de surachat et de survente identifiés par l'indicateur.
+      indicators:
+        - name: RSI
+          parameters:
+            rsi_period: 14
+            overbought: 70
+            oversold: 30
+      long_rules:
+        entry:
+          action: buy
+          conditions:
+            - name: RSI_Below_Oversold
+              condition: RSI.value < RSI.oversold
+        exit:
+          action: sell
+          conditions:
+            - name: RSI_Above_Middle_Range
+              condition: RSI.value > 50
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: RSI_Above_Overbought
+              condition: RSI.value > RSI.overbought
+        exit:
+          action: buy
+          conditions:
+            - name: RSI_Below_Middle_Range
+              condition: RSI.value < 50
+
 
     - name: MA_Crossover
       display_name: MA Crossover
       description: Une stratégie de croisement de moyennes mobiles, qui génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.
-      parameters:
-        short_window: 50
-        long_window: 200
       indicators:
         - name: MACrossover
           parameters:
@@ -48,7 +91,7 @@ strategies_composer:
           parameters:
             window: 20
             num_std: 2
-      rules:
+      long_rules:
         entry:
           action: buy
           conditions:
@@ -61,16 +104,24 @@ strategies_composer:
           conditions:
             - name: MACrossover_Down
               condition: MACrossover.short < MACrossover.long
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: MACrossover_Down
+              condition: MACrossover.short < MACrossover.long
             - name: Price_Below_Lower_Band
               condition: price < BollingerBands.lower
+        exit:
+          action: buy
+          conditions:
+            - name: MACrossover_Up
+              condition: MACrossover.short > MACrossover.long
+
 
     - name: RSIDivergence
       display_name: RSI Divergence
       description: Une stratégie basée sur la divergence de l'indice de force relative (RSI), qui détecte les divergences entre le mouvement des prix et l'indicateur RSI pour anticiper les retournements de marché.
-      parameters:
-        signal_period: 14
-        long_rsi_period: 70
-        short_rsi_period: 30
       indicators:
         - name: RSIDivergence
           parameters:
@@ -80,67 +131,63 @@ strategies_composer:
         - name: MACrossover
           parameters:
             short_window: 50
-            long_window: 200
-      rules:
+            long_window: 200 
+      long_rules:
         entry:
           action: buy
           conditions:
-            - name: RSI_Divergence_Up
-              condition: RSIDivergence.divergence == 1
+            - name: RSIDivergence_Bullish
+              condition: RSIDivergence.divergence == "bullish"
             - name: MACrossover_Up
               condition: MACrossover.short > MACrossover.long
         exit:
           action: sell
           conditions:
-            - name: RSI_Divergence_Down
-              condition: RSIDivergence.divergence == -1
-            - name: MACrossover_Down
-              condition: MACrossover.short < MACrossover.long 
-    
-    - name: MACD
-      display_name: MACD
-      description: Une stratégie basée sur la convergence/divergence des moyennes mobiles (MACD), qui génère des signaux d'achat et de vente en fonction du croisement entre la ligne MACD et la ligne de signal.
-      parameters:
-        short_window: 12
-        long_window: 26
-        signal_window: 9
-      indicators:
-        - name: MACD
-          parameters:
-            short_window: 12
-            long_window: 26
-            signal_window: 9
-      rules:
+            - name: RSIDivergence_Bearish
+              condition: RSIDivergence.divergence == "bearish"
+      short_rules:
         entry:
-          action: buy
-          conditions:
-            - name: MACD_Crossover_Up
-              condition: MACD.line > MACD.signal
-        exit:
           action: sell
           conditions:
-            - name: MACD_Crossover_Down
-              condition: MACD.line < MACD.signal
+            - name: RSIDivergence_Bearish
+              condition: RSIDivergence.divergence == "bearish"
+            - name: MACrossover_Down
+              condition: MACrossover.short < MACrossover.long
+        exit:
+          action: buy
+          conditions:
+            - name: RSIDivergence_Bullish
+              condition: RSIDivergence.divergence == "bullish"
+
+        
+
 
     - name: ATR_strategy_for_test
       display_name: ATR
       description: Une stratégie basée sur l'indicateur Average True Range (ATR), qui utilise la volatilité pour déterminer les niveaux de stop-loss et de prise de bénéfices.
-      parameters:
-        window: 14
       indicators:
         - name: ATR
           parameters:
             window: 14
-      rules:
+      long_rules:
         entry:
           action: buy
           conditions:
-            - name: ATR_Below_Threshold
-              condition: ATR.value < 0.001
+            - name: ATR_Breakout_Up
+              condition: price > (price + ATR.value)
         exit:
           action: sell
           conditions:
-            - name: ATR_Above_Threshold
-              condition: ATR.value > 0.001
-
-
+            - name: ATR_Breakout_Down
+              condition: price < (price - ATR.value)
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: ATR_Breakout_Down
+              condition: price < (price - ATR.value)
+        exit:
+          action: buy
+          conditions:
+            - name: ATR_Breakout_Up
+              condition: price > (price + ATR.value)

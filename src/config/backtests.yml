@@ -35,7 +35,7 @@ backtests_composer:
                 rsi_period: 14
                 overbought: 70
                 oversold: 30
-          rules:
+          long_rules:
             entry:
               action: buy
               conditions:
@@ -50,6 +50,22 @@ backtests_composer:
                   condition: MACD.line < MACD.signal
                 - name: RSI_Overbought
                   condition: RSI.value > 70
+          short_rules:
+            entry:
+              action: sell
+              conditions:
+                - name: MACD_Crossover_Down
+                  condition: MACD.line < MACD.signal
+                - name: RSI_Overbought
+                  condition: RSI.value > 70
+            exit:
+              action: buy
+              conditions:
+                - name: MACD_Crossover_Up
+                  condition: MACD.line > MACD.signal
+                - name: RSI_Oversold
+                  condition: RSI.value < 30
+
     
     - name: dolar_euro_macd 2
       display_name: Dolar Euro MACD
@@ -83,7 +99,7 @@ backtests_composer:
                 rsi_period: 14
                 overbought: 70
                 oversold: 30
-          rules:
+          long_rules:
             entry:
               action: buy
               conditions:
@@ -98,4 +114,19 @@ backtests_composer:
                   condition: MACD.line < MACD.signal
                 - name: RSI_Overbought
                   condition: RSI.value > 70
+          short_rules:
+            entry:
+              action: sell
+              conditions:
+                - name: MACD_Crossover_Down
+                  condition: MACD.line < MACD.signal
+                - name: RSI_Overbought
+                  condition: RSI.value > 70
+            exit:
+              action: buy
+              conditions:
+                - name: MACD_Crossover_Up
+                  condition: MACD.line > MACD.signal
+                - name: RSI_Oversold
+                  condition: RSI.value < 30
         

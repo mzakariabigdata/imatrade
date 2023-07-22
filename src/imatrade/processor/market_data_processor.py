@@ -1,8 +1,166 @@
 """Module for processing market data."""
-
+from datetime import datetime
 from collections import deque
 import pandas as pd
 from src.imatrade.model.tick import Tick
+
+
+class TradeDetails:  # pylint: disable=too-few-public-methods
+    """Represent the trading details of a position"""
+
+    def __init__(self, quantity, entry_price, stop_loss=None, take_profit=None):
+        self.quantity = quantity
+        self.entry_price = entry_price
+        self.stop_loss = stop_loss
+        self.take_profit = take_profit
+        self.exit_price = None
+
+
+class Position:  # pylint: disable=too-few-public-methods
+    """Represent a position in a trading account"""
+
+    def __init__(self, instrument, position_type, trade_details):
+        self.instrument = instrument
+        self.position_type = position_type
+        self.trade_details = trade_details
+        self.entry_time = datetime.now()
+        self.exit_time = None
+        self.is_open = True
+        self.pnl = 0  # "profit_and_loss", "net_gain_loss", "trading_outcome" ou "financial_result"
+
+    def close(self, exit_price):
+        """Close the position"""
+        if not self.is_open:
+            print(f"Position is already closed. Cannot close again {exit_price}.")
+            return
+        self.is_open = False
+        self.exit_time = datetime.now()
+        self.trade_details.exit_price = exit_price
+        if self.position_type == "long":
+            self.pnl = self.trade_details.quantity * (
+                self.trade_details.exit_price - self.trade_details.entry_price
+            )
+        else:  # assuming position_type can be "long" or "short"
+            self.pnl = self.trade_details.quantity * (
+                self.trade_details.entry_price - self.trade_details.exit_price
+            )
+
+
+class PositionHandler:
+    """Class for handling open and close positions."""
+
+    def __init__(self):
+        self.open_positions = {}
+        self.closed_positions = {}
+        self.total_pnl = 0
+        self.market_prices = {}
+        self.max_drawdown = (
+            0  # This should be calculated based on your portfolio value over time
+        )
+
+    def open_position(  # pylint: disable=too-many-arguments
+        self,
+        instrument,
+        position_type,
+        quantity,
+        open_price,
+        stop_loss=None,
+        take_profit=None,
+    ):
+        """Method to open a position."""
+        trade_details = TradeDetails(quantity, open_price, stop_loss, take_profit)
+        position = Position(instrument, position_type, trade_details)
+        if instrument not in self.open_positions:
+            self.open_positions[instrument] = []
+        self.open_positions[instrument].append(position)
+        print(
+            f"Opened a {position_type} position of {quantity} {instrument} at {open_price}"
+        )
+
+    def close_position(self, instrument, position_type, close_price):
+        """Method to close a position."""
+        if instrument not in self.open_positions:
+            print(f"No open {position_type} position to close for {instrument}")
+            return
+
+        for position in self.open_positions[instrument]:
+            if position.position_type == position_type and position.is_open:
+                position.close(close_price)
+                if instrument not in self.closed_positions:
+                    self.closed_positions[instrument] = []
+                self.closed_positions[instrument].append(position)
+                self.open_positions[instrument].remove(position)
+                self.total_pnl += position.pnl
+                print(
+                    f"Closed a {position_type} position of {position.trade_details.quantity}"
+                    f" {instrument} at {close_price}"
+                )
+                break
+        else:
+            print(f"No open {position_type} position to close for {instrument}")
+
+    def update_market_price(self, instrument, bar_data):
+        """Update the market price for an instrument."""
+        self.market_prices[instrument] = bar_data["close"]
+        self.check_stop_loss_and_take_profit(instrument, bar_data)
+
+    def check_stop_loss_and_take_profit(self, instrument, bar_data):
+        """Check and execute stop loss and take profit orders for open positions."""
+        if instrument not in self.open_positions:
+            return
+
+        for position in self.open_positions[instrument]:
+            if position.is_open and position.position_type == "long":
+                if (
+                    position.trade_details.stop_loss is not None
+                    and bar_data["low"] <= position.trade_details.stop_loss
+                ):
+                    self.close_position(
+                        instrument,
+                        position.position_type,
+                        position.trade_details.stop_loss,
+                    )
+                elif (
+                    position.trade_details.take_profit is not None
+                    and bar_data["high"] >= position.trade_details.take_profit
+                ):
+                    self.close_position(
+                        instrument,
+                        position.position_type,
+                        position.trade_details.take_profit,
+                    )
+            elif position.is_open and position.position_type == "short":
+                if (
+                    position.trade_details.stop_loss is not None
+                    and bar_data["high"] >= position.trade_details.stop_loss
+                ):
+                    self.close_position(
+                        instrument,
+                        position.position_type,
+                        position.trade_details.stop_loss,
+                    )
+                elif (
+                    position.trade_details.take_profit is not None
+                    and bar_data["low"] <= position.trade_details.take_profit
+                ):
+                    self.close_position(
+                        instrument,
+                        position.position_type,
+                        position.trade_details.take_profit,
+                    )
+
+    def get_open_positions(self):
+        """Method to get open positions."""
+        return self.open_positions
+
+    def get_closed_positions(self):
+        """Method to get closed positions."""
+        return self.closed_positions
+
+    def total_open_positions(self):
+        """Method to get total open positions."""
+        total = sum(len(positions) for positions in self.open_positions.values())
+        return total
 
 
 class TickHandler:  # pylint: disable=too-few-public-methods
@@ -31,7 +189,7 @@ class TickHandler:  # pylint: disable=too-few-public-methods
             strategy.handle_bar(bar_data)
 
 
-class MarketDataProcessor:  # pylint: disable=too-few-public-methods
+class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-instance-attributes
     """Class for processing market data."""
 
     def __init__(self, data_frame: pd.DataFrame, strategy=None):
@@ -45,6 +203,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
             indicator: deque(maxlen=indicator.get_window_size())
             for indicator in self.indicators
         }
+        self.position_handler = PositionHandler()
 
     def get_data_frame_processed(self):
         """Method for getting data processor."""
@@ -108,10 +267,34 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
     def on_bar(self, index, bar_data):
         """Method for handling bar."""
 
+        instrument = self.strategy.instruments[0]
+        close_price = bar_data["close"]
+
+        # Update market price for instrument
+        self.position_handler.update_market_price(instrument, bar_data)
+
         bar_data_with_indicator = self.add_indicators(bar_data)
         if bar_data_with_indicator is not None:
-            bar_data_with_signals = self.apply_startegy(bar_data_with_indicator)
-            self.display_bar(bar_data_with_signals)
+            signals_df = self.apply_startegy(bar_data_with_indicator)
+            # Vérifier le signal d'achat
+            if signals_df["Signal.long.entry"]:
+                self.position_handler.open_position(
+                    instrument, "long", self.strategy.quantity, close_price
+                )
+            # Vérifier le signal de vente
+            elif signals_df["Signal.short.entry"]:
+                self.position_handler.open_position(
+                    instrument, "short", self.strategy.quantity, close_price
+                )
+            # Vérifier le signal de sortie pour une position longue
+            elif signals_df["Signal.long.exit"]:
+                self.position_handler.close_position(instrument, "long", close_price)
+            # Vérifier le signal de sortie pour une position short
+            elif signals_df["Signal.short.exit"]:
+                self.position_handler.close_position(instrument, "short", close_price)
+
+            # self.display_bar(signals_df)
+
         self.add_row_to_dataframe(index, bar_data)
         # self.display_bar(bar_data, index)
 
@@ -127,8 +310,3 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods
             pass
 
         print(self.data_frame_processed.dropna())
-        # for _, row in self.data_frame.iterrows():
-        #     timestamp = row["timestamp"]
-        #     price = row["price"]
-        #     volume = row["volume"]
-        #     self.tick_handler.on_tick(timestamp, price, volume)

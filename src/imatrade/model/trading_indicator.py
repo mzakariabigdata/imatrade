@@ -52,7 +52,7 @@ class IchimokuCloudIndicator(TradingIndicator):
         super().__init__(**kwargs)
 
     def prepare_indicator_data_for_bar(self, window_data: List[float]):
-        return super().prepare_indicator_data_for_bar(window_data)
+        pass
 
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Ichimoku Cloud."""
@@ -129,7 +129,7 @@ class ATRIndicator(TradingIndicator):
         super().__init__(**kwargs)
 
     def prepare_indicator_data_for_bar(self, window_data: List[float]):
-        return super().prepare_indicator_data_for_bar(window_data)
+        pass
 
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Average True Range."""
@@ -264,6 +264,7 @@ class RSIIndicator(TradingIndicator):
             )
             result["value"] = rsi_indicator.rsi().iloc[-1]
             result["oversold"] = self.parameters["oversold"]
+            result["overbought"] = self.parameters["overbought"]
         # self.market_data["RSI"] = rsi_indicator.rsi()
         return result if result else None
 
@@ -309,10 +310,13 @@ class BollingerBandsIndicator(TradingIndicator):
             )
             bollinger_hband = bolband.bollinger_hband()
             bollinger_lband = bolband.bollinger_lband()
+            bollinger_mavg = bolband.bollinger_mavg()
             if not bollinger_hband.empty:
                 result["hband"] = bollinger_hband.iloc[-1]  # Return the last value
             if not bollinger_lband.empty:
                 result["lband"] = bollinger_lband.iloc[-1]  # Return the last value
+            if not bollinger_mavg.empty:
+                result["mavg"] = bollinger_mavg.iloc[-1]
             # if not bollinger_hband.empty:
             #     return bollinger_hband.iloc[-1]  # Return the last value
         # return None
@@ -352,8 +356,8 @@ class StochasticOscillatorIndicator(TradingIndicator):
         super().__init__(**kwargs)
 
     def prepare_indicator_data_for_bar(self, window_data: List[float]):
-        return super().prepare_indicator_data_for_bar(window_data)
-    
+        pass
+
     def prepare_data(self, market_data):
         """Prépare les données pour l'indicateur Stochastic Oscillator."""
         self.market_data = market_data.copy()
@@ -433,11 +437,11 @@ class MAEnvelopeIndicator(TradingIndicator):
         """Prépare les données pour l'indicateur MA Envelope pour une barre donnée."""
         result = {}
         if len(window_data) >= self.parameters["ma_period"]:
-            ma = np.mean(window_data[-self.parameters["ma_period"] :])
-            result["ma"] = ma
+            mvg = np.mean(window_data[-self.parameters["ma_period"] :])
+            result["ma"] = mvg
             result["price"] = window_data[-1]
-            result["upper_band"] = ma * (1 + self.parameters["ma_distance"])
-            result["lower_band"] = ma * (1 - self.parameters["ma_distance"])
+            result["upper_band"] = mvg * (1 + self.parameters["ma_distance"])
+            result["lower_band"] = mvg * (1 - self.parameters["ma_distance"])
         return result if result else None
 
     def prepare_data(self, market_data):
@@ -488,10 +492,10 @@ class BreakoutIndicator(TradingIndicator):
         """Prépare les données pour l'indicateur Breakout pour une barre donnée."""
         result = {}
         if len(window_data) >= self.parameters["window"]:
-            ma = np.mean(window_data[-self.parameters["window"] :])
-            result["ma"] = ma
+            mva = np.mean(window_data[-self.parameters["window"] :])
+            result["ma"] = mva
             result["price"] = window_data[-1]
-            result["breakout"] = window_data[-1] > ma
+            result["breakout"] = window_data[-1] > mva
         return result if result else None
 
     def prepare_data(self, market_data):

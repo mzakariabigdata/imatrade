@@ -81,7 +81,6 @@ class TradingIndicatorsController(metaclass=Singleton):
             prepared_date = self.indicators.get(indicator_name).prepare_data(data)
             self.data_controller.set_data(prepared_date)
         self.data = prepared_date
-        print(prepared_date)
         return True
 
     def prepare_indicator_data_for_bar(self, indicator_name, window_data):

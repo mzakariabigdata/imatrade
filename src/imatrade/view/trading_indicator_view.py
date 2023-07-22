@@ -11,7 +11,7 @@ class TradingIndicatorView:
         """Affiche tous les indicators de trading"""
         print("Indicators de trading :")
         for indicator_name, indicator in indicators.items():
-            print(f"\nStrategy name: {indicator_name}")
+            print(f"\nIndicator name: {indicator_name}")
             TradingIndicatorView.display_indicator(indicator)
 
     @staticmethod

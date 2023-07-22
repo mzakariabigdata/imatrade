@@ -18,7 +18,7 @@ class TradingBacktestView:
     def display_all_backtests(backtests):
         """Display all backtests."""
         for backtest_name, backtest in backtests.items():
-            print(f"\nBacktest name: {backtest_name}")
+            print(f"Backtest name: {backtest_name}")
             TradingBacktestView.display_backtest(backtest)
 
     @staticmethod
