@@ -32,6 +32,8 @@ from src.imatrade.command.add_task_command import (
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
+from src.imatrade.model.report_generator import ReportGenerator
+
 
 from src.imatrade.controller.task_controller import TaskController
 from src.imatrade.strategy.task import TitleSortingStrategy
@@ -101,10 +103,11 @@ def create_trading_strategy_controller():
     strategy_factory = TradingStrategyFactory(
         APPLICATION.strategies_config.strategies_composer
     )
+    report_generator = ReportGenerator()
     oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
     treading_data_controller = TreadingDataController(oanda_data_provider)
     trading_strategy_controller = TradingStrategyController(
-        strategy_factory, treading_data_controller
+        strategy_factory, treading_data_controller, report_generator
     )
 
     return trading_strategy_controller

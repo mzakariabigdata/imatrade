@@ -79,6 +79,6 @@ def trading_strategy_controller():
     oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
     treading_data_controller = TreadingDataController(oanda_data_provider)
     trading_strategy_controller_fixture = TradingStrategyController(
-        strategy_factory, treading_data_controller
+        strategy_factory, treading_data_controller, None
     )
     return trading_strategy_controller_fixture

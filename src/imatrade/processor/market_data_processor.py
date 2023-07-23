@@ -16,7 +16,7 @@ class TradeDetails:  # pylint: disable=too-few-public-methods
         self.exit_price = None
 
 
-class Position:  # pylint: disable=too-few-public-methods
+class Position:  # pylint: disable=too-few-public-methods, too-many-instance-attributes, too-many-arguments
     """Represent a position in a trading account"""
 
     def __init__(self, entry_time, instrument, position_type, trade_details):
@@ -84,6 +84,10 @@ class PositionHandler:
                     f"{str(round(position.capital_after_close, 2)).ljust(14)}"
                 )
 
+    def get_financial_management(self):
+        """Method to get financial management."""
+        return self.financial_management
+
     def get_position_size(self, open_price, stop_loss):
         """Determine the size of the position based on the risk per trade."""
         risk_amount = (
@@ -129,8 +133,13 @@ class PositionHandler:
         #     f"Opened a {position_type} position of {quantity} {instrument} at {open_price}"
         # )
 
-    def close_position(
-        self, exit_time, instrument, position_type, close_price, reason=""
+    def close_position(  # pylint: disable=too-many-arguments
+        self,
+        exit_time,
+        instrument,
+        position_type,
+        close_price,
+        reason="",
     ):
         """Method to close a position."""
         if instrument not in self.open_positions:
@@ -278,6 +287,10 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
     def get_data_frame_processed(self):
         """Method for getting data processor."""
         return self.data_frame_processed
+
+    def get_position_handler(self):
+        """Method for getting position handler."""
+        return self.position_handler
 
     def add_row_to_dataframe(self, index, row_data):
         """

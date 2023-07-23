@@ -8,7 +8,8 @@ from src.imatrade.processor.market_data_processor import MarketDataProcessor
 class TradingStrategyController(metaclass=Singleton):
     """Contrôleur des stratégies de trading"""
 
-    def __init__(self, strategy_factory, data_controller):
+    def __init__(self, strategy_factory, data_controller, report_generator):
+        self.report_generator = report_generator
         self.strategy_factory = strategy_factory
         self.strategies = {}  # Stocker les stratégies créées
         self.data_controller = data_controller  # Contrôleur des données
@@ -96,9 +97,13 @@ class TradingStrategyController(metaclass=Singleton):
             self.data_controller.get_data(), strategy
         )
         market_data_processor.process_market_data()
+
         data_frame_processed = market_data_processor.get_data_frame_processed()
         self.data_controller.set_data(data_frame_processed)
         self.data_controller.save_data()
+
+        position_handler = market_data_processor.get_position_handler()
+        self.report_generator.generate_close_report(position_handler)
 
     def run_strategy(self, strategy_name):
         """Exécuter une stratégie de trading"""
