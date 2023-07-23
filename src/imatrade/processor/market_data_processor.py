@@ -49,7 +49,8 @@ class Position:  # pylint: disable=too-few-public-methods
 class PositionHandler:
     """Class for handling open and close positions."""
 
-    def __init__(self):
+    def __init__(self, financial_management):
+        self.financial_management = financial_management  # new attribute
         self.open_positions = {}
         self.closed_positions = {}
         self.total_pnl = 0
@@ -58,16 +59,40 @@ class PositionHandler:
             0  # This should be calculated based on your portfolio value over time
         )
 
+    def get_position_size(self, open_price, stop_loss):
+        """Determine the size of the position based on the risk per trade."""
+        risk_amount = (
+            self.financial_management.get_capital()
+            * self.financial_management.risk_per_trade
+        )
+        print(f"_______stop_loss: {stop_loss} _______open_price: {open_price} _______")
+        position_size = risk_amount / abs(open_price - stop_loss)
+        return position_size
+
     def open_position(  # pylint: disable=too-many-arguments
         self,
         instrument,
         position_type,
-        quantity,
         open_price,
-        stop_loss=None,
-        take_profit=None,
     ):
         """Method to open a position."""
+
+        # Check if there is already an open position for the instrument
+        if instrument in self.open_positions and self.open_positions[instrument]:
+            print(f"There is already an open position for {instrument}")
+            return
+
+        if self.financial_management.get_stop_loss() is not None:
+            # Get the position size based on risk management
+            stop_loss = self.financial_management.get_stop_loss()
+
+            quantity = self.get_position_size(open_price, stop_loss)
+
+        take_profit = self.financial_management.get_take_profit()
+
+        invested_amount = quantity * open_price
+        self.financial_management.update_capital(-invested_amount)
+
         trade_details = TradeDetails(quantity, open_price, stop_loss, take_profit)
         position = Position(instrument, position_type, trade_details)
         if instrument not in self.open_positions:
@@ -77,7 +102,7 @@ class PositionHandler:
             f"Opened a {position_type} position of {quantity} {instrument} at {open_price}"
         )
 
-    def close_position(self, instrument, position_type, close_price):
+    def close_position(self, instrument, position_type, close_price, reason=""):
         """Method to close a position."""
         if instrument not in self.open_positions:
             print(f"No open {position_type} position to close for {instrument}")
@@ -91,10 +116,16 @@ class PositionHandler:
                 self.closed_positions[instrument].append(position)
                 self.open_positions[instrument].remove(position)
                 self.total_pnl += position.pnl
+                self.financial_management.close_trade(
+                    position.pnl
+                )  # Update the financial management parameters
                 print(
                     f"Closed a {position_type} position of {position.trade_details.quantity}"
-                    f" {instrument} at {close_price}"
+                    f" {instrument} at {close_price} because of {reason}"
                 )
+                print(
+                    f"Updated Financial Management: {self.financial_management}"
+                )  # Print out the financial management details
                 break
         else:
             print(f"No open {position_type} position to close for {instrument}")
@@ -119,6 +150,7 @@ class PositionHandler:
                         instrument,
                         position.position_type,
                         position.trade_details.stop_loss,
+                        "stop loss reached",
                     )
                 elif (
                     position.trade_details.take_profit is not None
@@ -128,6 +160,7 @@ class PositionHandler:
                         instrument,
                         position.position_type,
                         position.trade_details.take_profit,
+                        "take profit reached",
                     )
             elif position.is_open and position.position_type == "short":
                 if (
@@ -138,6 +171,7 @@ class PositionHandler:
                         instrument,
                         position.position_type,
                         position.trade_details.stop_loss,
+                        "stop loss reached",
                     )
                 elif (
                     position.trade_details.take_profit is not None
@@ -147,6 +181,7 @@ class PositionHandler:
                         instrument,
                         position.position_type,
                         position.trade_details.take_profit,
+                        "take profit reached",
                     )
 
     def get_open_positions(self):
@@ -203,7 +238,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
             indicator: deque(maxlen=indicator.get_window_size())
             for indicator in self.indicators
         }
-        self.position_handler = PositionHandler()
+        self.position_handler = PositionHandler(strategy.financial_management)
 
     def get_data_frame_processed(self):
         """Method for getting data processor."""
@@ -278,20 +313,24 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
             signals_df = self.apply_startegy(bar_data_with_indicator)
             # Vérifier le signal d'achat
             if signals_df["Signal.long.entry"]:
-                self.position_handler.open_position(
-                    instrument, "long", self.strategy.quantity, close_price
-                )
+                print(bar_data["time"], end=" ")
+                self.position_handler.open_position(instrument, "long", close_price)
             # Vérifier le signal de vente
             elif signals_df["Signal.short.entry"]:
-                self.position_handler.open_position(
-                    instrument, "short", self.strategy.quantity, close_price
-                )
+                print(bar_data["time"], end=" ")
+                self.position_handler.open_position(instrument, "short", close_price)
             # Vérifier le signal de sortie pour une position longue
             elif signals_df["Signal.long.exit"]:
-                self.position_handler.close_position(instrument, "long", close_price)
+                print(bar_data["time"], end=" ")
+                self.position_handler.close_position(
+                    instrument, "long", close_price, "exit signal received"
+                )
             # Vérifier le signal de sortie pour une position short
             elif signals_df["Signal.short.exit"]:
-                self.position_handler.close_position(instrument, "short", close_price)
+                print(bar_data["time"], end=" ")
+                self.position_handler.close_position(
+                    instrument, "short", close_price, "exit signal received"
+                )
 
             # self.display_bar(signals_df)
 

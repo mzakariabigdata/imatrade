@@ -87,6 +87,65 @@ class RuleSet:  # pylint: disable=too-few-public-methods
         self.exit_rule = Rule(rule_type, "exit", rules.get("exit").get("conditions"))
 
 
+class FinancialManagement:  # pylint: disable=too-many-instance-attributes
+    """Represent the financial parameters of a trading strategy"""
+
+    def __init__(self, initial_capital, risk_per_trade, stop_loss, take_profit):
+        self.stop_loss = stop_loss
+        self.take_profit = take_profit
+        self.initial_capital = initial_capital
+        self.current_capital = (
+            initial_capital  # suppose que nous commençons avec le capital initial
+        )
+        self.risk_per_trade = risk_per_trade
+        self.pnl = 0
+        self.trades = 0
+        self.win_trades = 0
+        self.loss_trades = 0
+
+    def get_take_profit(self):
+        """Return the take profit value"""
+        return self.take_profit
+
+    def get_stop_loss(self):
+        """Return the stop loss value"""
+        return self.stop_loss
+
+    def close_trade(self, pnl):
+        """Close a trade and update the financial management parameters."""
+        self.update_capital(pnl)
+        self.trades += 1
+        self.pnl += pnl
+        if pnl > 0:
+            self.win_trades += 1
+        elif pnl < 0:
+            self.loss_trades += 1
+
+    def update_capital(self, pnl):
+        """Update the current capital based on profit or loss from a trade"""
+        self.current_capital += pnl
+
+    def calculate_position_size(self):
+        """Calculate the position size based on risk per trade and current capital"""
+        return self.current_capital * self.risk_per_trade
+
+    def calculate_performance(self):
+        """Calculate performance metrics"""
+        # TODO: Implement performance calculations
+
+    def get_capital(self):
+        """Return the current capital."""
+        return self.current_capital
+
+    def __repr__(self):
+        # return all the parameters of the financial management
+        return (
+            f"Initial capital: {self.initial_capital}, Current capital: {self.current_capital},"
+            f"Risk per trade: {self.risk_per_trade}, PnL: {self.pnl}, Trades: {self.trades}, "
+            f"Win trades: {self.win_trades}, Loss trades: {self.loss_trades}"
+        )
+
+
 class TradingStrategy:
     """Class for trading strategies."""
 
@@ -95,8 +154,12 @@ class TradingStrategy:
         self.name = kwargs.get("name", "Default Trading Strategy")
         self.description = kwargs.get("description", "Default Trading Strategy")
         self.instruments = kwargs.get("instruments", [])
-        self.quantity = kwargs.get("quantity", 1)
-
+        self.financial_management = FinancialManagement(
+            kwargs.get("financial_management").get("initial_capital"),
+            kwargs.get("financial_management").get("risk_per_trade"),
+            kwargs.get("financial_management").get("stop_loss"),
+            kwargs.get("financial_management").get("take_profit"),
+        )
         self.short_rules = RuleSet("short", kwargs.get("short_rules", {}))
         self.long_rules = RuleSet("long", kwargs.get("long_rules", {}))
 

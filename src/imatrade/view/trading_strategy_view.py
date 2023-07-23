@@ -12,6 +12,7 @@ class TradingStrategyView:
         print(f"Stratégie de trading : {strategy.name}")
         print(f"déscription: {strategy.description}")
         print(f"Instruments : {strategy.instruments}")
+        print(f"FinancialManagement : {strategy.financial_management}")
         for indicator in strategy.indicators:
             print(f"  indicator: {indicator.name}")
             print(f"     Object: {indicator}")
@@ -49,6 +50,7 @@ class TradingStrategyView:
         print(f"Nom : {strategy.name}")
         print(f"Description : {strategy.description}")
         print(f"Instruments : {strategy.instruments}")
+        print(f"FinancialManagement : {strategy.financial_management}")
         for indicator in strategy.indicators:
             print(f"  indicator: {indicator.name}")
             print(f"    Paramètres : {indicator.parameters}")

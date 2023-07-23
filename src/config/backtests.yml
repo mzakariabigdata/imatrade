@@ -22,6 +22,9 @@ backtests_composer:
       strategies:
         - name: MACD with RSI
           description: Stratégie de trading avancée combinant les indicateurs MACD et RSI avec contrôle du risque et diversification
+          financial_management:
+            initial_capital: 10000
+            risk_per_trade: 0.02
           indicators:
             - name: MACD
               display_name: Moving Average Convergence Divergence
@@ -86,6 +89,9 @@ backtests_composer:
       strategies:
         - name: MACD with RSI
           description: Stratégie de trading avancée combinant les indicateurs MACD et RSI avec contrôle du risque et diversification
+          financial_management:
+            initial_capital: 10000
+            risk_per_trade: 0.02
           indicators:
             - name: MACD
               display_name: Moving Average Convergence Divergence

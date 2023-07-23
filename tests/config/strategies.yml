@@ -4,6 +4,11 @@ strategies_composer:
     - name: BollingerBands
       display_name: Bollinger Bands
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02  
+        take_profit: 0.04 
       indicators:
         - name: BollingerBands
           parameters:
@@ -49,6 +54,11 @@ strategies_composer:
     - name: RSIStrategy
       display_name: RSI
       description: Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui génère des signaux d'achat et de vente en fonction des niveaux de surachat et de survente identifiés par l'indicateur.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02  
+        take_profit: 0.04 
       indicators:
         - name: RSI
           parameters:
@@ -82,6 +92,11 @@ strategies_composer:
     - name: MA_Crossover
       display_name: MA Crossover
       description: Une stratégie de croisement de moyennes mobiles, qui génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02  
+        take_profit: 0.04 
       indicators:
         - name: MACrossover
           parameters:
@@ -122,6 +137,11 @@ strategies_composer:
     - name: RSIDivergence
       display_name: RSI Divergence
       description: Une stratégie basée sur la divergence de l'indice de force relative (RSI), qui détecte les divergences entre le mouvement des prix et l'indicateur RSI pour anticiper les retournements de marché.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02  
+        take_profit: 0.04 
       indicators:
         - name: RSIDivergence
           parameters:
@@ -165,6 +185,11 @@ strategies_composer:
     - name: ATR_strategy_for_test
       display_name: ATR
       description: Une stratégie basée sur l'indicateur Average True Range (ATR), qui utilise la volatilité pour déterminer les niveaux de stop-loss et de prise de bénéfices.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02  
+        take_profit: 0.04 
       indicators:
         - name: ATR
           parameters:
