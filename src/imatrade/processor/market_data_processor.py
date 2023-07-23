@@ -284,13 +284,17 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
         }
         self.position_handler = PositionHandler(strategy.financial_management)
 
+    def get_position_handler(self):
+        """Method for getting position handler."""
+        return self.position_handler
+
     def get_data_frame_processed(self):
         """Method for getting data processor."""
         return self.data_frame_processed
 
-    def get_position_handler(self):
-        """Method for getting position handler."""
-        return self.position_handler
+    def get_startegy(self):
+        """Method for getting strategy."""
+        return self.strategy
 
     def add_row_to_dataframe(self, index, row_data):
         """

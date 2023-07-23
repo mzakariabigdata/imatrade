@@ -102,8 +102,7 @@ class TradingStrategyController(metaclass=Singleton):
         self.data_controller.set_data(data_frame_processed)
         self.data_controller.save_data()
 
-        position_handler = market_data_processor.get_position_handler()
-        self.report_generator.generate_close_report(position_handler)
+        self.report_generator.generate_close_report(market_data_processor)
 
     def run_strategy(self, strategy_name):
         """Exécuter une stratégie de trading"""

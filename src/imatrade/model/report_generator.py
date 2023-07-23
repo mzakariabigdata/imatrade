@@ -41,16 +41,19 @@ class ReportGenerator:
         with path_report.open("w") as file:
             file.write(report)
 
-    def generate_close_report(self, position_handler):
+    def generate_close_report(self, market_data_processor):
         """Generate the close report"""
         env = self.get_templates_environment()
         template = env.get_template("close_report.html.j2")
 
+        position_handler = market_data_processor.get_position_handler()
         financial_management = position_handler.get_financial_management()
         closed_positions = position_handler.get_closed_positions()
+        stratgy = market_data_processor.get_startegy()
 
         # Render the template with the given data
         rendered_report = template.render(
+            strategy=stratgy,
             initial_capital=financial_management.initial_capital,
             current_capital=financial_management.current_capital,
             risk_per_trade=financial_management.risk_per_trade,
