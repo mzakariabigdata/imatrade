@@ -107,6 +107,19 @@ class FinancialManagement:  # pylint: disable=too-many-instance-attributes
         """Return the take profit value"""
         return self.take_profit
 
+    def display(self):
+        """Display the financial management details"""
+        print("Financial Management Details:")
+        print(f"Initial capital: {self.initial_capital}")
+        print(f"Current capital: {self.current_capital}")
+        print(f"Risk per trade: {self.risk_per_trade}")
+        print(f"Total PnL: {self.pnl}")
+        print(f"Total trades: {self.trades}")
+        print(f"Winning trades: {self.win_trades}")
+        print(f"Losing trades: {self.loss_trades}")
+        print(f"Stop loss: {self.stop_loss}")
+        print(f"Take profit: {self.take_profit}")
+
     def get_stop_loss(self):
         """Return the stop loss value"""
         return self.stop_loss
@@ -134,6 +147,10 @@ class FinancialManagement:  # pylint: disable=too-many-instance-attributes
         # TODO: Implement performance calculations
 
     def get_capital(self):
+        """Return the current capital."""
+        return self.current_capital
+
+    def get_current_capital(self):
         """Return the current capital."""
         return self.current_capital
 
