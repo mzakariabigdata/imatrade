@@ -1,7 +1,7 @@
 
 strategies_composer:
   strategies:
-    - name: BollingerBands
+    - name: BollingerBandsRSI
       display_name: Bollinger Bands
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
       financial_management:
@@ -53,7 +53,50 @@ strategies_composer:
             - name: RSI_Below_Middle_Range
               condition: RSI.value < 50
 
-      
+    - name: BollingerBands
+      display_name: Bollinger Bands
+      description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02
+        take_profit: 0.04
+      instruments:
+        - EURUSD
+        - GBPUSD
+      indicators:
+        - name: BollingerBands
+          parameters:
+            window: 20
+            num_std: 2
+        - name: RSI 
+          parameters:
+            rsi_period: 14
+            overbought: 70
+            oversold: 30
+      long_rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Price_Below_Lower_Band
+              condition: close < BollingerBands.lband
+        exit:
+          action: sell
+          conditions:
+            - name: Price_Above_Middle_Band
+              condition: close > BollingerBands.mavg
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: Price_Above_Upper_Band
+              condition: close > BollingerBands.hband
+        exit:
+          action: buy
+          conditions:
+            - name: Price_Below_Middle_Band
+              condition: close < BollingerBands.mavg
+
     - name: RSIStrategy
       display_name: RSI
       description: Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui génère des signaux d'achat et de vente en fonction des niveaux de surachat et de survente identifiés par l'indicateur.
