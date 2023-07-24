@@ -135,5 +135,10 @@ gitconfig.txt
 # jupyter
 jupyter/
 
-# data
-data/
+src/data/saves/*
+
+# Ignore HTML files
+src/imatrade/trading_reports/*.html
+
+# But do not ignore .j2 HTML files
+!src/imatrade/trading_reports/*.html.j2
