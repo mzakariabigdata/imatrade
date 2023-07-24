@@ -46,5 +46,7 @@ class TradingStrategyFactory(metaclass=Singleton):
             raise ValueError("Builder not loaded")
         if strategy_name not in self.strategies:
             raise ValueError(f"Invalid strategy name: {strategy_name}")
-        strategy_config = self.strategies_composer.strategies.where(name=strategy_name)
+        strategy_config = self.strategies_composer.strategies.where(
+            name__eq=strategy_name
+        )
         return self._builder.build(strategy_config.find_by(name=strategy_name))

@@ -64,26 +64,32 @@
         <table class="table table-striped">
             <thead>
                 <tr>
+                    <th scope="col">Id</th>
                     <th scope="col">Instrument</th>
+                    <th scope="col">Quantity</th>
                     <th scope="col">Entry Time</th>
                     <th scope="col">Entry Price</th>
                     <th scope="col">Exit Time</th>
                     <th scope="col">Exit Price</th>
                     <th scope="col">PnL</th>
                     <th scope="col">Closed Capital</th>
+                    <th scope="col">Close Reason</th>
                 </tr>
             </thead>
             <tbody>
                 {% for instrument, positions in closed_positions.items() %}
                     {% for position in positions %}
                     <tr>
+                        <th scope="row">{{ position.id }}</th>
                         <td>{{ instrument }}</td>
+                        <td>{{ position.trade_details.quantity | round(5) }}</td>
                         <td>{{ position.entry_time }}</td>
                         <td>{{ position.trade_details.entry_price }}</td>
                         <td>{{ position.exit_time }}</td>
                         <td>{{ position.trade_details.exit_price }}</td>
-                        <td>{{ position.pnl }}</td>
-                        <td>{{ position.capital_after_close }}</td>
+                        <td>{{ position.pnl | round(5) }}</td>
+                        <td>{{ position.capital_after_close | round(5) }}</td>
+                        <td>{{ position.close_reason }}</td>
                     </tr>
                     {% endfor %}
                 {% endfor %}

@@ -2,7 +2,7 @@
 strategies_composer:
   strategies:
     - name: BollingerBandsRSI
-      display_name: Bollinger Bands
+      display_name: Bollinger Bands + RSI
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.
       financial_management:
         initial_capital: 10000

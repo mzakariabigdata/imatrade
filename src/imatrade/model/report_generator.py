@@ -2,6 +2,7 @@
 which is responsible for generating the close report."""
 
 from pathlib import Path
+import webbrowser
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
@@ -40,6 +41,12 @@ class ReportGenerator:
 
         with path_report.open("w") as file:
             file.write(report)
+
+        self.open_report(path_report)
+
+    def open_report(self, path_report):
+        """Open the report in the default web browser"""
+        webbrowser.open("file://" + str(path_report))
 
     def generate_close_report(self, market_data_processor):
         """Generate the close report"""
