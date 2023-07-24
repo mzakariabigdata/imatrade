@@ -11,7 +11,7 @@ class ReportGenerator:
     def get_templates_environment(self):
         """Return the templates environment"""
         path = Path(__file__)
-        path_report = path.parent.parent / "reports"
+        path_report = path.parent.parent / "trading_reports"
 
         env = Environment(
             loader=FileSystemLoader(path_report),
@@ -23,7 +23,7 @@ class ReportGenerator:
         """Save the report to a file"""
 
         path = Path(__file__)
-        path_report_dir = path.parent.parent / "reports"
+        path_report_dir = path.parent.parent / "trading_reports"
 
         file_number = 1
         file_name = f"{file_number}_close_report.html"
