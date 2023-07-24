@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Trading Report</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-4">Strategy Details:</h2>
+        <p><strong>Name:</strong> {{ strategy.name }}</p>
+        <p><strong>Description:</strong> {{ strategy.description }}</p>
+        <p><strong>Instruments:</strong> {{ strategy.instruments }}</p>
+        <p><strong>Financial Management:</strong></p>
+        <ul class="list-unstyled">
+            <li>Initial Capital: {{ strategy.financial_management.initial_capital }}</li>
+            <li>Risk per Trade: {{ strategy.financial_management.risk_per_trade }}</li>
+            <li>Stop Loss: {{ strategy.financial_management.stop_loss }}</li>
+            <li>Take Profit: {{ strategy.financial_management.take_profit }}</li>
+        </ul>
+        <p><strong>Short Rules:</strong></p> 
+        <ul class="list-unstyled">
+            <li>Exit:</li>  
+            <ul>
+                {% for condition in strategy.short_rules.exit_rule.conditions %}
+                <li>{{ condition.name }} : {{ condition.condition_str }}</li>
+                {% endfor %}
+            </ul>
+            <li>Entry:</li>
+            <ul>
+                {% for condition in strategy.short_rules.entry_rule.conditions %}
+                <li>{{ condition.name }} : {{ condition.condition_str }}</li>
+                {% endfor %}
+            </ul>
+        </ul>
+        <p><strong>Long Rules:</strong></p> 
+        <ul class="list-unstyled">
+            <li>Exit:</li>   
+            <ul>
+                {% for condition in strategy.long_rules.exit_rule.conditions %}
+                <li>{{ condition.name }} : {{ condition.condition_str }}</li>
+                {% endfor %}
+            </ul>
+            <li>Entry:</li>
+            <ul>
+                {% for condition in strategy.long_rules.entry_rule.conditions %}
+                <li>{{ condition.name }} : {{ condition.condition_str }}</li>
+                {% endfor %}
+            </ul>
+        </ul>
+
+        <h2 class="mt-4">Financial Management Details:</h2>
+        <p>Initial capital: {{ initial_capital }}</p>
+        <p>Current capital: {{ current_capital }}</p>
+        <p>Risk per trade: {{ risk_per_trade }}</p>
+        <p>Total PnL: {{ total_pnl }}</p>
+        <p>Total trades: {{ total_trades }}</p>
+        <p>Winning trades: {{ winning_trades }}</p>
+        <p>Losing trades: {{ losing_trades }}</p>
+        <p>Stop loss: {{ stop_loss }}</p>
+        <p>Take profit: {{ take_profit }}</p>
+
+        <h2 class="mt-4">Closed Positions</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Instrument</th>
+                    <th scope="col">Entry Time</th>
+                    <th scope="col">Entry Price</th>
+                    <th scope="col">Exit Time</th>
+                    <th scope="col">Exit Price</th>
+                    <th scope="col">PnL</th>
+                    <th scope="col">Closed Capital</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for instrument, positions in closed_positions.items() %}
+                    {% for position in positions %}
+                    <tr>
+                        <td>{{ instrument }}</td>
+                        <td>{{ position.entry_time }}</td>
+                        <td>{{ position.trade_details.entry_price }}</td>
+                        <td>{{ position.exit_time }}</td>
+                        <td>{{ position.trade_details.exit_price }}</td>
+                        <td>{{ position.pnl }}</td>
+                        <td>{{ position.capital_after_close }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
