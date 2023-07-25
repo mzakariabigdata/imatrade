@@ -15,6 +15,10 @@ class TradingBacktestController:
     #     """Method to backtest a strategy."""
     #     self.trading_strategy_controller.backtest(strategy_name)
 
+    def run_backtest(self, backtest_name):
+        """Method to run a backtest."""
+        self.backtests.get(backtest_name).run()
+
     def load_backtests_builder(self):
         """Method to load backtests builder."""
         self.backtest_factory.load_builder()  # Charger les constructeurs de backtests

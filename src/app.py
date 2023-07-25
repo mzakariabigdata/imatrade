@@ -29,6 +29,7 @@ from src.imatrade.command.add_task_command import (
     DisplayBacktestsSummaryCommand,
     DisplayBacktestCommand,
     RunStrategyCommand,
+    RunBacktestCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -154,15 +155,6 @@ def trade_menu():
     task_controller = create_task_controller()
 
     ################
-    ####Backtest####
-    ################
-
-    # APPLICATION.backtests_config.backtests_composer
-    trading_backtest_controller = create_trading_backtest_controller()
-    trading_backtest_controller.create_all_backtests()
-    print("--- backtests --- ", trading_backtest_controller.backtests)
-
-    ################
     ###Indicators###
     ################
 
@@ -178,6 +170,18 @@ def trade_menu():
     # Créer toutes les stratégies à partir du fichier strategies.yaml
     strategies = trading_strategy_controller.create_all_strategies()
     print("--- strategies --- ", strategies)
+
+    ################
+    ####Backtest####
+    ################
+
+    # APPLICATION.backtests_config.backtests_composer
+    trading_backtest_controller = create_trading_backtest_controller()
+    trading_backtest_controller.trading_strategy_controller = (
+        trading_strategy_controller
+    )
+    trading_backtest_controller.create_all_backtests()
+    print("--- backtests --- ", trading_backtest_controller.backtests)
 
     #######################
     ###Données de marché###
@@ -206,6 +210,7 @@ def trade_menu():
         4_1: DisplayBacktestCommand(trading_backtest_controller),
         4_2: DisplayAllBacktestsCommand(trading_backtest_controller),
         4_3: DisplayBacktestsSummaryCommand(trading_backtest_controller),
+        4_4: RunBacktestCommand(trading_backtest_controller),
         "5": "--------- 5. Market data ---------",
         5_1: GetHistoricalDataCommand(treading_data_controller),
         5_2: ProcessMarketDataCommand(trading_strategy_controller),

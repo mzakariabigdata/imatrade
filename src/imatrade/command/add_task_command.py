@@ -343,9 +343,15 @@ class RunStrategyCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        strategy_name = input("Name of the strategy: ")
-        if not strategy_name:
-            strategy_name = "MACD"
+        strategies = self.trading_strategy_controller.get_strategies()
+        for i, (key, _) in enumerate(strategies.items(), start=1):
+            print(f"{i}: {key}", end=", ")
+        print()
+        strategy_index = input("Index of the strategy: ")
+        if not strategy_index:
+            strategy_index = 1
+        keys = list(strategies.keys())
+        strategy_name = keys[int(strategy_index) - 1]
         self.trading_strategy_controller.run_strategy(strategy_name)
 
 
@@ -372,6 +378,31 @@ class ProcessMarketDataCommand(TaskCommand):
         keys = list(strategies.keys())
         strategy_name = keys[int(strategy_index) - 1]
         self.trading_strategy_controller.process_market_data(strategy_name)
+
+
+class RunBacktestCommand(TaskCommand):
+    """Class for running a backtest."""
+
+    def __init__(self, backtest_controller):
+        self.backtest_controller = backtest_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Run a backtest"
+
+    def execute(self):
+        """Execute the command."""
+        backtets = self.backtest_controller.backtests
+        for i, (key, _) in enumerate(backtets.items(), start=1):
+            print(f"{i}: {key}", end=", ")
+        print()
+        backtest_index = input("Index of the backtest: ")
+        if not backtest_index:
+            backtest_index = 1
+        keys = list(backtets.keys())
+        backtest_name = keys[int(backtest_index) - 1]
+        self.backtest_controller.run_backtest(backtest_name)
 
 
 class QuitCommand(TaskCommand):
