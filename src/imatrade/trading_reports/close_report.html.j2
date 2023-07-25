@@ -67,6 +67,7 @@
                     <th scope="col">Id</th>
                     <th scope="col">Instrument</th>
                     <th scope="col">Quantity</th>
+                    <th scope="col">Type</th>
                     <th scope="col">Entry Time</th>
                     <th scope="col">Entry Price</th>
                     <th scope="col">Exit Time</th>
@@ -83,6 +84,7 @@
                         <th scope="row">{{ position.id }}</th>
                         <td>{{ instrument }}</td>
                         <td>{{ position.trade_details.quantity | round(5) }}</td>
+                        <td>{{ position.position_type }}</td>
                         <td>{{ position.entry_time }}</td>
                         <td>{{ position.trade_details.entry_price }}</td>
                         <td>{{ position.exit_time }}</td>
