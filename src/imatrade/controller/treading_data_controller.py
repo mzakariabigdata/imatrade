@@ -37,13 +37,15 @@ class TreadingDataController(metaclass=Singleton):
 
         # Résoudre le chemin pour éliminer le '..'
         new_path = new_path.resolve()
-        files = glob.glob(str(new_path) + "/" + str(num_files) + "*.xlsx")
+        # files = glob.glob(str(new_path) + "/" + str(num_files) + "*.xlsx")
+        files = glob.glob(str(new_path) + "/" + str(num_files) + "*.csv")
         print("new_path", new_path)
         print("files", files)
         if not files:
             print("No files found that match the prefix.")
             return None
-        dataframe = pd.read_excel(files[0])
+        # dataframe = pd.read_excel(files[0])
+        dataframe = pd.read_csv(files[0])
         self.data = dataframe
         self.file_name = self.get_file_name(files)
         return dataframe
@@ -87,9 +89,49 @@ class TreadingDataController(metaclass=Singleton):
         print(f"Data saved to data/saves/{self.file_name}_{suffix}.xlsx")
         return save_file
 
-    def get_historical_data(self):
+    def save_raw_data_to_excel(
+        self, data, instrument, start, end, price, granularity
+    ):  # pylint: disable=too-many-arguments
+        """Sauvegarder les données du marché"""
+        num_files = self.count_xlsx_files("data")  # Compter le nombre de fichiers
+        file_name = (
+            f"data/{num_files}_{instrument}_{start}_{end}_{price}_{granularity}.xlsx"
+        )
+        print("file_name", file_name)
+        data.to_csv(file_name.replace(".xlsx", ".csv"))
+
+    def count_xlsx_files(self, directory):
+        """Compte le nombre de fichiers .xlsx dans un dossier."""
+        files = glob.glob(directory + "/*.csv")
+        return len(files)
+
+    def get_history(self):
         """Récupérer les données historiques du marché"""
-        market_data = self.oanda_data_provider.get_historical_data(
-            instrument="EUR_USD", start="2021-01-01", end="2021-12-31", granularity="D"
+        instrument = "EUR_USD"
+        start = "2018-01-01"
+        end = "2023-05-31"
+        price = "M"
+        granularity = "M1"
+
+        market_data = self.oanda_data_provider.get_history(
+            instrument=instrument,
+            start=start,
+            end=end,
+            price=price,
+            granularity=granularity,
+        )
+
+        market_data.rename(
+            columns={
+                "o": "open",
+                "h": "high",
+                "l": "low",
+                "c": "close",
+            },
+            inplace=True,
+        )
+
+        self.save_raw_data_to_excel(
+            market_data, instrument, start, end, price, granularity
         )
         return market_data

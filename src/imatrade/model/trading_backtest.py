@@ -1,6 +1,7 @@
 """Contains the TradingBacktest class."""
 
 from imobject import ObjDict
+from src.imatrade.utils.config import APPLICATION
 
 # add runners to the backtest
 
@@ -31,8 +32,11 @@ class TradingBacktest:
         print(f"Description: {self.description}")
         print(f"Strategies: {self.strategies}")
         print()
-        for strategy in self.strategies:
-            strategy.run()
+        for strategy_name, strategy in self.strategies.items():
+            print(f"Running strategy: {strategy_name}")
+            strategy = APPLICATION.trading_strategy_controller.run_strategy(
+                strategy.name
+            )
 
     def __repr__(self):
         return f"'Name: {self.name}, Instance of : {type(self).__name__}'"

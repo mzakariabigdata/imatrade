@@ -142,3 +142,7 @@ src/imatrade/trading_reports/*.html
 
 # But do not ignore .j2 HTML files
 !src/imatrade/trading_reports/*.html.j2
+
+oanda.cfg
+
+src/data/xlxs/*

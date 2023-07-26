@@ -1,5 +1,6 @@
 """Module for the command line interface."""
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import click
 
@@ -33,6 +34,7 @@ from src.imatrade.command.add_task_command import (
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
+from src.imatrade.data_providers.tpqoa_data import tpqoa
 from src.imatrade.model.report_generator import ReportGenerator
 
 
@@ -71,46 +73,46 @@ def display_menu(commands):
         print(f"{key}. {command.description}")
 
 
-def create_trading_backtest_controller():
+def create_data_provider():
+    """Create a data provider."""
+    file_path = Path(__file__).parent.parent / "oanda.cfg"
+    return tpqoa(file_path), OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
+
+
+def create_trading_backtest_controller(treading_data_controller):
     """Create a trading backtest controller."""
     backtests_factory = TradingBacktestsFactory(
         APPLICATION.backtests_config.backtests_composer
     )
-    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
-    treading_data_controller = TreadingDataController(oanda_data_provider)
     trading_backtest_controller = TradingBacktestController(
         backtests_factory, treading_data_controller
     )
-
+    APPLICATION.trading_backtest_controller = trading_backtest_controller
     return trading_backtest_controller
 
 
-def create_trading_indicators_controller():
+def create_trading_indicators_controller(treading_data_controller):
     """Create a trading indicators controller."""
     indicators_factory = TradingIndicatorsFactory(
         APPLICATION.indicators_config.indicators_composer
     )
-    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
-    treading_data_controller = TreadingDataController(oanda_data_provider)
     trading_indicators_controller = TradingIndicatorsController(
         indicators_factory, treading_data_controller
     )
-
+    APPLICATION.trading_indicators_controller = trading_indicators_controller
     return trading_indicators_controller
 
 
-def create_trading_strategy_controller():
+def create_trading_strategy_controller(treading_data_controller):
     """Create a trading strategy controller."""
     strategy_factory = TradingStrategyFactory(
         APPLICATION.strategies_config.strategies_composer
     )
     report_generator = ReportGenerator()
-    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
-    treading_data_controller = TreadingDataController(oanda_data_provider)
     trading_strategy_controller = TradingStrategyController(
         strategy_factory, treading_data_controller, report_generator
     )
-
+    APPLICATION.trading_strategy_controller = trading_strategy_controller
     return trading_strategy_controller
 
 
@@ -132,7 +134,7 @@ def create_task_controller():
         sorting_strategy,
         observers=[count_observer, priority_observer, due_date_observer],
     )
-
+    APPLICATION.task_controller = task_controller
     return task_controller
 
 
@@ -140,13 +142,18 @@ def trade_menu():
     """Trade menu."""
     load_dotenv()
 
-    oanda_data_provider = OandaDataProvider(api_key=os.getenv("OANDA_API_KEY"))
+    #################
+    ###Data source###
+    #################
+
+    tpqoa_data_provider, _ = create_data_provider()
+    APPLICATION.tqpoa_data_provider = tpqoa_data_provider
 
     #####################
     ###data controller###
     #####################
     # Créer une instance du contrôleur avec la factory
-    treading_data_controller = TreadingDataController(oanda_data_provider)
+    treading_data_controller = TreadingDataController(tpqoa_data_provider)
 
     ################
     #####Tâches#####
@@ -158,7 +165,9 @@ def trade_menu():
     ###Indicators###
     ################
 
-    trading_indicators_controller = create_trading_indicators_controller()
+    trading_indicators_controller = create_trading_indicators_controller(
+        treading_data_controller
+    )
     # Créer toutes les indicators à partir du fichier indicators.yaml
     indicators = trading_indicators_controller.create_all_indicators()
     print("--- indicators --- ", indicators)
@@ -166,7 +175,9 @@ def trade_menu():
     ################
     ###Strategies###
     ################
-    trading_strategy_controller = create_trading_strategy_controller()
+    trading_strategy_controller = create_trading_strategy_controller(
+        treading_data_controller
+    )
     # Créer toutes les stratégies à partir du fichier strategies.yaml
     strategies = trading_strategy_controller.create_all_strategies()
     print("--- strategies --- ", strategies)
@@ -176,7 +187,9 @@ def trade_menu():
     ################
 
     # APPLICATION.backtests_config.backtests_composer
-    trading_backtest_controller = create_trading_backtest_controller()
+    trading_backtest_controller = create_trading_backtest_controller(
+        treading_data_controller
+    )
     trading_backtest_controller.trading_strategy_controller = (
         trading_strategy_controller
     )

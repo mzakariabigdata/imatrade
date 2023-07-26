@@ -224,7 +224,7 @@ class GetHistoricalDataCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        self.task_controller.get_historical_data()
+        self.task_controller.get_history()
 
 
 class LoadDataCommand(TaskCommand):

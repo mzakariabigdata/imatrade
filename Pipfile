@@ -16,6 +16,7 @@ openai = "*"
 ipykernel = "*"
 pandas-ta = "*"
 watchdog = "*"
+v20 = "*"
 
 [dev-packages]
 pyclean = "*"

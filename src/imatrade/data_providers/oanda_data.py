@@ -3,6 +3,7 @@ import glob
 import pandas as pd
 from oandapyV20 import API
 from oandapyV20.endpoints import instruments
+from oandapyV20.exceptions import V20Error
 from src.imatrade.adapter.data_provider import DataProvider
 
 
@@ -24,7 +25,9 @@ class OandaDataProvider(DataProvider):
         response = self.api.request(istrs)
         return float(response["candles"][0]["mid"]["c"])
 
-    def get_historical_data(self, instrument, start, end, granularity="D"):
+    def get_history(  # pylint: disable=inconsistent-return-statements
+        self, instrument, start, end, granularity
+    ):
         """Get historical data from Oanda."""
         params = {
             "from": start,
@@ -32,10 +35,24 @@ class OandaDataProvider(DataProvider):
             "granularity": granularity,
             # "count": 5000,
         }
+        data = []
+
+        # while True:
+        istrs = instruments.InstrumentsCandles(instrument=instrument, params=params)
+
+        try:
+            response = self.api.request(istrs)
+        except V20Error as err:
+            print(err)
+            return
+
+        response = self.api.request(istrs)
+
+        if not response.get("candles"):  # break the loop if no more data
+            return
 
         istrs = instruments.InstrumentsCandles(instrument=instrument, params=params)
         response = self.api.request(istrs)
-        data = []
         for candle in response["candles"]:
             data.append(
                 [

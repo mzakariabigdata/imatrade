@@ -6,7 +6,6 @@ import pytest
 from imobject import ObjDict
 from src.imatrade.utils.config import Config
 
-
 from src.imatrade.controller.trading_indicators_controller import (
     TradingIndicatorsController,
 )
@@ -81,4 +80,5 @@ def trading_strategy_controller():
     trading_strategy_controller_fixture = TradingStrategyController(
         strategy_factory, treading_data_controller, None
     )
+
     return trading_strategy_controller_fixture

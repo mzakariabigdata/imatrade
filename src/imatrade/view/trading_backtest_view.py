@@ -55,6 +55,6 @@ class TradingBacktestView:
         print(f"Data feeds: {backtest.config.data_feeds}")
         print(f"Historical data: {backtest.config.historical_data}")
         print(f"Fourward testing: {backtest.config.fourward_testing}")
-        for _, strategy in backtest.strategies.items():
+        for strategy in backtest.strategies:
             TradingStrategyView.display_strategies_summary(strategy)
         print()

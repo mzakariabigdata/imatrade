@@ -2,9 +2,12 @@
 
 import io
 import sys
+from src.imatrade.utils.config import APPLICATION
 
 
-def test_display_all_backtests(trading_backtest_controller):
+def test_display_all_backtests(
+    trading_backtest_controller, trading_strategy_controller
+):
     """Test hello world."""
 
     # Create a temporary variable to replace stdout
@@ -12,6 +15,7 @@ def test_display_all_backtests(trading_backtest_controller):
     # # Replace stdout with our temporary variable
     sys.stdout = temp_out
     # # Run the function we want to test
+    APPLICATION.trading_strategy_controller = trading_strategy_controller
     trading_backtest_controller.create_all_backtests()
     trading_backtest_controller.display_all_backtests()
     # Replace stdout with its original value
