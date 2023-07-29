@@ -71,8 +71,9 @@ class TradingIndicatorsController(metaclass=Singleton):
         if indicator_name in self.indicators:
             TradingIndicatorView.display_indicator(self.indicators[indicator_name])
 
-    def prepare_indicator_data(self, indicator_name):
+    def prepare_indicator_data(self, indicator_name, num_files=1):
         """Préparer les données pour les indicators"""
+        _, _ = self.data_controller.load_data(num_files)
         data = self.data_controller.get_data()
         if data is None:
             print("No data to prepare for indicators !")

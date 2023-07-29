@@ -17,6 +17,8 @@ ipykernel = "*"
 pandas-ta = "*"
 watchdog = "*"
 v20 = "*"
+plotly = "*"
+cufflinks = "*"
 
 [dev-packages]
 pyclean = "*"

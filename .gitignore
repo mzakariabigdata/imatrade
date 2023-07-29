@@ -146,3 +146,5 @@ src/imatrade/trading_reports/*.html
 oanda.cfg
 
 src/data/xlxs/*
+src/data/*.csv
+src/data/oldes

@@ -23,8 +23,9 @@ class TradingStrategyController(metaclass=Singleton):
         """Récupérer les stratégies"""
         return self.strategies
 
-    def prepare_strategy_data(self, strategy_name):
+    def prepare_strategy_data(self, strategy_name, num_files=1):
         """Préparer les données pour les stratégies"""
+        _, _ = self.data_controller.load_data(num_files)
         data = self.data_controller.get_data()
         if data is None:
             print("No data to prepare for strategies !")
@@ -35,7 +36,7 @@ class TradingStrategyController(metaclass=Singleton):
             print("indicator", strategy.indicators)
             for indicator in strategy.indicators:
                 data = indicator.prepare_data(data)
-            print("data", data)
+            print(data)
         self.data_controller.set_data(data)
         return data
 
@@ -89,13 +90,14 @@ class TradingStrategyController(metaclass=Singleton):
         for _, strategy in self.strategies.items():
             TradingStrategyView.display_strategies_summary(strategy)
 
-    def process_market_data(self, strategy_name):
+    def process_market_data(self, strategy_name, num_files=1):
         """Préparer les données du marché"""
-        self.data_controller.load_data()
+        _, file_name = self.data_controller.load_data(num_files)
         strategy = self.get_strategy(strategy_name)
         market_data_processor = MarketDataProcessor(
             self.data_controller.get_data(), strategy
         )
+        market_data_processor.file_name = file_name
         market_data_processor.process_market_data()
 
         data_frame_processed = market_data_processor.get_data_frame_processed()

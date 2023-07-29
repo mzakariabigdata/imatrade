@@ -35,6 +35,193 @@ class TradingIndicator(ABC):  # pylint: disable=too-few-public-methods
         return f"'Name: {self.name}, Instance of : {type(self).__name__}'"
 
 
+class N_SMA_SDIndicator(TradingIndicator):  # pylint: disable=invalid-name
+    """Un indicateur qui trace la moyenne mobile et l'écart type d'une série de prix normalisée."""
+
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.market_data = None
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        kwargs.display_name = "Normalized SMA SD Indicator"
+        kwargs.description = (
+            "Une stratégie basée sur la moyenne mobile "
+            "et l'écart type d'une série de prix normalisée."
+        )
+        super().__init__(**kwargs)
+
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return self.parameters["window"]
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur N SMA SD pour une barre donnée."""
+        result = {}
+        if len(window_data) >= self.get_window_size():
+            print("window_data", window_data)
+            prices_series = pd.Series(list(window_data))
+            # Calculate Moving Average
+            moving_avg = prices_series.mean()
+            # Calculate normalized moving average (z-score)
+            z_score_ma = (moving_avg - prices_series.mean()) / prices_series.std()
+            # Calculate Standard Deviation
+            std_dev = prices_series.std()
+            # Calculate normalized standard deviation (z-score)
+            z_score_std_dev = (std_dev - prices_series.mean()) / prices_series.std()
+
+            result = {
+                "moving_avg": moving_avg,
+                "z_score_ma": z_score_ma,
+                "std_dev": std_dev,
+                "z_score_std_dev": z_score_std_dev,
+            }
+
+        return result if result else None
+
+    def prepare_data(self, market_data):
+        """Prépare les données pour l'indicateur N SMA SD."""
+        self.market_data = market_data.copy()
+        self.market_data["moving_avg"] = (
+            self.market_data["close"].rolling(window=self.parameters["window"]).mean()
+        )
+        self.market_data["std_dev"] = (
+            self.market_data["close"].rolling(window=self.parameters["window"]).std()
+        )
+        # Z-score calculations for each window
+        self.market_data["z_score_ma"] = (
+            self.market_data["moving_avg"]
+            .rolling(window=self.parameters["window"])
+            .apply(
+                lambda x: (np.array(x)[-1] - np.mean(x)) / np.std(x)
+                if len(x) > 0
+                else np.nan
+            )
+        )
+        self.market_data["z_score_std_dev"] = (
+            self.market_data["std_dev"]
+            .rolling(window=self.parameters["window"])
+            .apply(
+                lambda x: (np.array(x)[-1] - np.mean(x)) / np.std(x)
+                if len(x) > 0
+                else np.nan
+            )
+        )
+        self.market_data = self.market_data.dropna()
+        return self.market_data
+
+    def moving_average(self, data, window_size):
+        """Calcule la moyenne mobile."""
+        window = np.ones(int(window_size)) / float(window_size)
+        return np.convolve(data, window, "same")
+
+
+class RSIIndicator(TradingIndicator):
+    """Classe pour l'indicateur Relative Strength Index."""
+
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.rsi_period = kwargs.parameters["rsi_period"]
+        self.overbought = kwargs.parameters["overbought"]
+        self.oversold = kwargs.parameters["oversold"]
+        self.market_data = None
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        kwargs.display_name = "RSI Indicator"
+        kwargs.description = (
+            "Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui "
+            "mesure la force relative d'une action par rapport à son historique."
+        )
+        super().__init__(**kwargs)
+
+    def get_window_size(self):
+        """Récupère les données pour la fenêtre."""
+        return self.rsi_period
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Calcule le RSI pour une liste donnée de prix."""
+        result = {}
+        if len(window_data) >= self.get_window_size():
+            rsi_indicator = RSI(
+                close=pd.Series(window_data), window=self.parameters["rsi_period"]
+            )
+            result["value"] = rsi_indicator.rsi().iloc[-1]
+            result["oversold"] = self.parameters["oversold"]
+            result["overbought"] = self.parameters["overbought"]
+        # self.market_data["RSI"] = rsi_indicator.rsi()
+        return result if result else None
+
+    def prepare_data(self, market_data):
+        """Prépare les données pour l'indicateur Relative Strength Index."""
+        self.market_data = market_data.copy()
+        rsi_indicator = RSI(
+            close=self.market_data["close"], window=self.parameters["rsi_period"]
+        )
+        self.market_data["RSI"] = rsi_indicator.rsi()
+
+        self.market_data = self.market_data.dropna()
+        return self.market_data
+
+
+class BollingerBandsIndicator(TradingIndicator):
+    """Classe pour l'indicateur Bollinger Bands."""
+
+    def __init__(self, **kwargs):
+        kwargs = ObjDict(kwargs)
+        self.market_data = None
+        self.parameters = kwargs.parameters
+        self.name = kwargs.name
+        kwargs.display_name = "Bollinger Bands Indicator"
+        kwargs.description = (
+            "Une stratégie basée sur les bandes de Bollinger, "
+            "qui sont des bandes de volatilité autour d'une moyenne mobile."
+        )
+        super().__init__(**kwargs)
+
+    def get_window_size(self):
+        """Récupère la taille de la fenêtre."""
+        return self.parameters["window"]
+
+    def prepare_indicator_data_for_bar(self, window_data: List[float]):
+        """Prépare les données pour l'indicateur Bollinger Bands pour une barre donnée."""
+        result = {}
+        if len(window_data) >= self.get_window_size():
+            bolband = BollingerBands(
+                close=pd.Series(window_data),
+                window=self.parameters["window"],
+                window_dev=self.parameters["num_std"],
+            )
+            bollinger_hband = bolband.bollinger_hband()
+            bollinger_lband = bolband.bollinger_lband()
+            bollinger_mavg = bolband.bollinger_mavg()
+            if not bollinger_hband.empty:
+                result["hband"] = bollinger_hband.iloc[-1]  # Return the last value
+            if not bollinger_lband.empty:
+                result["lband"] = bollinger_lband.iloc[-1]  # Return the last value
+            if not bollinger_mavg.empty:
+                result["mavg"] = bollinger_mavg.iloc[-1]
+            # if not bollinger_hband.empty:
+            #     return bollinger_hband.iloc[-1]  # Return the last value
+        # return None
+        return result if result else None
+
+    def get_prepare_data(self):
+        """Prépare les données pour l'indicateur Bollinger Bands."""
+        return self.market_data
+
+    def prepare_data(self, market_data):
+        """Prépare les données pour l'indicateur Bollinger Bands."""
+        self.market_data = market_data.copy()
+        bollinger = BollingerBands(
+            close=self.market_data["close"],
+            window=self.parameters["window"],
+            window_dev=self.parameters["num_std"],
+        )
+        self.market_data["bollinger_high"] = bollinger.bollinger_hband()
+        self.market_data["bollinger_low"] = bollinger.bollinger_lband()
+        self.market_data = self.market_data.dropna()
+        return self.market_data
+
+
 class IchimokuCloudIndicator(TradingIndicator):
     """Classe pour l'indicateur Ichimoku Cloud."""
 
@@ -229,113 +416,6 @@ class MACrossoverIndicator(TradingIndicator):
             .rolling(window=self.parameters["long_window"])
             .mean()
         )
-        self.market_data = self.market_data.dropna()
-        return self.market_data
-
-
-class RSIIndicator(TradingIndicator):
-    """Classe pour l'indicateur Relative Strength Index."""
-
-    def __init__(self, **kwargs):
-        kwargs = ObjDict(kwargs)
-        self.rsi_period = kwargs.parameters["rsi_period"]
-        self.overbought = kwargs.parameters["overbought"]
-        self.oversold = kwargs.parameters["oversold"]
-        self.market_data = None
-        self.parameters = kwargs.parameters
-        self.name = kwargs.name
-        kwargs.display_name = "RSI Indicator"
-        kwargs.description = (
-            "Une stratégie basée sur l'indicateur Relative Strength Index (RSI), qui "
-            "mesure la force relative d'une action par rapport à son historique."
-        )
-        super().__init__(**kwargs)
-
-    def get_window_size(self):
-        """Récupère les données pour la fenêtre."""
-        return self.rsi_period
-
-    def prepare_indicator_data_for_bar(self, window_data: List[float]):
-        """Calcule le RSI pour une liste donnée de prix."""
-        result = {}
-        if len(window_data) >= self.get_window_size():
-            rsi_indicator = RSI(
-                close=pd.Series(window_data), window=self.parameters["rsi_period"]
-            )
-            result["value"] = rsi_indicator.rsi().iloc[-1]
-            result["oversold"] = self.parameters["oversold"]
-            result["overbought"] = self.parameters["overbought"]
-        # self.market_data["RSI"] = rsi_indicator.rsi()
-        return result if result else None
-
-    def prepare_data(self, market_data):
-        """Prépare les données pour l'indicateur Relative Strength Index."""
-        self.market_data = market_data.copy()
-        rsi_indicator = RSI(
-            close=self.market_data["close"], window=self.parameters["rsi_period"]
-        )
-        self.market_data["RSI"] = rsi_indicator.rsi()
-
-        self.market_data = self.market_data.dropna()
-        return self.market_data
-
-
-class BollingerBandsIndicator(TradingIndicator):
-    """Classe pour l'indicateur Bollinger Bands."""
-
-    def __init__(self, **kwargs):
-        kwargs = ObjDict(kwargs)
-        self.market_data = None
-        self.parameters = kwargs.parameters
-        self.name = kwargs.name
-        kwargs.display_name = "Bollinger Bands Indicator"
-        kwargs.description = (
-            "Une stratégie basée sur les bandes de Bollinger, "
-            "qui sont des bandes de volatilité autour d'une moyenne mobile."
-        )
-        super().__init__(**kwargs)
-
-    def get_window_size(self):
-        """Récupère la taille de la fenêtre."""
-        return self.parameters["window"]
-
-    def prepare_indicator_data_for_bar(self, window_data: List[float]):
-        """Prépare les données pour l'indicateur Bollinger Bands pour une barre donnée."""
-        result = {}
-        if len(window_data) >= self.get_window_size():
-            bolband = BollingerBands(
-                close=pd.Series(window_data),
-                window=self.parameters["window"],
-                window_dev=self.parameters["num_std"],
-            )
-            bollinger_hband = bolband.bollinger_hband()
-            bollinger_lband = bolband.bollinger_lband()
-            bollinger_mavg = bolband.bollinger_mavg()
-            if not bollinger_hband.empty:
-                result["hband"] = bollinger_hband.iloc[-1]  # Return the last value
-            if not bollinger_lband.empty:
-                result["lband"] = bollinger_lband.iloc[-1]  # Return the last value
-            if not bollinger_mavg.empty:
-                result["mavg"] = bollinger_mavg.iloc[-1]
-            # if not bollinger_hband.empty:
-            #     return bollinger_hband.iloc[-1]  # Return the last value
-        # return None
-        return result if result else None
-
-    def get_prepare_data(self):
-        """Prépare les données pour l'indicateur Bollinger Bands."""
-        return self.market_data
-
-    def prepare_data(self, market_data):
-        """Prépare les données pour l'indicateur Bollinger Bands."""
-        self.market_data = market_data.copy()
-        bollinger = BollingerBands(
-            close=self.market_data["close"],
-            window=self.parameters["window"],
-            window_dev=self.parameters["num_std"],
-        )
-        self.market_data["bollinger_high"] = bollinger.bollinger_hband()
-        self.market_data["bollinger_low"] = bollinger.bollinger_lband()
         self.market_data = self.market_data.dropna()
         return self.market_data
 

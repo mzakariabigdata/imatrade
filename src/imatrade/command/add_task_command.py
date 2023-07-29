@@ -141,7 +141,12 @@ class PrepareStrategyDataCommand(TaskCommand):
             strategy_index = 1
         keys = list(strategies.keys())
         strategy_name = keys[int(strategy_index) - 1]
-        self.trading_strategy_controller.prepare_strategy_data(strategy_name)
+
+        num_file = input("Number of file: ")
+        if not num_file:
+            num_file = 1
+
+        self.trading_strategy_controller.prepare_strategy_data(strategy_name, num_file)
 
 
 class PrepareIndicatorDataCommand(TaskCommand):
@@ -157,10 +162,39 @@ class PrepareIndicatorDataCommand(TaskCommand):
 
     def execute(self):
         """Execute the command."""
-        indicator_name = input("Name of the indicator: ")
-        if not indicator_name:
-            indicator_name = "BollingerBands"
-        self.task_controller.prepare_indicator_data(indicator_name)
+        indicators = self.task_controller.get_indicators()
+        for i, (key, _) in enumerate(indicators.items(), start=1):
+            print(f"{i}: {key}", end=", ")
+        print()
+        indicator_index = input("Index of the indicator: ")
+        if not indicator_index:
+            indicator_index = 1
+        keys = list(indicators.keys())
+        indicator_name = keys[int(indicator_index) - 1]
+
+        num_file = input("Number of file: ")
+        if not num_file:
+            num_file = 1
+        self.task_controller.prepare_indicator_data(indicator_name, num_file)
+
+
+class DrawChartCommand(TaskCommand):
+    """Class for drawing a chart."""
+
+    def __init__(self, task_controller):
+        self.task_controller = task_controller
+
+    @property
+    def description(self):
+        """Return the description of the command."""
+        return "Draw chart"
+
+    def execute(self):
+        """Execute the command."""
+        index = input("Index of the chart: ")
+        if not index:
+            index = 1
+        self.task_controller.draw_chart(index)
 
 
 class DisplayAllBacktestsCommand(TaskCommand):
@@ -377,7 +411,12 @@ class ProcessMarketDataCommand(TaskCommand):
             strategy_index = 1
         keys = list(strategies.keys())
         strategy_name = keys[int(strategy_index) - 1]
-        self.trading_strategy_controller.process_market_data(strategy_name)
+
+        num_file = input("Number of file: ")
+        if not num_file:
+            num_file = 1
+
+        self.trading_strategy_controller.process_market_data(strategy_name, num_file)
 
 
 class RunBacktestCommand(TaskCommand):

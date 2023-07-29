@@ -4,6 +4,7 @@ import glob
 from pathlib import Path
 import pandas as pd
 from src.imatrade import Singleton
+from src.imatrade.view.trading_data_view import TradingDataView
 
 
 class TreadingDataController(metaclass=Singleton):
@@ -29,26 +30,36 @@ class TreadingDataController(metaclass=Singleton):
         """Récupérer le nom du fichier"""
         return os.path.basename(file_path[0])
 
-    def load_data(self, num_files=1):
+    def load_data(self, num_files=1, file_type="data"):
         """Charger les données du marché"""
 
-        script_path = Path(__file__).resolve()  # Chemin du script
-        new_path = script_path.parent / "../../data/"  # Ajouter '../../data/'
+        if file_type == "data":
+            script_path = Path(__file__).resolve()
+            new_path = script_path.parent / "../../data/"
+            new_path = new_path.resolve()
+            files = glob.glob(str(new_path) + "/" + str(num_files) + "*.csv")
+            # print("new_path", new_path)
+            print("files", files)
+            if not files:
+                print("No files found that match the prefix.")
+                return None
+            dataframe = pd.read_csv(files[0])
+        elif file_type == "saves":
+            script_path = Path(__file__).resolve()
+            new_path = script_path.parent / "../../data/saves/"
+            new_path = new_path.resolve()
+            files = glob.glob(str(new_path) + "/" + str(num_files) + "*.xlsx")
 
-        # Résoudre le chemin pour éliminer le '..'
-        new_path = new_path.resolve()
-        # files = glob.glob(str(new_path) + "/" + str(num_files) + "*.xlsx")
-        files = glob.glob(str(new_path) + "/" + str(num_files) + "*.csv")
-        print("new_path", new_path)
-        print("files", files)
-        if not files:
-            print("No files found that match the prefix.")
-            return None
-        # dataframe = pd.read_excel(files[0])
-        dataframe = pd.read_csv(files[0])
+            # print("new_path", new_path)
+            print("files", files)
+            if not files:
+                print("No files found that match the prefix.")
+                return None
+            dataframe = pd.read_excel(files[0])
+
         self.data = dataframe
         self.file_name = self.get_file_name(files)
-        return dataframe
+        return dataframe, self.file_name
 
     def print_data(self):
         """Afficher les données du marché"""
@@ -108,10 +119,10 @@ class TreadingDataController(metaclass=Singleton):
     def get_history(self):
         """Récupérer les données historiques du marché"""
         instrument = "EUR_USD"
-        start = "2018-01-01"
+        start = "2022-01-01"
         end = "2023-05-31"
         price = "M"
-        granularity = "M1"
+        granularity = "H1"
 
         market_data = self.oanda_data_provider.get_history(
             instrument=instrument,
@@ -135,3 +146,8 @@ class TreadingDataController(metaclass=Singleton):
             market_data, instrument, start, end, price, granularity
         )
         return market_data
+
+    def draw_chart(self, index):
+        """Dessiner un graphique en chandeliers japonais"""
+        treading_data_view = TradingDataView(self.data)
+        treading_data_view.draw_chart(index)

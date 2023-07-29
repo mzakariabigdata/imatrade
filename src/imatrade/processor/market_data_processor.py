@@ -135,6 +135,13 @@ class PositionHandler:
         trade_details = TradeDetails(quantity, open_price, stop_loss, take_profit)
         if entry_time is None:
             entry_time = datetime.now()
+        print(
+            "PositionHandler.open_position",
+            entry_time,
+            instrument,
+            position_type,
+            trade_details,
+        )
         position = Position(entry_time, instrument, position_type, trade_details)
         if instrument not in self.open_positions:
             self.open_positions[instrument] = []
@@ -172,6 +179,14 @@ class PositionHandler:
 
                 self.closed_positions[instrument].append(position)
                 self.open_positions[instrument].remove(position)
+                print(
+                    "PositionHandler.close_position",
+                    exit_time,
+                    instrument,
+                    position_type,
+                    close_price,
+                    reason,
+                )
                 # print(
                 #     f"Closed a {position_type} position of {position.trade_details.quantity}"
                 #     f" {instrument} at {close_price} because of {reason}"
@@ -282,6 +297,8 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
     """Class for processing market data."""
 
     def __init__(self, data_frame: pd.DataFrame, strategy=None):
+        self.data_processor_duration = 0
+        self.data_processor_duration_str = ""
         self.data_frame = data_frame
         self.tick_handler = TickHandler(strategy)
         self.strategy = strategy
@@ -368,7 +385,7 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
         close_price = bar_data["close"]
 
         # Update market price for instrument
-        self.position_handler.update_market_price(instrument, bar_data)
+        # self.position_handler.update_market_price(instrument, bar_data) # comment only for time
 
         bar_data_with_indicator = self.add_indicators(bar_data)
         if bar_data_with_indicator is not None:
@@ -409,14 +426,28 @@ class MarketDataProcessor:  # pylint: disable=too-few-public-methods, too-many-i
 
     def process_market_data(self):
         """Method for processing data."""
+        data_processor_duration_start = datetime.now()
+
         data_stream = self.simulate_real_time_data(self.data_frame)
 
         try:
             while True:
                 index, data = next(data_stream)
                 self.on_bar(index, data)  # or do something with data
+
         except StopIteration:
             pass
+
+        data_processor_duration_end = datetime.now()
+        self.data_processor_duration = (
+            data_processor_duration_end - data_processor_duration_start
+        ).total_seconds()
+        hours, remainder = divmod(self.data_processor_duration, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        self.data_processor_duration_str = (
+            f"Data processing duration: {int(hours)} hours,"
+            f" {int(minutes)} minutes, and {seconds:.2f} seconds"
+        )
 
         self.position_handler.display_positions()
         # print(self.data_frame_processed.dropna())

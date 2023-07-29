@@ -1,6 +1,53 @@
 
 strategies_composer:
   strategies:
+
+    - name: N_SMA_SDStrategy
+      display_name: Normalized Moving Average and Standard Deviation
+      description: Une stratégie basée sur la moyenne mobile et l'écart type d'une série de prix normalisée, qui génère des signaux d'achat et de vente en fonction des marges spécifiées.
+      financial_management:
+        initial_capital: 10000
+        risk_per_trade: 0.02
+        stop_loss: 0.02
+        take_profit: 0.04
+      instruments:
+        - EURUSD
+        - GBPUSD
+      indicators:
+        - name: N_SMA_SD
+          parameters:
+            window: 20
+      long_rules:
+        entry:
+          action: buy
+          conditions:
+            - name: Price_Below_Lower_Band
+              condition: close < BollingerBands.lband
+            - name: RSI_Below_Oversold
+              condition: RSI.value < RSI.oversold
+        exit:
+          action: sell
+          conditions:
+            - name: Price_Above_Middle_Band
+              condition: close > BollingerBands.mavg
+            - name: RSI_Above_Middle_Range
+              condition: RSI.value > 50
+      short_rules:
+        entry:
+          action: sell
+          conditions:
+            - name: Price_Above_Upper_Band
+              condition: close > BollingerBands.hband
+            - name: RSI_Above_Overbought
+              condition: RSI.value > RSI.overbought
+        exit:
+          action: buy
+          conditions:
+            - name: Price_Below_Middle_Band
+              condition: close < BollingerBands.mavg
+            - name: RSI_Below_Middle_Range
+              condition: RSI.value < 50
+
     - name: BollingerBandsRSI
       display_name: Bollinger Bands + RSI
       description: Une stratégie basée sur les bandes de Bollinger, qui utilise un indicateur de volatilité pour identifier les situations de surachat et de survente.

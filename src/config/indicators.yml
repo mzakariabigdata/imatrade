@@ -9,6 +9,12 @@ indicators_composer:
         window: 20
         num_std: 2
 
+    - name: N_SMA_SD
+      display_name: Normalized Moving Average and Standard Deviation
+      description: Un indicateur qui trace la moyenne mobile et l'écart type d'une série de prix normalisée.
+      parameters:
+        window: 20
+
     - name: MACrossover
       display_name: MA Crossover
       description: Un indicateur qui trace deux moyennes mobiles et génère des signaux d'achat et de vente lorsque la moyenne mobile à court terme croise la moyenne mobile à long terme.

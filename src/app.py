@@ -31,6 +31,7 @@ from src.imatrade.command.add_task_command import (
     DisplayBacktestCommand,
     RunStrategyCommand,
     RunBacktestCommand,
+    DrawChartCommand,
 )
 
 from src.imatrade.data_providers.oanda_data import OandaDataProvider
@@ -230,6 +231,7 @@ def trade_menu():
         5_3: LoadDataCommand(treading_data_controller),
         5_4: PrintDataCommand(treading_data_controller),
         5_5: SaveDataCommand(treading_data_controller),
+        5_6: DrawChartCommand(treading_data_controller),
         "6": "--------- 6. Quit ---------",
         0: QuitCommand(),
     }

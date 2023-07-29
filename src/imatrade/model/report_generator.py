@@ -61,6 +61,8 @@ class ReportGenerator:
         # Render the template with the given data
         rendered_report = template.render(
             strategy=stratgy,
+            data_processor_duration_str=market_data_processor.data_processor_duration_str,
+            file_name=market_data_processor.file_name,
             initial_capital=financial_management.initial_capital,
             current_capital=financial_management.current_capital,
             risk_per_trade=financial_management.risk_per_trade,
