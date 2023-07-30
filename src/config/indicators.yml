@@ -13,7 +13,7 @@ indicators_composer:
       display_name: Normalized Moving Average and Standard Deviation
       description: Un indicateur qui trace la moyenne mobile et l'écart type d'une série de prix normalisée.
       parameters:
-        window: 20
+        window: 10
 
     - name: MACrossover
       display_name: MA Crossover

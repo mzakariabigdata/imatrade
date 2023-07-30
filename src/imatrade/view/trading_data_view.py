@@ -3,6 +3,7 @@ import warnings
 from plotly.subplots import make_subplots
 import cufflinks as cf
 import plotly.graph_objects as go
+import pandas as pd
 
 warnings.filterwarnings("ignore")
 cf.set_config_file(offline=True)
@@ -65,6 +66,7 @@ class TradingDataView:
         # width=500,
         # height=600))
         self.add_trace_mark(row, col, name, mark_y)
+        # self.add_trace_indicator()
         self.add_trace_volume()
 
     def add_trace_z_score_ma(self, row, col):
@@ -107,12 +109,39 @@ class TradingDataView:
         )
         self.add_trace_mark(row, col, name, mark_y)
 
+    def add_trace_indicator(self):
+        """Ajouter une trace indicateur"""
+        labels = ["moving_avg", "std_dev"]
+        colors = [
+            "rgb(49,130,189)",
+            "rgb(49,130,189)",
+        ]
+        line_size = [1.5, 1.5]
+
+        for i, label in enumerate(labels):
+            self.fig.add_trace(  # pylint: disable=expression-not-assigned
+                go.Scatter(
+                    x=self.dataf["time"],
+                    y=self.dataf[label],
+                    mode="lines",
+                    name=label,
+                    line={"color": colors[i], "width": line_size[i]},
+                    connectgaps=True,
+                )
+            ).update_traces(yaxis="y2").data[0]
+
     def draw_chart(self, index):
         """Dessiner un graphique en chandeliers japonais"""
 
-        self.datetime = self.dataf.loc[index]["time"]
+        # date = self.dataf.iloc[3]['time'].split(" ")[0]
+        self.dataf["time"] = pd.to_datetime(self.dataf["time"])
+        self.dataf.set_index("time", inplace=True)
+        self.datetime = self.dataf.iloc[index].name
+        date = str(self.datetime).split(" ", maxsplit=1)[0]
+        # # Filtrer le DataFrame pour une date spécifique
+        self.dataf = self.dataf.loc[date]
 
-        dataf = self.dataf.reset_index()
+        self.dataf = self.dataf.reset_index()
 
         self.fig = make_subplots(
             rows=3,
@@ -127,13 +156,14 @@ class TradingDataView:
         )
 
         self.add_trace_candlestick(1, 1)
+
         self.add_trace_z_score_ma(2, 1)
         self.add_trace_z_score_std_dev(3, 1)
 
         # Add figure title
         # fig.update_layout(title_text="Candlestick Chart" + self.add_name_shart(datetime))
         self.fig.update_layout(
-            title_text="Candlestick Chart" + ", time " + self.datetime
+            title_text="Candlestick Chart" + ", time " + str(self.datetime)
         )
         # Set x-axis title
         # fig.update_xaxes(title_text="Time")
@@ -142,5 +172,3 @@ class TradingDataView:
         )
 
         cf.iplot(self.fig)
-
-        return dataf
